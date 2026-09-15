@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# Least privilege: the job only reads the repository.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Actions are pinned to commit SHAs (tag in the trailing comment) so a moved tag can't change the build.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run typecheck
+
+      # No provider keys are set: the suite is keyless by design — fakes sit only at the SDK
+      # boundary, and a network guard fails any test that reaches a live host.
+      - run: npm test
+
+      - run: npm run build
+
+      - run: npm run test:coverage
