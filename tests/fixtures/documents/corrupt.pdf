@@ -1,0 +1,3 @@
+%PDF-1.4
+This is deliberately not a valid PDF body — no xref table, no objects.
+GARBAGE_BYTES_0x00FF

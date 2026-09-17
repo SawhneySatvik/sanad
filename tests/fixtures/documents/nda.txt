@@ -1,0 +1,71 @@
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Mutual Non-Disclosure Agreement ("Agreement") is entered into on 10th January 2026,
+
+BETWEEN
+
+Kavya Analytics Private Limited, a company incorporated under the Companies Act, 2013, having its
+registered office at 4th Floor, Cyber Towers, Hitech City, Hyderabad, Telangana ("Party A"),
+
+AND
+
+Northwind Consulting LLP, having its registered office at 22 Residency Road, Bengaluru, Karnataka
+("Party B").
+
+Party A and Party B are individually referred to as a "Party" and collectively as the "Parties",
+and each Party may act as either the Disclosing Party or the Receiving Party under this Agreement.
+
+1. PURPOSE
+
+1.1 The Parties wish to explore a potential business relationship (the "Purpose") and, in
+connection with the Purpose, each Party may disclose certain confidential information to the other.
+
+2. DEFINITION OF CONFIDENTIAL INFORMATION
+
+2.1 "Confidential Information" means any non-public technical, business, financial, or other
+information disclosed by the Disclosing Party to the Receiving Party, whether orally, in writing,
+or in any other form, that is designated as confidential or that would reasonably be understood to
+be confidential given the nature of the information and the circumstances of disclosure.
+
+3. OBLIGATIONS OF THE RECEIVING PARTY
+
+3.1 The Receiving Party shall hold the Disclosing Party's Confidential Information in strict
+confidence and shall not disclose it to any third party without the prior written consent of the
+Disclosing Party.
+
+3.2 The Receiving Party shall use the Confidential Information solely for the Purpose and for no
+other purpose whatsoever.
+
+3.3 The Receiving Party shall protect the Confidential Information using at least the same degree
+of care it uses to protect its own confidential information, and in no event less than reasonable
+care.
+
+4. EXCLUSIONS
+
+4.1 Confidential Information does not include information that: (a) was already known to the
+Receiving Party prior to disclosure; (b) is or becomes publicly available through no fault of the
+Receiving Party; (c) is independently developed by the Receiving Party without use of the
+Confidential Information; or (d) is rightfully received from a third party without breach of any
+confidentiality obligation.
+
+5. TERM
+
+5.1 This Agreement shall remain in effect for a period of three (3) years from the date first
+written above. The confidentiality obligations under Clause 3 shall survive for a further period of
+two (2) years after termination or expiry of this Agreement.
+
+6. RETURN OF INFORMATION
+
+6.1 Upon written request of the Disclosing Party, the Receiving Party shall promptly return or
+destroy all Confidential Information and confirm such destruction in writing.
+
+7. GOVERNING LAW AND JURISDICTION
+
+7.1 This Agreement shall be governed by the laws of India, and the courts at Hyderabad shall have
+exclusive jurisdiction over any disputes arising under this Agreement.
+
+IN WITNESS WHEREOF the Parties have executed this Agreement as of the date first written above.
+
+For Kavya Analytics Private Limited          For Northwind Consulting LLP
+
+______________________                        ______________________

@@ -1,0 +1,69 @@
+FREELANCE SERVICE AGREEMENT
+
+This Freelance Service Agreement ("Agreement") is entered into on 5th May 2026,
+
+BETWEEN
+
+Studio Loop Design LLP, having its principal place of business at 12 MG Road, Indiranagar,
+Bengaluru, Karnataka, hereinafter referred to as the "Client",
+
+AND
+
+Mr. Arjun Mehta, an independent contractor and freelance UI/UX designer, residing at 45 Koramangala
+4th Block, Bengaluru, Karnataka, hereinafter referred to as the "Freelancer".
+
+1. SCOPE OF WORK
+
+1.1 The Freelancer agrees to provide UI/UX design services to the Client as more particularly
+described in the Statement of Work attached as Annexure A (the "Services"), including wireframes,
+high-fidelity mockups, and a design system for the Client's mobile application.
+
+2. DELIVERABLES AND TIMELINE
+
+2.1 The Freelancer shall deliver the agreed deliverables in accordance with the milestone schedule
+set out in Annexure A, with the final deliverables due no later than 30th June 2026.
+
+3. FEES AND PAYMENT
+
+3.1 In consideration of the Services, the Client shall pay the Freelancer a total fee of Rs.
+2,50,000/- (Rupees Two Lakh Fifty Thousand only), payable in three (3) instalments linked to the
+milestones set out in Annexure A.
+
+3.2 Each invoice raised by the Freelancer shall be payable by the Client within fourteen (14) days
+of receipt.
+
+4. RELATIONSHIP OF THE PARTIES
+
+4.1 The Freelancer is an independent contractor and not an employee, agent, or partner of the
+Client. Nothing in this Agreement shall be construed to create an employer-employee relationship
+between the Parties.
+
+4.2 The Freelancer shall be solely responsible for payment of any applicable taxes, including income
+tax and GST, on amounts received under this Agreement.
+
+5. INTELLECTUAL PROPERTY
+
+5.1 Upon full and final payment, all intellectual property rights in the deliverables created under
+this Agreement shall vest exclusively in the Client. The Freelancer retains no rights to reuse the
+deliverables for any other client without the Client's prior written consent.
+
+6. CONFIDENTIALITY
+
+6.1 The Freelancer shall keep confidential all business, technical, and design information shared
+by the Client in connection with this Agreement, and shall not disclose such information to any
+third party.
+
+7. TERMINATION
+
+7.1 Either Party may terminate this Agreement by giving seven (7) days' written notice to the other
+Party. Upon termination, the Client shall pay the Freelancer for Services satisfactorily performed
+up to the date of termination.
+
+8. GOVERNING LAW
+
+8.1 This Agreement shall be governed by the laws of India, and the courts at Bengaluru shall have
+exclusive jurisdiction over any disputes arising out of this Agreement.
+
+IN WITNESS WHEREOF the Parties have executed this Agreement as of the date first written above.
+
+CLIENT: ______________________          FREELANCER: ______________________

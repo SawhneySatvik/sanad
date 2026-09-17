@@ -1,0 +1,74 @@
+PRIVACY POLICY
+
+Last updated: 15th February 2026
+
+Welcome to the Fintrack app ("we", "us", "our"), operated by Fintrack Technologies Private Limited.
+This Privacy Policy explains how we collect, use, share, and protect your personal data when you
+use our mobile application and website (collectively, the "Services").
+
+This Privacy Policy is framed in accordance with the Digital Personal Data Protection Act, 2023
+(the "DPDP Act") and other applicable laws of India.
+
+1. ROLES UNDER THE DPDP ACT
+
+1.1 For the purposes of the DPDP Act, Fintrack Technologies Private Limited acts as the "Data
+Fiduciary" in respect of personal data processed through the Services, and you, the user, are the
+"Data Principal".
+
+2. PERSONAL DATA WE COLLECT
+
+2.1 We collect personal data that you provide directly, including your name, mobile number, email
+address, PAN, and bank account details, when you register for and use the Services.
+
+2.2 We also collect personal data automatically, including device identifiers, IP address, app
+usage data, and cookies, through the use of the Services.
+
+3. HOW WE USE YOUR PERSONAL DATA
+
+3.1 We use your personal data to provide and improve the Services, process transactions, respond to
+your requests, comply with legal obligations, and, where you have given consent, to send you
+promotional communications.
+
+4. CONSENT
+
+4.1 We process your personal data on the basis of your free, specific, informed, and unambiguous
+consent, given through a clear affirmative action, in accordance with Section 6 of the DPDP Act.
+
+4.2 You may withdraw your consent at any time through the "Privacy Settings" section of the app,
+without affecting the lawfulness of processing carried out before such withdrawal.
+
+5. SHARING OF PERSONAL DATA
+
+5.1 We may share your personal data with our data processors, including cloud hosting providers and
+payment gateways, strictly for the purposes described in this Policy, and with regulators and law
+enforcement authorities where required by law.
+
+5.2 We do not sell your personal data to any third party.
+
+6. DATA RETENTION
+
+6.1 We retain your personal data only for as long as necessary to fulfil the purposes described in
+this Policy, or as required under applicable law, after which it is securely deleted or anonymised.
+
+7. YOUR RIGHTS AS A DATA PRINCIPAL
+
+7.1 Subject to the DPDP Act, you have the right to access a summary of your personal data, request
+correction or erasure of your personal data, nominate another individual to exercise your rights in
+the event of death or incapacity, and grievance redressal.
+
+7.2 You may exercise these rights by contacting our Grievance Officer at grievance@fintrack.example.
+
+8. SECURITY
+
+8.1 We implement reasonable security safeguards, including encryption and access controls, to
+protect your personal data against unauthorised access, loss, or disclosure.
+
+9. CHANGES TO THIS POLICY
+
+9.1 We may update this Privacy Policy from time to time. We will notify you of material changes
+through the app or by email.
+
+10. CONTACT US
+
+10.1 If you have questions about this Privacy Policy or our handling of your personal data, please
+contact our Grievance Officer at grievance@fintrack.example.
