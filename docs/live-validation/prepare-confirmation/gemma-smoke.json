@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "mode": "live",
+    "startedAt": "2026-09-23T12:53:37.815Z",
+    "finishedAt": "2026-09-23T12:56:13.717Z",
+    "wallTimeMs": 155902,
+    "budget": 4,
+    "callsUsed": 4,
+    "blockedCalls": [
+      {
+        "op": "understand:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:53:38.982Z",
+        "reason": "cap"
+      },
+      {
+        "op": "understand:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:53:38.983Z",
+        "reason": "cap"
+      },
+      {
+        "op": "prepare:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:19.615Z",
+        "reason": "cap"
+      },
+      {
+        "op": "prepare:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:19.617Z",
+        "reason": "cap"
+      },
+      {
+        "op": "understand:leave_and_license",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:32.627Z",
+        "reason": "cap"
+      },
+      {
+        "op": "understand:leave_and_license",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:32.630Z",
+        "reason": "cap"
+      }
+    ],
+    "otherFetches": 0,
+    "env": {
+      "GEMINI_API_KEY": "set",
+      "NVIDIA_API_KEY": "set",
+      "OPENROUTER_API_KEY": "set",
+      "GEMINI_MODEL": "unset",
+      "GEMMA_MODEL": "unset",
+      "GEMMA_MODEL_NIM": "unset",
+      "GEMMA_MODEL_OPENROUTER": "unset",
+      "RATE_LIMIT_PRINCIPAL_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMINI_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMMA_PER_MINUTE": "unset"
+    },
+    "primaryModelId": "gemini-2.5-flash",
+    "understandPromptVersion": "understand-v3",
+    "preparePromptVersion": "prepare-v3",
+    "stops": [],
+    "history": [],
+    "notes": [
+      "A targeted confirmation of the current Prepare version, not a full Understand run: 4 provider calls at most, primary out of its daily quota (capped at 0), so every answer is the fallback model. The NDA replaced the job offer letter because the offer letter and the leave and license produce no checklist gaps, so only the NDA exercises the checklist-gap path."
+    ]
+  },
+  "httpCalls": [],
+  "smoke": {
+    "fixture": "privacy_policy",
+    "timeoutMs": 90000,
+    "documentType": "privacy_policy",
+    "canonicalTextHash": "1e0bfebabfda93485e46c41fca4a0d383cc842c16c406a032723df72b9590878",
+    "op": {
+      "label": "smoke:privacy_policy",
+      "startedAt": "2026-09-23T12:53:38.956Z",
+      "durationMs": 0,
+      "outcome": "skipped",
+      "httpCallSeqs": [],
+      "skippedReason": "skipped: NIM has not answered within its timeout on 3 recorded attempts and OpenRouter's free quota is exhausted, so another attempt would spend budget without new information"
+    },
+    "gateway": null,
+    "parsed": false,
+    "findings": null
+  },
+  "computed": {
+    "metrics": null,
+    "repairRetry": false,
+    "concerns": [
+      "gemma-smoke: Gemma fallback UNVERIFIED — skipped: NIM has not answered within its timeout on 3 recorded attempts and OpenRouter's free quota is exhausted, so another attempt would spend budget without new information"
+    ]
+  }
+}

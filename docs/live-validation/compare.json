@@ -1,0 +1,456 @@
+{
+  "meta": {
+    "part": "compare",
+    "mode": "live",
+    "startedAt": "2026-09-23T10:22:52.903Z",
+    "finishedAt": "2026-09-23T10:23:35.088Z",
+    "wallTimeMs": 42192,
+    "flashLiteAllocation": 6,
+    "caps": {
+      "gemini:gemini-2.5-flash": 1,
+      "gemini:gemini-3.5-flash-lite": 6,
+      "gemini:gemma-4-31b-it": 1,
+      "nim:google/gemma-4-31b-it": 0,
+      "openrouter:google/gemma-4-31b-it:free": 1
+    },
+    "models": {
+      "primary": "gemini-2.5-flash",
+      "flashLite": "gemini-3.5-flash-lite",
+      "gemmaGoogle": "gemma-4-31b-it",
+      "nim": "google/gemma-4-31b-it",
+      "openrouter": "google/gemma-4-31b-it:free"
+    },
+    "callsSent": 4,
+    "blocked": [
+      {
+        "op": "compare:job_offer_letter",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T10:23:13.036Z",
+        "reason": "cap"
+      },
+      {
+        "op": "compare:job_offer_letter",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T10:23:13.038Z",
+        "reason": "cap"
+      },
+      {
+        "op": "compare:freelance_service_agreement",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T10:23:33.028Z",
+        "reason": "cap"
+      },
+      {
+        "op": "compare:freelance_service_agreement",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T10:23:33.041Z",
+        "reason": "cap"
+      }
+    ],
+    "otherFetches": 0,
+    "env": {
+      "GEMINI_API_KEY": "set",
+      "NVIDIA_API_KEY": "set",
+      "OPENROUTER_API_KEY": "set",
+      "GEMINI_MODEL": "unset",
+      "GEMMA_MODEL": "unset",
+      "GEMMA_MODEL_NIM": "unset",
+      "GEMMA_MODEL_OPENROUTER": "unset",
+      "RATE_LIMIT_PRINCIPAL_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMINI_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMMA_PER_MINUTE": "unset"
+    },
+    "stops": []
+  },
+  "httpCalls": [
+    {
+      "seq": 1,
+      "op": "compare:leave_and_license",
+      "provider": "gemini",
+      "model": "gemini-2.5-flash",
+      "startedAt": "2026-09-23T10:22:53.025Z",
+      "latencyMs": 1030,
+      "outcome": "response",
+      "status": 429,
+      "errorStatus": "RESOURCE_EXHAUSTED",
+      "errorMessage": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.",
+      "quotaWindow": "per_day",
+      "retryAfter": null
+    },
+    {
+      "seq": 2,
+      "op": "compare:leave_and_license",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T10:22:54.070Z",
+      "latencyMs": 2247,
+      "outcome": "response",
+      "status": 200
+    },
+    {
+      "seq": 3,
+      "op": "compare:job_offer_letter",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T10:23:13.040Z",
+      "latencyMs": 1840,
+      "outcome": "response",
+      "status": 200
+    },
+    {
+      "seq": 4,
+      "op": "compare:freelance_service_agreement",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T10:23:33.045Z",
+      "latencyMs": 1960,
+      "outcome": "response",
+      "status": 200
+    }
+  ],
+  "pairs": [
+    {
+      "pair": "leave_and_license",
+      "op": {
+        "label": "compare:leave_and_license",
+        "startedAt": "2026-09-23T10:22:53.006Z",
+        "durationMs": 3354,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          1,
+          2
+        ],
+        "events": [
+          {
+            "event": "llm_provider_rejected",
+            "model": "gemini-2.5-flash",
+            "httpStatus": 429,
+            "providerStatus": "RESOURCE_EXHAUSTED",
+            "providerMessage": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis."
+          }
+        ],
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "answeredBy": "gemini-3.5-flash-lite",
+      "modelUsed": "gemini-3.5-flash-lite",
+      "modelQuotes": {
+        "kept": 5,
+        "replaced": 0
+      },
+      "changes": [
+        {
+          "id": "01a0cdca-3558-7cfd-be07-e5d379dafac6",
+          "changeType": "changed",
+          "explanation": "The security deposit amount has been increased from Rs. 1,50,000/- to Rs. 2,25,000/-. This means the licensee must pay a higher upfront deposit to the licensor upon signing.",
+          "a": {
+            "status": "verified",
+            "spanStart": 5568,
+            "spanEnd": 5620,
+            "spanText": "Rs. 1,50,000/- (Rupees One Lakh Fifty Thousand only)"
+          },
+          "b": {
+            "status": "verified",
+            "spanStart": 5568,
+            "spanEnd": 5626,
+            "spanText": "Rs. 2,25,000/- (Rupees Two Lakh Twenty-Five Thousand only)"
+          }
+        },
+        {
+          "id": "01a0cdca-3558-7cfd-be07-e5d40b11e0ac",
+          "changeType": "changed",
+          "explanation": "The required notice period for the licensee to terminate the agreement after the lock-in period has been extended from thirty days to sixty days. In practice, the licensee must plan further ahead if they wish to exit the agreement.",
+          "a": {
+            "status": "verified",
+            "spanStart": 7795,
+            "spanEnd": 7812,
+            "spanText": "thirty (30) days'"
+          },
+          "b": {
+            "status": "verified",
+            "spanStart": 7801,
+            "spanEnd": 7817,
+            "spanText": "sixty (60) days'"
+          }
+        },
+        {
+          "id": "01a0cdca-3558-7cfd-be07-e5d5a2b8046b",
+          "changeType": "added",
+          "explanation": "A new restriction has been added prohibiting the licensee from keeping any pet animal or bird in the licensed premises.",
+          "a": {
+            "status": null,
+            "spanStart": null,
+            "spanEnd": null,
+            "spanText": null
+          },
+          "b": {
+            "status": "verified",
+            "spanStart": 10797,
+            "spanEnd": 10873,
+            "spanText": "The Licensee shall not keep any pet animal or bird in the Licensed Premises."
+          }
+        }
+      ]
+    },
+    {
+      "pair": "job_offer_letter",
+      "op": {
+        "label": "compare:job_offer_letter",
+        "startedAt": "2026-09-23T10:23:13.009Z",
+        "durationMs": 1939,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          3
+        ],
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "answeredBy": "gemini-3.5-flash-lite",
+      "modelUsed": "gemini-3.5-flash-lite",
+      "modelQuotes": {
+        "kept": 3,
+        "replaced": 0
+      },
+      "changes": [
+        {
+          "id": "01a0cdca-7df8-7f29-88ba-789f9d625075",
+          "changeType": "removed",
+          "explanation": "This clause, which previously allowed the Company to reimburse up to Rs. 50,000/- for relocation expenses from Chennai to Bengaluru, has been removed entirely. In practice, this means the company will no longer cover these relocation costs.",
+          "a": {
+            "status": "verified",
+            "spanStart": 2768,
+            "spanEnd": 3016,
+            "spanText": "3.5 The Company will reimburse your actual and reasonable relocation expenses from Chennai to Bengaluru, up to a maximum of Rs. 50,000/- (Rupees Fifty Thousand only), against original bills submitted within thirty (30) days of your date of joining."
+          },
+          "b": {
+            "status": null,
+            "spanStart": null,
+            "spanEnd": null,
+            "spanText": null
+          }
+        },
+        {
+          "id": "01a0cdca-7df8-7f29-88ba-78a0632f418e",
+          "changeType": "changed",
+          "explanation": "The resignation notice period required from the employee after confirmation has been increased from sixty (60) days to ninety (90) days. In practice, this means you must serve a longer notice period before resigning, which may delay your ability to transition to a new job under Indian employment practice.",
+          "a": {
+            "status": "verified",
+            "spanStart": 3613,
+            "spanEnd": 3644,
+            "spanText": "sixty (60) days' written notice"
+          },
+          "b": {
+            "status": "verified",
+            "spanStart": 3364,
+            "spanEnd": 3396,
+            "spanText": "ninety (90) days' written notice"
+          }
+        }
+      ]
+    },
+    {
+      "pair": "freelance_service_agreement",
+      "op": {
+        "label": "compare:freelance_service_agreement",
+        "startedAt": "2026-09-23T10:23:33.011Z",
+        "durationMs": 2073,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          4
+        ],
+        "events": [
+          {
+            "event": "llm_circuit_open",
+            "tier": "gemini:gemini-2.5-flash",
+            "consecutiveFailures": 3,
+            "openMs": 60000,
+            "code": "UPSTREAM_UNAVAILABLE"
+          }
+        ],
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "answeredBy": "gemini-3.5-flash-lite",
+      "modelUsed": "gemini-3.5-flash-lite",
+      "modelQuotes": {
+        "kept": 4,
+        "replaced": 0
+      },
+      "changes": [
+        {
+          "id": "01a0cdca-cc8e-7a1d-8d07-537bc535f478",
+          "changeType": "changed",
+          "explanation": "The payment window for undisputed invoices has been extended from thirty days to sixty days. In practice, this means the freelancer will have to wait twice as long to receive payment after submitting an invoice.",
+          "a": {
+            "status": "verified",
+            "spanStart": 4259,
+            "spanEnd": 4282,
+            "spanText": "within thirty (30) days"
+          },
+          "b": {
+            "status": "verified",
+            "spanStart": 4259,
+            "spanEnd": 4281,
+            "spanText": "within sixty (60) days"
+          }
+        },
+        {
+          "id": "01a0cdca-cc8e-7a1d-8d07-537cec488d63",
+          "changeType": "removed",
+          "explanation": "A clause allowing the freelancer to display the final designs in her portfolio and website after the client's public launch has been completely removed. This means the agreement no longer explicitly grants the freelancer the right to showcase this work publicly.",
+          "a": {
+            "status": "verified",
+            "spanStart": 5869,
+            "spanEnd": 6021,
+            "spanText": "The Freelancer may display the final designs in her personal portfolio and on her website after the Client has publicly launched the redesigned website."
+          },
+          "b": {
+            "status": null,
+            "spanStart": null,
+            "spanEnd": null,
+            "spanText": null
+          }
+        },
+        {
+          "id": "01a0cdca-cc8e-7a1d-8d07-537da2e79572",
+          "changeType": "added",
+          "explanation": "A new restriction has been added prohibiting the freelancer from using any generative artificial intelligence tools for the deliverables without prior written consent. This means the freelancer must create all work manually or obtain explicit permission before using AI assistance.",
+          "a": {
+            "status": null,
+            "spanStart": null,
+            "spanEnd": null,
+            "spanText": null
+          },
+          "b": {
+            "status": "verified",
+            "spanStart": 6426,
+            "spanEnd": 6586,
+            "spanText": "The Freelancer shall not use any generative artificial intelligence tool to create any part of the Deliverables without the prior written consent of the Client."
+          }
+        }
+      ]
+    }
+  ],
+  "computed": {
+    "verdicts": [
+      {
+        "pair": "leave_and_license",
+        "id": "LL-C1",
+        "type": "changed",
+        "description": "Security deposit raised from Rs. 1,50,000 to Rs. 2,25,000 (clause 5.1).",
+        "matchedChangeId": "01a0cdca-3558-7cfd-be07-e5d379dafac6",
+        "detected": true,
+        "modelWritten": true,
+        "mentions": [
+          "2,25,000"
+        ],
+        "explained": true,
+        "explanation": "The security deposit amount has been increased from Rs. 1,50,000/- to Rs. 2,25,000/-. This means the licensee must pay a higher upfront deposit to the licensor upon signing."
+      },
+      {
+        "pair": "leave_and_license",
+        "id": "LL-C2",
+        "type": "changed",
+        "description": "Licensee's post-lock-in termination notice lengthened from 30 to 60 days (clause 7.2).",
+        "matchedChangeId": "01a0cdca-3558-7cfd-be07-e5d40b11e0ac",
+        "detected": true,
+        "modelWritten": true,
+        "mentions": [
+          "sixty"
+        ],
+        "explained": true,
+        "explanation": "The required notice period for the licensee to terminate the agreement after the lock-in period has been extended from thirty days to sixty days. In practice, the licensee must plan further ahead if they wish to exit the agreement."
+      },
+      {
+        "pair": "leave_and_license",
+        "id": "LL-C3",
+        "type": "added",
+        "description": "New clause 10.6 added at the end of the use restrictions: no pets or birds.",
+        "matchedChangeId": "01a0cdca-3558-7cfd-be07-e5d5a2b8046b",
+        "detected": true,
+        "modelWritten": true,
+        "mentions": [
+          "pet",
+          "animal"
+        ],
+        "explained": true,
+        "explanation": "A new restriction has been added prohibiting the licensee from keeping any pet animal or bird in the licensed premises."
+      },
+      {
+        "pair": "job_offer_letter",
+        "id": "JO-C1",
+        "type": "removed",
+        "description": "Clause 3.5 (relocation reimbursement of up to Rs. 50,000) removed.",
+        "matchedChangeId": "01a0cdca-7df8-7f29-88ba-789f9d625075",
+        "detected": true,
+        "modelWritten": true,
+        "mentions": [
+          "relocation"
+        ],
+        "explained": true,
+        "explanation": "This clause, which previously allowed the Company to reimburse up to Rs. 50,000/- for relocation expenses from Chennai to Bengaluru, has been removed entirely. In practice, this means the company will no longer cover these relocation costs."
+      },
+      {
+        "pair": "job_offer_letter",
+        "id": "JO-C2",
+        "type": "changed",
+        "description": "Employee's post-confirmation resignation notice lengthened from 60 to 90 days (clause 5.1).",
+        "matchedChangeId": "01a0cdca-7df8-7f29-88ba-78a0632f418e",
+        "detected": true,
+        "modelWritten": true,
+        "mentions": [
+          "90",
+          "ninety"
+        ],
+        "explained": true,
+        "explanation": "The resignation notice period required from the employee after confirmation has been increased from sixty (60) days to ninety (90) days. In practice, this means you must serve a longer notice period before resigning, which may delay your ability to transition to a new job under Indian employment practice."
+      },
+      {
+        "pair": "freelance_service_agreement",
+        "id": "FS-C1",
+        "type": "changed",
+        "description": "Client's payment window lengthened from 30 to 60 days after receiving each invoice (clause 6.2).",
+        "matchedChangeId": "01a0cdca-cc8e-7a1d-8d07-537bc535f478",
+        "detected": true,
+        "modelWritten": true,
+        "mentions": [
+          "sixty"
+        ],
+        "explained": true,
+        "explanation": "The payment window for undisputed invoices has been extended from thirty days to sixty days. In practice, this means the freelancer will have to wait twice as long to receive payment after submitting an invoice."
+      },
+      {
+        "pair": "freelance_service_agreement",
+        "id": "FS-C2",
+        "type": "removed",
+        "description": "Clause 7.5 (freelancer's right to show the final designs in her portfolio) removed.",
+        "matchedChangeId": "01a0cdca-cc8e-7a1d-8d07-537cec488d63",
+        "detected": true,
+        "modelWritten": true,
+        "mentions": [
+          "portfolio"
+        ],
+        "explained": true,
+        "explanation": "A clause allowing the freelancer to display the final designs in her portfolio and website after the client's public launch has been completely removed. This means the agreement no longer explicitly grants the freelancer the right to showcase this work publicly."
+      },
+      {
+        "pair": "freelance_service_agreement",
+        "id": "FS-C3",
+        "type": "added",
+        "description": "New clause 8.4 added: no use of generative AI tools without the client's prior written consent.",
+        "matchedChangeId": "01a0cdca-cc8e-7a1d-8d07-537da2e79572",
+        "detected": true,
+        "modelWritten": true,
+        "mentions": [
+          "generative",
+          "artificial intelligence",
+          "AI"
+        ],
+        "explained": true,
+        "explanation": "A new restriction has been added prohibiting the freelancer from using any generative artificial intelligence tools for the deliverables without prior written consent. This means the freelancer must create all work manually or obtain explicit permission before using AI assistance."
+      }
+    ],
+    "concerns": []
+  }
+}

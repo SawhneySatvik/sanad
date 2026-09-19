@@ -1,0 +1,95 @@
+{
+  "fixture": "job_offer_letter",
+  "questions": [
+    {
+      "id": "JO-Q1",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "What is my fixed salary per month, leaving out the variable pay?",
+      "expectedAnchors": ["Total Fixed Gross | 15,98,614 | 1,33,218"],
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "JO-Q2",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "If I resign after one year, do I have to pay the company anything?",
+      "expectedAnchors": ["you shall pay to the Company a sum of Rs. 2,50,000/- (Rupees Two Lakh Fifty Thousand only) as liquidated damages"],
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "JO-Q3",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "How much notice do I have to give after confirmation, and how much notice does the company have to give me?",
+      "expectedAnchors": ["you shall be required to give sixty (60) days' written notice of resignation", "the Company may terminate your employment by giving you thirty (30) days' written notice or salary in lieu thereof"],
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "JO-Q4",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Would the company own an app I build on weekends on my own laptop?",
+      "expectedAnchors": ["whether or not during working hours and whether or not using the Company's resources"],
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "JO-Q5",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "Is a non-compete clause in an employment contract enforceable in India after I resign?",
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "JO-Q6",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "Can my previous employer refuse to give me a relieving letter because I did not serve my full notice period?",
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "JO-Q7",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "The company also wants me to sign a separate NDA before joining. Is that normal, and does it change anything in this offer?",
+      "expectedAnchors": ["keep confidential all proprietary and confidential information of the Company and its clients"],
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": true,
+      "acceptableSpecialists": ["employment", "contracts_nda"],
+      "note": "Cross-domain question asked with the offer attached (grounded, so outside the routing bar): an employee NDA is an employment matter, but the NDA itself is a contracts_nda subject; both are defensible."
+    },
+    {
+      "id": "JO-Q8",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "I am joining a company as a full-time employee but still have one freelance client project to finish. Can my offer letter's clause on other paid assignments stop me from completing it?",
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": false,
+      "note": "'freelance' is a distractor; the question is about the employer's moonlighting restriction."
+    },
+    {
+      "id": "JO-Q9",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "HR is asking for my last three payslips and bank statements for background verification. How long are they allowed to keep this data?",
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false,
+      "note": "Employment context, but the question is about retention of personal data; carries no privacy-registry keyword, so it also tests the classifier's no-keyword path."
+    },
+    {
+      "id": "JO-Q10",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "I resigned, and my manager says my last month's salary will be held back until I sign an NDA about my project. Can the company do that?",
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": false,
+      "note": "'NDA' is a contracts distractor; the question is about an employer withholding wages."
+    }
+  ]
+}

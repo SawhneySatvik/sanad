@@ -1,0 +1,95 @@
+{
+  "fixture": "freelance_service_agreement",
+  "questions": [
+    {
+      "id": "FS-Q1",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "When will I get paid for each milestone?",
+      "expectedAnchors": ["the Client shall pay each undisputed invoice within thirty (30) days of receiving it"],
+      "expectedSpecialist": "freelance",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "FS-Q2",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "If Orchid Lane cancels the project halfway, will I be paid for the work I have already done?",
+      "expectedAnchors": ["no payment shall be due for work in progress or for Deliverables not yet accepted"],
+      "expectedSpecialist": "freelance",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "FS-Q3",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Do I keep the rights to my designs until the client pays me?",
+      "expectedAnchors": ["whether or not the Fees for them have been paid"],
+      "expectedSpecialist": "freelance",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "FS-Q4",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "How many rounds of revisions am I required to do?",
+      "expectedAnchors": ["until the Client is satisfied with them, at no additional cost"],
+      "expectedSpecialist": "freelance",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "FS-Q5",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "As a freelancer in India, when do I need to register for GST?",
+      "expectedSpecialist": "freelance",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "FS-Q6",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "A client has not paid my invoice for three months. What can I do as a freelance designer?",
+      "expectedSpecialist": "freelance",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "FS-Q7",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Is the 12-month non-compete in this agreement enforceable against me?",
+      "expectedAnchors": ["shall not provide design or development services to any business engaged in the manufacture or sale of packaged foods, snacks or beverages in India"],
+      "expectedSpecialist": "freelance",
+      "routingAmbiguous": false,
+      "note": "Asked with the agreement attached (grounded, so outside the routing bar): 'non-compete' is also an employment keyword; the restraint is in a freelance contract."
+    },
+    {
+      "id": "FS-Q8",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "Can my client stop me from showing their project in my portfolio if the contract says nothing about it?",
+      "expectedSpecialist": "freelance",
+      "routingAmbiguous": true,
+      "acceptableSpecialists": ["freelance", "contracts_nda"],
+      "note": "A freelancer's portfolio right (freelance) that turns on contract silence and IP (contracts_nda)."
+    },
+    {
+      "id": "FS-Q9",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "The startup I freelance for wants to hire me full-time with a 90-day notice period. What should I check in the offer letter before signing?",
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": false,
+      "note": "'freelance' is a distractor; the question is about an employment offer."
+    },
+    {
+      "id": "FS-Q10",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "A startup I designed a logo for is using it without paying me, and says our contract was never signed. Can I stop them from using my design?",
+      "expectedSpecialist": "freelance",
+      "routingAmbiguous": false,
+      "note": "'contract' is a distractor; the question is about unpaid freelance work and who owns it."
+    }
+  ]
+}

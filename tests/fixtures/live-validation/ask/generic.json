@@ -1,0 +1,94 @@
+{
+  "fixture": "generic",
+  "questions": [
+    {
+      "id": "GN-Q1",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "How do I stop this membership from renewing automatically?",
+      "expectedAnchors": ["at least sixty (60) days before the end of the then-current term", "sent by email to membership@deskhaven.example from the Member's registered email address"],
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "GN-Q2",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Will I get my deposit back if I leave after one month?",
+      "expectedAnchors": ["the Refundable Deposit shall be forfeited in full"],
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "GN-Q3",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Can Deskhaven increase my fee in the middle of a term?",
+      "expectedAnchors": ["The Operator may revise the Membership Fee at any time"],
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "GN-Q4",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "If the internet is down for a week, do I get any refund?",
+      "expectedAnchors": ["arising from any interruption, failure or unavailability of internet, electricity or any other service"],
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "GN-Q5",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "Are automatic renewal clauses in service contracts enforceable in India?",
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false,
+      "note": "A contract-law question; 'contracts' (plural) does not match the registry's whole-word 'contract'."
+    },
+    {
+      "id": "GN-Q6",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "My co-working space is refusing to return my deposit. Can I approach the consumer forum?",
+      "expectedSpecialist": "general_legal",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "GN-Q7",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "The centre's CCTV recorded me and they gave the footage to my former business partner. Is that a violation of my privacy under the DPDP Act?",
+      "expectedAnchors": ["The Centre is monitored by CCTV cameras in its common areas"],
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false,
+      "note": "Cross-domain question asked with the membership agreement attached (grounded, so outside the routing bar): the question is about misuse of CCTV footage under data-protection law."
+    },
+    {
+      "id": "GN-Q8",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "I'm a freelancer renting a desk at a co-working space, and their membership agreement needs 60 days' notice to stop auto-renewal. Is that clause fair?",
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false,
+      "note": "'freelancer' is a distractor; the question is about a membership contract's renewal term."
+    },
+    {
+      "id": "GN-Q9",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "My co-working operator locked my desk and is holding my laptop until I pay their dues. Can I file a police complaint?",
+      "expectedSpecialist": "general_legal",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "GN-Q10",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "My co-working operator emailed that the centre is shutting next week and that they will keep this month's fee. Can they do that?",
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false,
+      "note": "A business member's rights under a workspace membership contract."
+    }
+  ]
+}

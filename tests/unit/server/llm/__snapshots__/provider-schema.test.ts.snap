@@ -1,0 +1,876 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`toProviderJsonSchema — real response schema compare > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "changes": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "explanation": {
+            "description": "1-3 plain-language sentences: what changed and what it means in practice for the people who sign.",
+            "type": "string",
+          },
+          "id": {
+            "description": "The candidate's id, exactly as given (for example c3).",
+            "type": "string",
+          },
+          "quoteA": {
+            "description": "Optional: the words that changed, copied character for character from this candidate's A text. null for an added clause.",
+            "type": [
+              "string",
+              "null",
+            ],
+          },
+          "quoteB": {
+            "description": "Optional: the words that changed, copied character for character from this candidate's B text. null for a removed clause.",
+            "type": [
+              "string",
+              "null",
+            ],
+          },
+        },
+        "required": [
+          "id",
+          "explanation",
+          "quoteA",
+          "quoteB",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "changes",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema draft:freelance_service_agreement > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "sections": {
+      "additionalProperties": false,
+      "properties": {
+        "fees_and_payment": {
+          "description": "The full body text for the "fees_and_payment" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "governing_law_and_disputes": {
+          "description": "The full body text for the "governing_law_and_disputes" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "ip_and_confidentiality": {
+          "description": "The full body text for the "ip_and_confidentiality" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "parties_and_scope": {
+          "description": "The full body text for the "parties_and_scope" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "termination_and_liability": {
+          "description": "The full body text for the "termination_and_liability" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+      },
+      "required": [
+        "parties_and_scope",
+        "fees_and_payment",
+        "ip_and_confidentiality",
+        "termination_and_liability",
+        "governing_law_and_disputes",
+      ],
+      "type": "object",
+    },
+  },
+  "required": [
+    "sections",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema draft:grounded_response > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "sections": {
+      "additionalProperties": false,
+      "properties": {
+        "next_steps": {
+          "description": "The full body text for the "next_steps" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "summary_of_what_you_received": {
+          "description": "The full body text for the "summary_of_what_you_received" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "your_response": {
+          "description": "The full body text for the "your_response" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+      },
+      "required": [
+        "summary_of_what_you_received",
+        "your_response",
+        "next_steps",
+      ],
+      "type": "object",
+    },
+  },
+  "required": [
+    "sections",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema draft:job_offer_letter > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "sections": {
+      "additionalProperties": false,
+      "properties": {
+        "joining_and_probation": {
+          "description": "The full body text for the "joining_and_probation" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "notice_period_and_termination": {
+          "description": "The full body text for the "notice_period_and_termination" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "other_terms": {
+          "description": "The full body text for the "other_terms" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "position_and_compensation": {
+          "description": "The full body text for the "position_and_compensation" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+      },
+      "required": [
+        "position_and_compensation",
+        "joining_and_probation",
+        "notice_period_and_termination",
+        "other_terms",
+      ],
+      "type": "object",
+    },
+  },
+  "required": [
+    "sections",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema draft:leave_and_license > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "sections": {
+      "additionalProperties": false,
+      "properties": {
+        "governing_law_and_disputes": {
+          "description": "The full body text for the "governing_law_and_disputes" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "maintenance_and_restrictions": {
+          "description": "The full body text for the "maintenance_and_restrictions" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "parties_and_premises": {
+          "description": "The full body text for the "parties_and_premises" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "term_rent_and_deposit": {
+          "description": "The full body text for the "term_rent_and_deposit" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "termination_and_notice": {
+          "description": "The full body text for the "termination_and_notice" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+      },
+      "required": [
+        "parties_and_premises",
+        "term_rent_and_deposit",
+        "termination_and_notice",
+        "maintenance_and_restrictions",
+        "governing_law_and_disputes",
+      ],
+      "type": "object",
+    },
+  },
+  "required": [
+    "sections",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema draft:nda > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "sections": {
+      "additionalProperties": false,
+      "properties": {
+        "confidential_information": {
+          "description": "The full body text for the "confidential_information" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "governing_law_and_disputes": {
+          "description": "The full body text for the "governing_law_and_disputes" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "obligations_and_exclusions": {
+          "description": "The full body text for the "obligations_and_exclusions" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "parties_and_purpose": {
+          "description": "The full body text for the "parties_and_purpose" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "term_and_remedies": {
+          "description": "The full body text for the "term_and_remedies" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+      },
+      "required": [
+        "parties_and_purpose",
+        "confidential_information",
+        "obligations_and_exclusions",
+        "term_and_remedies",
+        "governing_law_and_disputes",
+      ],
+      "type": "object",
+    },
+  },
+  "required": [
+    "sections",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema draft:privacy_policy > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "sections": {
+      "additionalProperties": false,
+      "properties": {
+        "data_collected_and_purpose": {
+          "description": "The full body text for the "data_collected_and_purpose" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "grievance_officer": {
+          "description": "The full body text for the "grievance_officer" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "retention_and_rights": {
+          "description": "The full body text for the "retention_and_rights" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+        "sharing_and_transfers": {
+          "description": "The full body text for the "sharing_and_transfers" section, in plain prose/paragraphs. Do not include a heading line — the heading is added separately.",
+          "type": "string",
+        },
+      },
+      "required": [
+        "data_collected_and_purpose",
+        "sharing_and_transfers",
+        "retention_and_rights",
+        "grievance_officer",
+      ],
+      "type": "object",
+    },
+  },
+  "required": [
+    "sections",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema orchestrator:specialist > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "answer": {
+      "type": "string",
+    },
+    "citations": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "quote": {
+            "type": "string",
+          },
+          "sourceDocumentId": {
+            "type": "string",
+          },
+        },
+        "required": [
+          "quote",
+          "sourceDocumentId",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "answer",
+    "citations",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema prepare > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "checklist": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "findingIds": {
+            "description": "ids of the findings below this item is about, exactly as given. Every item must reference at least one.",
+            "items": {
+              "type": "string",
+            },
+            "type": "array",
+          },
+          "item": {
+            "description": "One concrete thing to do or gather before signing this document, or before meeting a lawyer about it.",
+            "type": "string",
+          },
+        },
+        "required": [
+          "item",
+          "findingIds",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+    "lawyerQuestions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "findingIds": {
+            "description": "ids of the findings below this question is about, exactly as given. Every question must reference at least one.",
+            "items": {
+              "type": "string",
+            },
+            "type": "array",
+          },
+          "question": {
+            "description": "A specific, concrete question the reader should ask a lawyer about this document.",
+            "type": "string",
+          },
+          "whyItMatters": {
+            "description": "1-2 plain-language sentences on why this question matters, grounded in the findings referenced.",
+            "type": "string",
+          },
+        },
+        "required": [
+          "question",
+          "whyItMatters",
+          "findingIds",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "lawyerQuestions",
+    "checklist",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema understand:freelance_service_agreement > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "enum": [
+              "obligation",
+              "deadline",
+              "penalty",
+              "ambiguity",
+              "missing_clause",
+            ],
+            "type": "string",
+          },
+          "lensExplanations": {
+            "additionalProperties": false,
+            "description": "One plain-language explanation of this same finding for each reader perspective.",
+            "properties": {
+              "client_about_to_sign": {
+                "description": "The client commissioning the work, before signing",
+                "type": "string",
+              },
+              "freelancer_about_to_sign": {
+                "description": "The freelancer who will do the work, before signing — can still negotiate scope, payment and terms",
+                "type": "string",
+              },
+              "freelancer_already_signed": {
+                "description": "The freelancer who has already signed and is doing, or has done, the work",
+                "type": "string",
+              },
+            },
+            "required": [
+              "freelancer_about_to_sign",
+              "freelancer_already_signed",
+              "client_about_to_sign",
+            ],
+            "type": "object",
+          },
+          "quote": {
+            "description": "Text copied character-for-character from the document that supports this finding. null only for missing_clause.",
+            "type": [
+              "string",
+              "null",
+            ],
+          },
+        },
+        "required": [
+          "category",
+          "quote",
+          "lensExplanations",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "findings",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema understand:generic > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "enum": [
+              "obligation",
+              "deadline",
+              "penalty",
+              "ambiguity",
+              "missing_clause",
+            ],
+            "type": "string",
+          },
+          "lensExplanations": {
+            "additionalProperties": false,
+            "description": "One plain-language explanation of this same finding for each reader perspective.",
+            "properties": {
+              "party_about_to_sign": {
+                "description": "A person who is asked to sign or accept this document and has not done so yet",
+                "type": "string",
+              },
+              "party_already_signed": {
+                "description": "A person who has already signed or accepted this document and is bound by it now",
+                "type": "string",
+              },
+            },
+            "required": [
+              "party_about_to_sign",
+              "party_already_signed",
+            ],
+            "type": "object",
+          },
+          "quote": {
+            "description": "Text copied character-for-character from the document that supports this finding. null only for missing_clause.",
+            "type": [
+              "string",
+              "null",
+            ],
+          },
+        },
+        "required": [
+          "category",
+          "quote",
+          "lensExplanations",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "findings",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema understand:grounded_response > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "enum": [
+              "obligation",
+              "deadline",
+              "penalty",
+              "ambiguity",
+              "missing_clause",
+            ],
+            "type": "string",
+          },
+          "lensExplanations": {
+            "additionalProperties": false,
+            "description": "One plain-language explanation of this same finding for each reader perspective.",
+            "properties": {
+              "party_about_to_sign": {
+                "description": "A person who is asked to sign or accept this document and has not done so yet",
+                "type": "string",
+              },
+              "party_already_signed": {
+                "description": "A person who has already signed or accepted this document and is bound by it now",
+                "type": "string",
+              },
+            },
+            "required": [
+              "party_about_to_sign",
+              "party_already_signed",
+            ],
+            "type": "object",
+          },
+          "quote": {
+            "description": "Text copied character-for-character from the document that supports this finding. null only for missing_clause.",
+            "type": [
+              "string",
+              "null",
+            ],
+          },
+        },
+        "required": [
+          "category",
+          "quote",
+          "lensExplanations",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "findings",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema understand:job_offer_letter > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "enum": [
+              "obligation",
+              "deadline",
+              "penalty",
+              "ambiguity",
+              "missing_clause",
+            ],
+            "type": "string",
+          },
+          "lensExplanations": {
+            "additionalProperties": false,
+            "description": "One plain-language explanation of this same finding for each reader perspective.",
+            "properties": {
+              "employee_about_to_sign": {
+                "description": "The candidate who received this offer and has not accepted it yet — can still negotiate or decline",
+                "type": "string",
+              },
+              "employee_already_signed": {
+                "description": "The employee who has already accepted this offer and joined, or is about to join",
+                "type": "string",
+              },
+              "employer_about_to_sign": {
+                "description": "The employer issuing this offer, before the candidate accepts it",
+                "type": "string",
+              },
+            },
+            "required": [
+              "employee_about_to_sign",
+              "employee_already_signed",
+              "employer_about_to_sign",
+            ],
+            "type": "object",
+          },
+          "quote": {
+            "description": "Text copied character-for-character from the document that supports this finding. null only for missing_clause.",
+            "type": [
+              "string",
+              "null",
+            ],
+          },
+        },
+        "required": [
+          "category",
+          "quote",
+          "lensExplanations",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "findings",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema understand:leave_and_license > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "enum": [
+              "obligation",
+              "deadline",
+              "penalty",
+              "ambiguity",
+              "missing_clause",
+            ],
+            "type": "string",
+          },
+          "lensExplanations": {
+            "additionalProperties": false,
+            "description": "One plain-language explanation of this same finding for each reader perspective.",
+            "properties": {
+              "landlord_about_to_sign": {
+                "description": "The landlord (licensor) who owns the premises, before signing",
+                "type": "string",
+              },
+              "landlord_already_signed": {
+                "description": "The landlord (licensor) who has already signed and has a tenant in the premises",
+                "type": "string",
+              },
+              "tenant_about_to_sign": {
+                "description": "The tenant (licensee) who will live in the premises, before signing — can still negotiate or walk away",
+                "type": "string",
+              },
+              "tenant_already_signed": {
+                "description": "The tenant (licensee) who has already signed and is living in, or about to move into, the premises",
+                "type": "string",
+              },
+            },
+            "required": [
+              "tenant_about_to_sign",
+              "tenant_already_signed",
+              "landlord_about_to_sign",
+              "landlord_already_signed",
+            ],
+            "type": "object",
+          },
+          "quote": {
+            "description": "Text copied character-for-character from the document that supports this finding. null only for missing_clause.",
+            "type": [
+              "string",
+              "null",
+            ],
+          },
+        },
+        "required": [
+          "category",
+          "quote",
+          "lensExplanations",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "findings",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema understand:nda > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "enum": [
+              "obligation",
+              "deadline",
+              "penalty",
+              "ambiguity",
+              "missing_clause",
+            ],
+            "type": "string",
+          },
+          "lensExplanations": {
+            "additionalProperties": false,
+            "description": "One plain-language explanation of this same finding for each reader perspective.",
+            "properties": {
+              "disclosing_party_about_to_sign": {
+                "description": "The party who will share its confidential information, before signing",
+                "type": "string",
+              },
+              "receiving_party_about_to_sign": {
+                "description": "The party who will receive confidential information, before signing",
+                "type": "string",
+              },
+              "receiving_party_already_signed": {
+                "description": "The party who has already signed and is now bound by the confidentiality obligations",
+                "type": "string",
+              },
+            },
+            "required": [
+              "receiving_party_about_to_sign",
+              "receiving_party_already_signed",
+              "disclosing_party_about_to_sign",
+            ],
+            "type": "object",
+          },
+          "quote": {
+            "description": "Text copied character-for-character from the document that supports this finding. null only for missing_clause.",
+            "type": [
+              "string",
+              "null",
+            ],
+          },
+        },
+        "required": [
+          "category",
+          "quote",
+          "lensExplanations",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "findings",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema understand:privacy_policy > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "enum": [
+              "obligation",
+              "deadline",
+              "penalty",
+              "ambiguity",
+              "missing_clause",
+            ],
+            "type": "string",
+          },
+          "lensExplanations": {
+            "additionalProperties": false,
+            "description": "One plain-language explanation of this same finding for each reader perspective.",
+            "properties": {
+              "user_about_to_sign": {
+                "description": "An individual deciding whether to accept this policy and sign up for the service",
+                "type": "string",
+              },
+              "user_already_signed": {
+                "description": "An individual who has already accepted this policy and whose personal data is being processed",
+                "type": "string",
+              },
+            },
+            "required": [
+              "user_about_to_sign",
+              "user_already_signed",
+            ],
+            "type": "object",
+          },
+          "quote": {
+            "description": "Text copied character-for-character from the document that supports this finding. null only for missing_clause.",
+            "type": [
+              "string",
+              "null",
+            ],
+          },
+        },
+        "required": [
+          "category",
+          "quote",
+          "lensExplanations",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "findings",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toProviderJsonSchema — real response schema understand:transcription > matches the pinned provider-facing shape 1`] = `
+{
+  "additionalProperties": false,
+  "properties": {
+    "text": {
+      "description": "The full verbatim text of the document.",
+      "type": "string",
+    },
+  },
+  "required": [
+    "text",
+  ],
+  "type": "object",
+}
+`;

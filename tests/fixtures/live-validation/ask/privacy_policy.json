@@ -1,0 +1,94 @@
+{
+  "fixture": "privacy_policy",
+  "questions": [
+    {
+      "id": "PP-Q1",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Does NestNagar read my SMS or my contacts?",
+      "expectedAnchors": ["the App will access your contact list, SMS inbox and call logs"],
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "PP-Q2",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "How long will NestNagar keep my data after I close my account?",
+      "expectedAnchors": ["for a period of ten (10) years after your account is closed"],
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "PP-Q3",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "What happens to my wallet balance if I withdraw my consent?",
+      "expectedAnchors": ["any cashback, reward points or NestNagar Wallet balance credited to your account shall stand forfeited"],
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "PP-Q4",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Who is the grievance officer, and how quickly must they resolve my complaint?",
+      "expectedAnchors": ["our Grievance Officer is Ms. Farzana Q. Siddiqui", "to resolve it within thirty (30) days of receipt"],
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "PP-Q5",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "What rights do I have over my personal data under the DPDP Act, 2023?",
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "PP-Q6",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "A company leaked my phone number in a data breach. Are they required to tell me?",
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "PP-Q7",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "NestNagar shared my rent agreement with my landlord's broker without asking me. Can I complain about this, and to whom?",
+      "expectedAnchors": ["We share your Personal Data with the property owners or tenants with whom you interact on the Platform", "you may approach the Data Protection Board of India"],
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false,
+      "note": "Cross-domain question asked with the policy attached (grounded, so outside the routing bar): 'rent agreement' and 'landlord' are tenancy distractors; the complaint is about unauthorised sharing of personal data."
+    },
+    {
+      "id": "PP-Q8",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "My landlord installed a CCTV camera facing my door and shares the footage in the society WhatsApp group. Is he allowed to do this?",
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": true,
+      "acceptableSpecialists": ["privacy", "tenancy"],
+      "note": "A privacy harm arising inside a landlord-tenant relationship; both specialists are defensible."
+    },
+    {
+      "id": "PP-Q9",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "The rent-payment app I use charged a hidden processing fee on my rent. Can I file a consumer complaint against the app?",
+      "expectedSpecialist": "general_legal",
+      "routingAmbiguous": false,
+      "note": "A consumer-protection question; 'rent' is a tenancy distractor."
+    },
+    {
+      "id": "PP-Q10",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "My gym uploaded a copy of my Aadhaar card to a shared Google Drive folder that anyone with the link can open. Is that a data protection violation?",
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false
+    }
+  ]
+}

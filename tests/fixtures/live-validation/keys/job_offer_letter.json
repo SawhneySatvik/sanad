@@ -1,0 +1,158 @@
+{
+  "fixture": "job_offer_letter",
+  "entries": [
+    {
+      "id": "JO-01",
+      "category": "obligation",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "A 12-month post-employment non-compete covering any data analytics, BI or software services firm anywhere in India. Post-employment restraints like this are generally void under Section 27 of the Indian Contract Act, 1872, but the clause can still deter the employee.",
+      "anchor": "During your employment and for a period of twelve (12) months after its cessation for any reason, you shall not, directly or indirectly, join, be employed by, consult for, or render services to any company or firm engaged in data analytics, business intelligence or software services anywhere in India."
+    },
+    {
+      "id": "JO-02",
+      "category": "obligation",
+      "required": true,
+      "description": "The company takes ownership of everything the employee creates during employment, even outside working hours and without company resources. This sweeps in personal side projects.",
+      "anchor": "All inventions, software, works of authorship, designs and developments conceived, made or developed by you during the period of your employment, whether or not during working hours and whether or not using the Company's resources, shall be the sole and exclusive property of the Company, and you hereby assign all rights in them to the Company."
+    },
+    {
+      "id": "JO-03",
+      "category": "obligation",
+      "required": false,
+      "description": "The company can transfer the employee anywhere in India or abroad, to any group company, department or shift. Broad but standard in Indian offer letters, so not required.",
+      "anchor": "During your employment, you may be transferred or deputed to any of the Company's offices, group companies, client locations or project sites, anywhere in India or abroad, and to any department or shift, as the Company may decide from time to time."
+    },
+    {
+      "id": "JO-04",
+      "category": "obligation",
+      "altCategories": ["deadline"],
+      "required": false,
+      "carriedBy": ["JO-10"],
+      "description": "A 24-month minimum service commitment. The same issue as the Rs. 2,50,000 recovery in 6.2 (JO-10), which carries it, so not required here.",
+      "anchor": "In consideration of the specialised training and onboarding investment that the Company will make in you, you agree to remain in the employment of the Company for a minimum period of twenty-four (24) months from your date of joining (the \"Minimum Service Period\")."
+    },
+    {
+      "id": "JO-05",
+      "category": "obligation",
+      "required": true,
+      "description": "The employee may be required to work late, on weekends and on public holidays with no extra pay and no compensatory off. The explicit waiver of any compensation goes beyond the usual 'extended hours' wording and is costly.",
+      "anchor": "Given the nature of your role, you may be required to work beyond normal working hours and on weekends or public holidays as business needs require, and no additional compensation or compensatory off shall be payable for the same."
+    },
+    {
+      "id": "JO-06",
+      "category": "deadline",
+      "required": false,
+      "description": "The offer lapses unless the signed copy reaches the company by 6:00 p.m. IST on 30 September 2026, five days after the letter's date. A standard acceptance window, worth knowing but not required.",
+      "anchor": "This offer will stand automatically withdrawn if the Company does not receive a copy of this Offer Letter signed by you by 6:00 p.m. IST on 30th September, 2026."
+    },
+    {
+      "id": "JO-07",
+      "category": "deadline",
+      "required": false,
+      "description": "A 60-day resignation notice period after confirmation. Standard for Indian technology roles, so not required on its own; the asymmetry with the company's 30 days is JO-08.",
+      "anchor": "After confirmation, you shall be required to give sixty (60) days' written notice of resignation to the Company."
+    },
+    {
+      "id": "JO-08",
+      "category": "deadline",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "After confirmation the company need give only 30 days' notice (or pay in lieu), against the employee's 60 (JO-07). The notice periods are one-sided in the company's favour.",
+      "anchor": "After confirmation, the Company may terminate your employment by giving you thirty (30) days' written notice or salary in lieu thereof."
+    },
+    {
+      "id": "JO-09",
+      "category": "deadline",
+      "altCategories": ["ambiguity"],
+      "required": false,
+      "description": "During probation the company can terminate without any notice, while the employee must give 30 days. Asymmetric, but widespread practice during probation in India, so not required.",
+      "anchor": "During probation, the Company may terminate your employment at any time without notice and without assigning any reason, and you may resign by giving thirty (30) days' written notice."
+    },
+    {
+      "id": "JO-10",
+      "category": "penalty",
+      "required": true,
+      "description": "A Rs. 2,50,000 'liquidated damages' bond if employment ends within 24 months for any reason, even if the company itself terminates. It is recoverable from any dues. Under Section 74 of the Indian Contract Act only reasonable compensation is recoverable, whatever the clause calls the sum.",
+      "anchor": "If you resign, or if your employment is terminated for any reason whatsoever, before the completion of the Minimum Service Period, you shall pay to the Company a sum of Rs. 2,50,000/- (Rupees Two Lakh Fifty Thousand only) as liquidated damages, which you agree is a genuine pre-estimate of the loss that the Company would suffer, and the Company may recover the same from any amount payable to you."
+    },
+    {
+      "id": "JO-11",
+      "category": "penalty",
+      "required": true,
+      "description": "The company may withhold the relieving letter, experience certificate and full and final settlement if notice is not fully served. This coercive consequence can block the employee's next job.",
+      "anchor": "If you leave the Company without serving the full notice period, the Company shall be entitled to withhold your relieving letter, experience certificate and full and final settlement until all dues are recovered from you."
+    },
+    {
+      "id": "JO-12",
+      "category": "penalty",
+      "required": false,
+      "carriedBy": ["JO-10", "JO-11"],
+      "description": "A broad right to deduct any claimed dues, including the bond and notice shortfall, from salary or full and final settlement. It repeats the issues JO-10 and JO-11 already carry, so not required.",
+      "anchor": "The Company shall be entitled to deduct from your salary or full and final settlement any amount due from you to the Company, including advances, the shortfall in notice, the liquidated damages under Clause 6.2, and the value of any Company property not returned."
+    },
+    {
+      "id": "JO-20",
+      "category": "penalty",
+      "altCategories": ["ambiguity"],
+      "required": false,
+      "description": "Buying out the notice period is not a right: the company decides at its sole discretion, and the buy-out costs gross (not basic) salary for the unserved days. Standard practice in Indian offer letters, so not required.",
+      "anchor": "The Company may, at its sole discretion, accept a request from you to shorten the notice period, in which case you shall pay to the Company your gross salary for the unserved portion of the notice period."
+    },
+    {
+      "id": "JO-13",
+      "category": "ambiguity",
+      "required": true,
+      "description": "The Rs. 1,86,000 variable pay counted in the CTC is entirely at management's 'sole discretion', and the plan can be modified or withdrawn at any time. The headline CTC is therefore not assured.",
+      "anchor": "The variable pay component is payable annually at the sole discretion of the management, based on individual and Company performance, and the Company may modify, defer or withdraw the variable pay plan at any time without assigning any reason."
+    },
+    {
+      "id": "JO-14",
+      "category": "ambiguity",
+      "altCategories": ["deadline"],
+      "required": true,
+      "description": "Probation can be extended 'for such further period or periods as it deems fit'. With no cap, the employee can be kept on probation indefinitely, with probation's no-notice termination.",
+      "anchor": "The Company may, at its sole discretion, extend the probation period for such further period or periods as it deems fit, and you shall continue to be on probation until you are confirmed in writing."
+    },
+    {
+      "id": "JO-15",
+      "category": "ambiguity",
+      "required": true,
+      "description": "The offer can be withdrawn, or employment ended after joining, 'for any other reason that the Company may consider appropriate'. This open-ended wording is not tied to the background check.",
+      "anchor": "The Company reserves the right to withdraw this offer, or to terminate your employment if you have already joined, if the background verification report is not satisfactory to the Company or for any other reason that the Company may consider appropriate."
+    },
+    {
+      "id": "JO-16",
+      "category": "ambiguity",
+      "required": false,
+      "description": "Unseen company policies 'as amended from time to time' are deemed part of the employment terms. Common practice, so not required.",
+      "anchor": "You shall comply with the Company's code of conduct, information security policy and all other policies of the Company, as amended from time to time, which shall be deemed to form part of your terms of employment."
+    },
+    {
+      "id": "JO-19",
+      "category": "ambiguity",
+      "altCategories": ["obligation"],
+      "required": false,
+      "description": "The Rs. 18,60,000 CTC includes employer PF, gratuity, the insurance premium and the target variable pay, so monthly take-home pay is well below one-twelfth of it (fixed gross is Rs. 15,98,614). Standard Indian practice and disclosed here, so not required, but it is what the employee actually earns. (None of the five categories fits exactly.)",
+      "anchor": "Your CTC includes the Company's contribution to provident fund, gratuity, the premium for group medical insurance and the target variable pay, and your monthly take-home salary will accordingly be lower than one-twelfth of your CTC."
+    },
+    {
+      "id": "JO-17",
+      "category": "missing_clause",
+      "required": true,
+      "description": "The letter says nothing about leave: no annual, sick or casual leave entitlement and no reference to a leave policy.",
+      "anchor": null,
+      "matchKeywords": ["leave entitlement", "leave entitlements", "annual leave", "annual leaves", "paid leave", "paid leaves", "earned leave", "earned leaves", "sick leave", "sick leaves", "casual leave", "casual leaves", "privilege leave", "privilege leaves", "leave policy", "leave policies", "leave days", "days of leave", "days off", "vacation", "vacations", "vacation days", "time off", "paid time off"],
+      "absentPhrases": ["annual leave", "paid leave", "earned leave", "privilege leave", "sick leave", "casual leave", "leave entitlement", "leave policy", "vacation"]
+    },
+    {
+      "id": "JO-18",
+      "category": "missing_clause",
+      "required": false,
+      "description": "There is no governing-law, jurisdiction or dispute-resolution clause. The law fills the gap, so not required.",
+      "anchor": null,
+      "matchKeywords": ["governing law", "governed by", "jurisdiction", "jurisdictions", "dispute resolution", "dispute-resolution", "arbitration", "arbitrator", "which court", "which courts"],
+      "absentPhrases": ["governing law", "governed by", "jurisdiction", "arbitration"]
+    }
+  ]
+}

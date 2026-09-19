@@ -1,0 +1,106 @@
+{
+  "items": [
+    {
+      "id": "D-LL-SCRATCH",
+      "documentType": "leave_and_license",
+      "mode": "from_scratch",
+      "jurisdiction": "IN",
+      "userInstructions": "Draft a leave and license agreement for a 2BHK flat in Wakad, Pune. Licensor: Mrs. Revati Joshi. Licensee: Mr. Faizan Qureshi. License fee Rs. 28,000 per month, payable by the 7th of each month. Interest-free security deposit Rs. 84,000, refundable within 15 days of vacating. Term of 11 months starting 1st December 2026. Lock-in of 6 months binding both parties, and one month's notice by either side after the lock-in. Society maintenance paid by the licensor; electricity and gas paid by the licensee. Stamp duty and registration charges shared equally.",
+      "expectedFacts": ["Revati Joshi", "Faizan Qureshi", "Wakad"]
+    },
+    {
+      "id": "D-LL-GROUNDED",
+      "documentType": "leave_and_license",
+      "mode": "document_grounded",
+      "groundingFixture": "leave_and_license",
+      "jurisdiction": "IN",
+      "userInstructions": "My licensor sent me the attached agreement. Prepare a fairer counter-draft of the leave and license agreement from my side as the licensee. Keep the same parties, flat, license fee and term, but make the lock-in and the notice period apply equally to both sides, add a 15-day deadline for refunding the deposit, remove the automatic repainting deduction, and make the owner responsible for major and structural repairs.",
+      "expectedFacts": ["Karandikar", "Bhardwaj", "Kharghar"]
+    },
+    {
+      "id": "D-JO-SCRATCH",
+      "documentType": "job_offer_letter",
+      "mode": "from_scratch",
+      "jurisdiction": "IN",
+      "userInstructions": "Draft a job offer letter from Sundaram Fintech Private Limited, Chennai, to Ms. Priyanka Nair for the role of Product Analyst. CTC Rs. 12,00,000 per annum including Rs. 1,00,000 target variable pay. Date of joining 1st December 2026. Probation of 6 months. Notice period of 30 days during probation and 60 days after confirmation, the same for both sides. 18 days of paid annual leave. No training bond and no post-employment non-compete.",
+      "expectedFacts": ["Priyanka Nair", "Sundaram Fintech", "Product Analyst"]
+    },
+    {
+      "id": "D-JO-GROUNDED",
+      "documentType": "job_offer_letter",
+      "mode": "document_grounded",
+      "groundingFixture": "job_offer_letter",
+      "jurisdiction": "IN",
+      "userInstructions": "I have received the attached offer letter. Draft a revised version that I can propose back to the company: the same role, CTC and joining date, but equal notice periods for both sides, no training bond, a non-compete that applies only during employment, a cap of one extension on probation, and a clearly stated annual leave entitlement.",
+      "expectedFacts": ["Tarangini", "Karthik", "Bellandur"]
+    },
+    {
+      "id": "D-ND-SCRATCH",
+      "documentType": "nda",
+      "mode": "from_scratch",
+      "jurisdiction": "IN",
+      "userInstructions": "Draft a mutual NDA between Kaveri Robotics LLP, Coimbatore, and Mr. Joseph Mathew, an independent embedded-systems consultant, for evaluating a possible collaboration on warehouse robots. Confidentiality should last 3 years after discussions end. Include the standard exclusions, including information that must be disclosed by law or court order. Return or destruction of materials within 30 days of a request. No non-compete. Courts at Coimbatore to have jurisdiction.",
+      "expectedFacts": ["Kaveri Robotics", "Joseph Mathew", "Coimbatore"]
+    },
+    {
+      "id": "D-ND-GROUNDED",
+      "documentType": "nda",
+      "mode": "document_grounded",
+      "groundingFixture": "nda",
+      "jurisdiction": "IN",
+      "userInstructions": "Prepare a balanced counter-draft of the attached NDA from our design studio's side. Make every obligation and remedy genuinely mutual, add the standard exclusions for independently developed information and for disclosures required by law, limit confidentiality to three years after the agreement ends, and drop both the non-compete and the residuals clause.",
+      "expectedFacts": ["Brightwater", "Pixelkraft"]
+    },
+    {
+      "id": "D-PP-SCRATCH",
+      "documentType": "privacy_policy",
+      "mode": "from_scratch",
+      "jurisdiction": "IN",
+      "userInstructions": "Draft a privacy policy for TiffinTrail, a Bengaluru-based home-cooked meal subscription app run by TiffinTrail Foods Private Limited. We collect name, phone number, delivery address, UPI payment details and food preferences. We share delivery addresses only with our delivery partners. Data is stored on servers in India and deleted 12 months after an account is closed. Our grievance officer is Mr. Arjun Hegde, reachable at grievance@tiffintrail.example.",
+      "expectedFacts": ["TiffinTrail", "Arjun Hegde"]
+    },
+    {
+      "id": "D-PP-GROUNDED",
+      "documentType": "privacy_policy",
+      "mode": "document_grounded",
+      "groundingFixture": "privacy_policy",
+      "jurisdiction": "IN",
+      "userInstructions": "Rewrite the attached privacy policy so that it complies with the Digital Personal Data Protection Act, 2023. Consent must come from a clear affirmative action, breach notification must be mandatory, retention must be limited to what is necessary, sharing must be limited to the stated purposes, and add sections on children's data and the right to nominate.",
+      "expectedFacts": ["NestNagar", "Siddiqui"]
+    },
+    {
+      "id": "D-FS-SCRATCH",
+      "documentType": "freelance_service_agreement",
+      "mode": "from_scratch",
+      "jurisdiction": "IN",
+      "userInstructions": "Draft a freelance service agreement between Ms. Ritika Sharma, a freelance content writer in Jaipur, and Monsoon Trails Travel LLP for 12 blog articles of about 1,500 words each at Rs. 4,000 per article. Invoices are raised monthly and paid within 15 days. Two rounds of revisions per article. Copyright passes to the client only on full payment. Either side may end the agreement with 15 days' notice, and completed articles must be paid for.",
+      "expectedFacts": ["Ritika Sharma", "Monsoon Trails"]
+    },
+    {
+      "id": "D-FS-GROUNDED",
+      "documentType": "freelance_service_agreement",
+      "mode": "document_grounded",
+      "groundingFixture": "freelance_service_agreement",
+      "jurisdiction": "IN",
+      "userInstructions": "Prepare a freelancer-friendly counter-draft of the attached agreement. Intellectual property should transfer only on full payment, revisions should be capped at two rounds per milestone, work in progress must be paid for if the client cancels, add interest on late payments, cap my liability at the fees received, and remove the non-compete.",
+      "expectedFacts": ["Orchid Lane", "Tanvi", "Mehra"]
+    },
+    {
+      "id": "D-GR-SCRATCH",
+      "documentType": "grounded_response",
+      "mode": "from_scratch",
+      "jurisdiction": "IN",
+      "userInstructions": "Draft a reply to a legal notice from my former landlord in Nagpur, Mr. Harish Wankhede, who claims I owe Rs. 45,000 for damage to the flat. I vacated on 30th June 2026 and returned the keys, I have dated photos showing the flat was in good condition, and he is still holding my Rs. 90,000 deposit.",
+      "expectedFacts": ["Harish Wankhede", "Nagpur"]
+    },
+    {
+      "id": "D-GR-GROUNDED",
+      "documentType": "grounded_response",
+      "mode": "document_grounded",
+      "groundingFixture": "generic",
+      "jurisdiction": "IN",
+      "userInstructions": "I told the centre manager on WhatsApp on 1st November that I will not renew after 31st December, but the operator now says my notice is invalid and my membership has renewed automatically. Draft a firm but polite letter to the operator disputing the renewal and asking for my deposit back.",
+      "expectedFacts": ["Deskhaven", "Aniruddha Sen", "HSR Layout"]
+    }
+  ]
+}

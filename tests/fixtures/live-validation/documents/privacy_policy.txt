@@ -1,0 +1,82 @@
+NESTNAGAR PRIVACY POLICY
+
+Last updated: 1st August, 2026
+
+NestNagar Technologies Private Limited ("NestNagar", "we", "us" or "our") operates the NestNagar mobile application (the "App") and the website www.nestnagar.example (together with the App, the "Platform"), through which users can search for rental homes, connect with property owners, execute rent agreements digitally, and pay rent and security deposits online.
+
+This Privacy Policy explains how we collect, use, share, store and otherwise process your personal data when you use the Platform. It is published in accordance with the Information Technology Act, 2000 and the rules made thereunder, and the Digital Personal Data Protection Act, 2023 (the "DPDP Act") and the rules made thereunder, to the extent applicable.
+
+Please read this Privacy Policy carefully. If you do not agree with it, please do not use the Platform.
+
+1. DEFINITIONS
+1.1 "Personal Data" means any data about an individual who is identifiable by or in relation to such data.
+1.2 "Data Principal" or "you" means the individual to whom the Personal Data relates, including tenants, property owners and other users of the Platform.
+1.3 "Data Fiduciary" means NestNagar, which alone or in conjunction with others determines the purpose and means of processing of your Personal Data.
+1.4 "Data Processor" means any person who processes Personal Data on behalf of NestNagar.
+1.5 "Partners" means our lending partners, payment aggregators, background verification agencies, home-service providers, advertisers and other business partners.
+
+2. PERSONAL DATA WE COLLECT
+2.1 Identity and contact data: your name, mobile number, email address, date of birth, gender, photograph, and the city in which you are searching for a home.
+2.2 Verification data: your PAN, masked Aadhaar number, a live selfie for face-match verification, the name of your employer, and your employee identity card or latest salary slip, where you choose to complete tenant verification.
+2.3 Rental data: details of the property you rent or list, your rent agreement and its annexures, the names and contact details of property owners, co-tenants and flatmates, rent and security deposit amounts, and your payment history on the Platform.
+2.4 Financial data: your UPI ID, bank account details, and the last four digits of any card used for payments. We do not store your full card number or CVV.
+2.5 Device and location data: your device identifiers, IP address, operating system, and your precise location, including in the background when the App is not in use, to show you homes near you and to verify property visits.
+2.6 Contacts and messages: if you apply for the Rent Now Pay Later facility, the App will access your contact list, SMS inbox and call logs in order to assess your creditworthiness and to share such data with our lending partners.
+2.7 Usage data: information about how you use the Platform, including the listings you view, your searches, and your interactions with property owners, collected through cookies, software development kits and similar technologies.
+2.8 Property owner data: if you list a property, we also collect the property address, ownership documents such as the electricity bill or property tax receipt, photographs of the property, and your bank account details for receiving rent.
+
+3. HOW WE COLLECT PERSONAL DATA
+3.1 We collect Personal Data directly from you when you register, complete verification, list a property, execute a rent agreement or make a payment.
+3.2 We collect Personal Data automatically from your device when you use the Platform.
+3.3 We also receive Personal Data about you from third parties, such as property owners, co-tenants, our Partners, credit information companies and publicly available sources.
+
+4. PURPOSES OF PROCESSING
+4.1 We process your Personal Data to create and manage your account; to show you relevant property listings; to verify your identity and conduct tenant verification; to facilitate digital rent agreements and rent payments; to assess your eligibility for credit facilities offered by our lending partners; to send you service communications; to improve the Platform; and to comply with applicable law.
+4.2 We may also process your Personal Data for such other purposes as we may consider necessary or appropriate in connection with our business.
+4.3 We may use your Personal Data to send you promotional offers from NestNagar and our Partners by SMS, WhatsApp, email and push notifications. You may unsubscribe from promotional emails using the link provided in them.
+
+5. CONSENT
+5.1 By downloading, installing, accessing or using the Platform, you are deemed to have given your consent to the collection and processing of your Personal Data in the manner and for the purposes described in this Privacy Policy.
+5.2 You may withdraw your consent at any time by writing to our Grievance Officer. Withdrawal of consent will not affect the lawfulness of any processing carried out before the withdrawal.
+5.3 If you withdraw your consent, we may suspend or terminate your account, and any cashback, reward points or NestNagar Wallet balance credited to your account shall stand forfeited.
+5.4 Where you upload a rent agreement, identity document or any other document containing the Personal Data of another individual, such as a property owner, co-tenant or family member, you confirm that you have obtained that individual's consent for such upload, and you shall be solely responsible for any claim arising out of it.
+
+6. SHARING OF PERSONAL DATA
+6.1 We share your Personal Data with Data Processors who provide cloud hosting, customer support, analytics and messaging services to us, under contracts that require them to protect it.
+6.2 We share your Personal Data with the property owners or tenants with whom you interact on the Platform, to the extent necessary to facilitate the rental.
+6.3 We may share your Personal Data with our Partners, group companies and other third parties for the purposes described in this Privacy Policy, including for their own marketing and analytics purposes.
+6.4 We may disclose your Personal Data to government authorities, courts and law enforcement agencies where we are required to do so by law.
+6.5 In the event of a merger, acquisition, restructuring or sale of all or part of our assets, your Personal Data may be transferred to the acquirer or successor entity.
+
+7. TRANSFER OUTSIDE INDIA
+7.1 Your Personal Data may be transferred to, stored and processed in any country in which we or our service providers operate, and by using the Platform you agree to such transfer.
+
+8. RETENTION AND DELETION
+8.1 We retain your Personal Data for as long as your account is active and for a period of ten (10) years after your account is closed, or for such longer period as we may consider necessary for our business purposes.
+8.2 You may request the deletion of your account through the settings menu of the App. Deletion requests shall be processed within ninety (90) days of receipt, subject to our retention rights under Clause 8.1.
+
+9. SECURITY AND PERSONAL DATA BREACH
+9.1 We implement reasonable security safeguards, including encryption of data in transit, role-based access controls and periodic security reviews, to protect your Personal Data.
+9.2 In the event of a Personal Data breach, we shall endeavour to inform affected users where we consider it appropriate to do so.
+9.3 No method of transmission over the internet or of electronic storage is completely secure, and we shall not be liable for any unauthorised access to your Personal Data that occurs despite our reasonable safeguards.
+
+10. YOUR RIGHTS AND DUTIES
+10.1 Subject to the DPDP Act, you have the right to obtain a summary of the Personal Data we process about you and of the processing activities undertaken, to request the correction, completion, updating and erasure of your Personal Data, and to have your grievances redressed.
+10.2 To exercise these rights, write to our Grievance Officer at the address given below. We may ask you to verify your identity before acting on your request.
+10.3 You must provide accurate information on the Platform and must update your Personal Data within seven (7) days of any change in it.
+10.4 Please note that under the DPDP Act, a Data Principal who registers a false or frivolous grievance or complaint, or who furnishes false particulars, may be liable to a penalty of up to Rs. 10,000/-.
+
+11. COOKIES
+11.1 We use cookies to keep you signed in, to remember your preferences, to measure the performance of the Platform, and to show you advertisements on and off the Platform.
+11.2 You can disable cookies in your browser settings, but some features of the Platform may then not work as intended.
+
+12. GRIEVANCE OFFICER
+12.1 In accordance with the Information Technology Act, 2000 and the DPDP Act, our Grievance Officer is Ms. Farzana Q. Siddiqui, NestNagar Technologies Private Limited, 5th Floor, Orbit Square, Baner-Pashan Link Road, Pune, Maharashtra 411045, email: grievance@nestnagar.example.
+12.2 The Grievance Officer shall endeavour to acknowledge your grievance within seventy-two (72) hours and to resolve it within thirty (30) days of receipt.
+12.3 If you are not satisfied with our response, you may approach the Data Protection Board of India in accordance with the DPDP Act.
+
+13. CHANGES TO THIS PRIVACY POLICY
+13.1 We may modify this Privacy Policy at any time without prior notice to you. The modified Privacy Policy shall be effective immediately upon being posted on the Platform, and your continued use of the Platform shall constitute your acceptance of the modified Privacy Policy.
+
+14. CONTACT US
+14.1 For any questions about this Privacy Policy or our data practices, write to privacy@nestnagar.example or to our registered office at 5th Floor, Orbit Square, Baner-Pashan Link Road, Pune, Maharashtra 411045.

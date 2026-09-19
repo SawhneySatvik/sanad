@@ -1,0 +1,35 @@
+{
+  "questions": [
+    {
+      "id": "NL-Q1",
+      "question": "What is a good recipe for filter coffee at home?",
+      "ambiguous": false
+    },
+    {
+      "id": "NL-Q2",
+      "question": "Who won the 2011 Cricket World Cup final?",
+      "ambiguous": false
+    },
+    {
+      "id": "NL-Q3",
+      "question": "Suggest a five-day itinerary for Kerala during the monsoon.",
+      "ambiguous": false
+    },
+    {
+      "id": "NL-Q4",
+      "question": "How do I reverse a linked list in Python?",
+      "ambiguous": false
+    },
+    {
+      "id": "NL-Q5",
+      "question": "What should I gift my sister for Raksha Bandhan?",
+      "ambiguous": false
+    },
+    {
+      "id": "NL-Q6",
+      "question": "Can you help me write a polite WhatsApp message wishing my landlord a happy Diwali?",
+      "ambiguous": true,
+      "note": "Not a legal question, but it names 'landlord'; a keyword router may reasonably treat it as tenancy. Report it, but keep it out of the redirect rate."
+    }
+  ]
+}

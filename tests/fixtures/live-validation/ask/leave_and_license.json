@@ -1,0 +1,95 @@
+{
+  "fixture": "leave_and_license",
+  "questions": [
+    {
+      "id": "LL-Q1",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "How much is my security deposit, and by when does the agreement say it will be refunded?",
+      "expectedAnchors": ["interest-free refundable Security Deposit of Rs. 1,50,000/- (Rupees One Lakh Fifty Thousand only)", "within a reasonable time after the Licensee has handed over vacant and peaceful possession"],
+      "expectedSpecialist": "tenancy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "LL-Q2",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "If I move out in April 2027, will I have to pay anything extra?",
+      "expectedAnchors": ["from 1st October, 2026 to 31st May, 2027, shall be a lock-in period", "the License Fee for the entire unexpired portion of the lock-in period"],
+      "expectedSpecialist": "tenancy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "LL-Q3",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Who has to pay if there is a major plumbing leak in the flat?",
+      "expectedAnchors": ["carry out all repairs to the Licensed Premises, whether minor or major"],
+      "expectedSpecialist": "tenancy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "LL-Q4",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Can the owner come into the flat without telling me first?",
+      "expectedAnchors": ["with or without prior notice to the Licensee"],
+      "expectedSpecialist": "tenancy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "LL-Q5",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "Is it compulsory to register a leave and license agreement in Maharashtra, and who usually pays the stamp duty?",
+      "expectedSpecialist": "tenancy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "LL-Q6",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "My landlord in Pune has not returned my security deposit two months after I vacated. What can I do?",
+      "expectedSpecialist": "tenancy",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "LL-Q7",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "The licensor wants a copy of my Aadhaar and my employer's details for police verification. Do I have to give them, and what can he do with that data?",
+      "expectedAnchors": ["The Licensor shall furnish the particulars of the Licensee to the local police station"],
+      "expectedSpecialist": "tenancy",
+      "routingAmbiguous": true,
+      "acceptableSpecialists": ["tenancy", "privacy"],
+      "note": "Cross-domain question asked with the agreement attached (grounded, so outside the routing bar): police verification of a licensee is a tenancy procedure, but the second half is a data-protection question; either specialist is a defensible primary."
+    },
+    {
+      "id": "LL-Q8",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "I work from my rented flat as a freelance graphic designer. Can my landlord stop me from running my business from home?",
+      "expectedSpecialist": "tenancy",
+      "routingAmbiguous": false,
+      "note": "'freelance' is a distractor; the question is about residential-use restrictions in a tenancy."
+    },
+    {
+      "id": "LL-Q9",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "My employer is transferring me to Hyderabad, but my flat in Kharghar has a lock-in period until May. Do I still have to pay rent for the remaining months?",
+      "expectedSpecialist": "tenancy",
+      "routingAmbiguous": false,
+      "note": "'employer' and 'transferring' are distractors; the question is about the lock-in."
+    },
+    {
+      "id": "LL-Q10",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "I work night shifts as a software engineer, and my landlord says I cannot take work calls from home at night because they disturb the neighbours. Can he restrict this under our leave and license agreement?",
+      "expectedSpecialist": "tenancy",
+      "routingAmbiguous": false,
+      "note": "'software engineer' and 'night shifts' are employment distractors; the question is about use restrictions in a tenancy."
+    }
+  ]
+}

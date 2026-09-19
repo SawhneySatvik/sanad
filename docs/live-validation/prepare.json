@@ -1,0 +1,584 @@
+{
+  "meta": {
+    "mode": "live",
+    "startedAt": "2026-09-23T08:42:47.655Z",
+    "finishedAt": "2026-09-23T08:51:39.625Z",
+    "wallTimeMs": 531970,
+    "budget": 25,
+    "callsUsed": 11,
+    "blockedCalls": [],
+    "otherFetches": 0,
+    "env": {
+      "GEMINI_API_KEY": "set",
+      "NVIDIA_API_KEY": "set",
+      "OPENROUTER_API_KEY": "set",
+      "GEMINI_MODEL": "unset",
+      "GEMMA_MODEL": "unset",
+      "GEMMA_MODEL_NIM": "unset",
+      "GEMMA_MODEL_OPENROUTER": "unset",
+      "RATE_LIMIT_PRINCIPAL_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMINI_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMMA_PER_MINUTE": "unset"
+    },
+    "primaryModelId": "gemini-2.5-flash",
+    "understandPromptVersion": "understand-v3",
+    "preparePromptVersion": "prepare-v3",
+    "stops": [
+      "prepare: stopped — quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)"
+    ],
+    "history": [
+      {
+        "startedAt": "2026-09-23T06:48:11.939Z",
+        "understandPromptVersion": "understand-v1",
+        "callsUsed": 5,
+        "stops": [
+          "understand: stopped — two consecutive operations failed with UPSTREAM_UNAVAILABLE"
+        ],
+        "calls": [
+          {
+            "seq": 1,
+            "op": "smoke:privacy_policy",
+            "provider": "nim",
+            "model": "google/gemma-4-31b-it",
+            "startedAt": "2026-09-23T06:48:13.164Z",
+            "latencyMs": 90006,
+            "outcome": "aborted",
+            "status": null
+          },
+          {
+            "seq": 2,
+            "op": "smoke:privacy_policy",
+            "provider": "openrouter",
+            "model": "google/gemma-4-31b-it:free",
+            "startedAt": "2026-09-23T06:49:43.178Z",
+            "latencyMs": 966,
+            "outcome": "response",
+            "status": 429,
+            "quotaWindow": "unstated",
+            "retryAfter": null
+          },
+          {
+            "seq": 3,
+            "op": "understand:leave_and_license",
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "startedAt": "2026-09-23T06:49:44.202Z",
+            "latencyMs": 17351,
+            "outcome": "response",
+            "status": 400
+          },
+          {
+            "seq": 4,
+            "op": "understand:job_offer_letter",
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "startedAt": "2026-09-23T06:50:01.581Z",
+            "latencyMs": 1450,
+            "outcome": "response",
+            "status": 400
+          },
+          {
+            "seq": 5,
+            "op": "diagnose:gemini:job_offer_letter",
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "startedAt": "2026-09-23T06:55:11.775Z",
+            "latencyMs": 1712,
+            "outcome": "response",
+            "status": 400,
+            "errorStatus": "INVALID_ARGUMENT",
+            "errorMessage": "The specified schema produces a constraint that has too many states for serving. Typical causes of this error are schemas with lots of text (for example, very long property or enum names), schemas with long array length limits (especially when nested), or schemas using complex value matchers (for ex"
+          }
+        ],
+        "outcomes": [
+          {
+            "label": "smoke:privacy_policy",
+            "outcome": "error",
+            "detail": "RATE_LIMITED: Too many requests. Please try again later."
+          },
+          {
+            "label": "understand:leave_and_license",
+            "outcome": "error",
+            "detail": "UPSTREAM_UNAVAILABLE: A required service is temporarily unavailable. Please try again later."
+          },
+          {
+            "label": "understand:job_offer_letter",
+            "outcome": "error",
+            "detail": "UPSTREAM_UNAVAILABLE: A required service is temporarily unavailable. Please try again later."
+          },
+          {
+            "label": "understand:nda",
+            "outcome": "skipped",
+            "detail": "two consecutive operations failed with UPSTREAM_UNAVAILABLE"
+          },
+          {
+            "label": "understand:privacy_policy",
+            "outcome": "skipped",
+            "detail": "two consecutive operations failed with UPSTREAM_UNAVAILABLE"
+          },
+          {
+            "label": "understand:freelance_service_agreement",
+            "outcome": "skipped",
+            "detail": "two consecutive operations failed with UPSTREAM_UNAVAILABLE"
+          },
+          {
+            "label": "understand:generic",
+            "outcome": "skipped",
+            "detail": "two consecutive operations failed with UPSTREAM_UNAVAILABLE"
+          },
+          {
+            "label": "prepare:leave_and_license",
+            "outcome": "ok",
+            "detail": null
+          },
+          {
+            "label": "prepare:job_offer_letter",
+            "outcome": "ok",
+            "detail": null
+          },
+          {
+            "label": "prepare:nda",
+            "outcome": "skipped",
+            "detail": "no document was created"
+          },
+          {
+            "label": "prepare:privacy_policy",
+            "outcome": "skipped",
+            "detail": "no document was created"
+          },
+          {
+            "label": "prepare:freelance_service_agreement",
+            "outcome": "skipped",
+            "detail": "no document was created"
+          },
+          {
+            "label": "prepare:generic",
+            "outcome": "skipped",
+            "detail": "no document was created"
+          },
+          {
+            "label": "diagnose:gemini:job_offer_letter",
+            "outcome": "error",
+            "detail": "UPSTREAM_UNAVAILABLE: A required service is temporarily unavailable. Please try again later."
+          }
+        ],
+        "note": "Found by this harness: Gemini rejected the Understand response schema (HTTP 400 INVALID_ARGUMENT, too many states) on 3/3 calls, so no document could be analysed and no fallback ran. Fixed: provider-facing schemas are sanitized in src/server/llm/provider-schema.ts; PROMPT_VERSION bumped to understand-v2 / prepare-v2.",
+        "label": "pre-fix: schema 400"
+      },
+      {
+        "startedAt": "2026-09-23T07:43:11.161Z",
+        "understandPromptVersion": "understand-v2",
+        "callsUsed": 13,
+        "stops": [
+          "understand: stopped — two Gemini requests aborted by the client-side timeout in this part (calls 5, 9)"
+        ],
+        "calls": [
+          {
+            "seq": 1,
+            "op": "understand:leave_and_license",
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "startedAt": "2026-09-23T07:43:12.267Z",
+            "latencyMs": 13219,
+            "outcome": "network_error",
+            "status": null
+          },
+          {
+            "seq": 2,
+            "op": "understand:leave_and_license",
+            "provider": "nim",
+            "model": "google/gemma-4-31b-it",
+            "startedAt": "2026-09-23T07:43:25.498Z",
+            "latencyMs": 45002,
+            "outcome": "aborted",
+            "status": null
+          },
+          {
+            "seq": 3,
+            "op": "understand:leave_and_license",
+            "provider": "openrouter",
+            "model": "google/gemma-4-31b-it:free",
+            "startedAt": "2026-09-23T07:44:10.503Z",
+            "latencyMs": 837,
+            "outcome": "response",
+            "status": 429,
+            "errorStatus": "429",
+            "errorMessage": "Provider returned error",
+            "quotaWindow": "unstated",
+            "retryAfter": null
+          },
+          {
+            "seq": 4,
+            "op": "understand:job_offer_letter",
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "startedAt": "2026-09-23T07:44:11.365Z",
+            "latencyMs": 44887,
+            "outcome": "response",
+            "status": 200
+          },
+          {
+            "seq": 5,
+            "op": "understand:nda",
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "startedAt": "2026-09-23T07:44:56.398Z",
+            "latencyMs": 45011,
+            "outcome": "aborted",
+            "status": null
+          },
+          {
+            "seq": 6,
+            "op": "understand:nda",
+            "provider": "nim",
+            "model": "google/gemma-4-31b-it",
+            "startedAt": "2026-09-23T07:45:41.409Z",
+            "latencyMs": 45006,
+            "outcome": "aborted",
+            "status": null
+          },
+          {
+            "seq": 7,
+            "op": "understand:nda",
+            "provider": "openrouter",
+            "model": "google/gemma-4-31b-it:free",
+            "startedAt": "2026-09-23T07:46:26.421Z",
+            "latencyMs": 892,
+            "outcome": "response",
+            "status": 429,
+            "errorStatus": "429",
+            "errorMessage": "Provider returned error",
+            "quotaWindow": "unstated",
+            "retryAfter": null
+          },
+          {
+            "seq": 8,
+            "op": "understand:privacy_policy",
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "startedAt": "2026-09-23T07:46:27.346Z",
+            "latencyMs": 28050,
+            "outcome": "response",
+            "status": 200
+          },
+          {
+            "seq": 9,
+            "op": "understand:freelance_service_agreement",
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "startedAt": "2026-09-23T07:46:55.463Z",
+            "latencyMs": 45009,
+            "outcome": "aborted",
+            "status": null
+          },
+          {
+            "seq": 10,
+            "op": "understand:freelance_service_agreement",
+            "provider": "nim",
+            "model": "google/gemma-4-31b-it",
+            "startedAt": "2026-09-23T07:47:40.490Z",
+            "latencyMs": 45005,
+            "outcome": "aborted",
+            "status": null
+          },
+          {
+            "seq": 11,
+            "op": "understand:freelance_service_agreement",
+            "provider": "openrouter",
+            "model": "google/gemma-4-31b-it:free",
+            "startedAt": "2026-09-23T07:48:25.501Z",
+            "latencyMs": 846,
+            "outcome": "response",
+            "status": 429,
+            "errorStatus": "429",
+            "errorMessage": "Provider returned error",
+            "quotaWindow": "unstated",
+            "retryAfter": null
+          },
+          {
+            "seq": 12,
+            "op": "prepare:job_offer_letter",
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "startedAt": "2026-09-23T07:48:26.391Z",
+            "latencyMs": 21734,
+            "outcome": "response",
+            "status": 200
+          },
+          {
+            "seq": 13,
+            "op": "prepare:privacy_policy",
+            "provider": "gemini",
+            "model": "gemini-2.5-flash",
+            "startedAt": "2026-09-23T07:48:48.144Z",
+            "latencyMs": 38847,
+            "outcome": "response",
+            "status": 200
+          }
+        ],
+        "outcomes": [
+          {
+            "label": "smoke:privacy_policy",
+            "outcome": "skipped",
+            "detail": "skipped: NIM has not answered within its timeout on 3 recorded attempts and OpenRouter's free quota is exhausted, so another attempt would spend budget without new information"
+          },
+          {
+            "label": "understand:leave_and_license",
+            "outcome": "error",
+            "detail": "RATE_LIMITED: Too many requests. Please try again later."
+          },
+          {
+            "label": "understand:job_offer_letter",
+            "outcome": "ok",
+            "detail": null
+          },
+          {
+            "label": "understand:nda",
+            "outcome": "error",
+            "detail": "RATE_LIMITED: Too many requests. Please try again later."
+          },
+          {
+            "label": "understand:privacy_policy",
+            "outcome": "ok",
+            "detail": null
+          },
+          {
+            "label": "understand:freelance_service_agreement",
+            "outcome": "error",
+            "detail": "RATE_LIMITED: Too many requests. Please try again later."
+          },
+          {
+            "label": "understand:generic",
+            "outcome": "skipped",
+            "detail": "two Gemini requests aborted by the client-side timeout in this part (calls 5, 9)"
+          },
+          {
+            "label": "prepare:leave_and_license",
+            "outcome": "ok",
+            "detail": null
+          },
+          {
+            "label": "prepare:job_offer_letter",
+            "outcome": "ok",
+            "detail": null
+          },
+          {
+            "label": "prepare:nda",
+            "outcome": "ok",
+            "detail": null
+          },
+          {
+            "label": "prepare:privacy_policy",
+            "outcome": "ok",
+            "detail": null
+          },
+          {
+            "label": "prepare:freelance_service_agreement",
+            "outcome": "ok",
+            "detail": null
+          },
+          {
+            "label": "prepare:generic",
+            "outcome": "skipped",
+            "detail": "no document was created"
+          }
+        ],
+        "note": "Found by this harness: the product's 45 s provider timeout aborted 3 of 5 Gemini Understand calls (completed calls took 28-45 s), and each timeout cascaded through NIM and OpenRouter to a misleading 'Too many requests' after ~91 s. Fixed: per-operation timeouts (Understand 120 s, Prepare 90 s) with a chain-wide deadline, honest final errors, Understand with Gemini thinking off; PROMPT_VERSION understand-v3 / prepare-v3. Measured with thinking on (understand-v2).",
+        "label": "pre-fix: 45 s timeout",
+        "fixtureMetrics": [
+          {
+            "fixture": "job_offer_letter",
+            "modelUsed": "gemini-2.5-flash",
+            "latencyMs": 44997,
+            "findings": 24,
+            "verified": 22,
+            "claimedQuotes": 22,
+            "requiredHit": 10,
+            "requiredTotal": 10,
+            "optional": 8,
+            "unmatched": 6,
+            "duplicates": 0,
+            "categoryAgree": 15,
+            "categoryTotal": 18,
+            "missingClause": 2,
+            "missedRequired": []
+          },
+          {
+            "fixture": "privacy_policy",
+            "modelUsed": "gemini-2.5-flash",
+            "latencyMs": 28114,
+            "findings": 25,
+            "verified": 23,
+            "claimedQuotes": 23,
+            "requiredHit": 13,
+            "requiredTotal": 13,
+            "optional": 5,
+            "unmatched": 6,
+            "duplicates": 1,
+            "categoryAgree": 15,
+            "categoryTotal": 18,
+            "missingClause": 2,
+            "missedRequired": []
+          }
+        ]
+      }
+    ],
+    "notes": [
+      "FS-14 (required: no late-payment interest clause) is credited to finding …8f92c7c3 by the spec's keyword rule ('delays in payment' appears in one lens explanation), but that finding is about unlimited revisions and deliverable acceptance, not late payment. Discounting it, freelance_service_agreement recall is 7/10 (70%, below the 80% bar) and aggregate recall 49/58 (84.5%).",
+      "The Run 2 vs Run 3 'quality drop' is one sample per setting on two fixtures (recall 23/23 → 21/23 is within run-to-run variation), so it is not yet attributable to thinking being off. The only model-facing change from understand-v2 to v3 is thinkingBudget 0 (prompt text and schema unchanged; no dedupe/trim fired). A repeated A/B is needed before deciding. Also: the generic fixture has never been measured in any run (12 required entries untested).",
+      "Standard-clause checklist: evaluated once, held-out, on these six fixtures before any key was read: 5/7 required missing clauses, with 1 false absence claim (the freelance agreement's payment on termination, which clause 10.3 does address) that was then fixed in the permissive direction only. The checklist lines here are recomputed from the fixture text after that fix, on the same fixtures, so they are not a held-out result.",
+      "Prepare: this Run 3 Prepare never ran (the primary's daily quota ran out first). The current Prepare version was confirmed live separately, on the fallback model gemini-3.5-flash-lite, in docs/live-validation/prepare-confirmation/: 2 documents (the NDA and the leave and license), 12/12 checks each, 0 internal finding aliases in 20 AI-written items, and both NDA checklist gaps cited under the not-checked label with no status."
+    ]
+  },
+  "httpCalls": [],
+  "fixtures": [
+    {
+      "fixture": "leave_and_license",
+      "op": {
+        "label": "prepare:leave_and_license",
+        "startedAt": "2026-09-23T08:51:39.603Z",
+        "durationMs": 0,
+        "outcome": "skipped",
+        "httpCallSeqs": [],
+        "skippedReason": "quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)"
+      },
+      "state": null,
+      "modelUsed": null,
+      "promptVersion": null,
+      "lawyerQuestions": [],
+      "checklist": [],
+      "markdown": null
+    },
+    {
+      "fixture": "job_offer_letter",
+      "op": {
+        "label": "prepare:job_offer_letter",
+        "startedAt": "2026-09-23T08:51:39.607Z",
+        "durationMs": 0,
+        "outcome": "skipped",
+        "httpCallSeqs": [],
+        "skippedReason": "quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)"
+      },
+      "state": null,
+      "modelUsed": null,
+      "promptVersion": null,
+      "lawyerQuestions": [],
+      "checklist": [],
+      "markdown": null
+    },
+    {
+      "fixture": "nda",
+      "op": {
+        "label": "prepare:nda",
+        "startedAt": "2026-09-23T08:51:39.610Z",
+        "durationMs": 0,
+        "outcome": "skipped",
+        "httpCallSeqs": [],
+        "skippedReason": "quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)"
+      },
+      "state": null,
+      "modelUsed": null,
+      "promptVersion": null,
+      "lawyerQuestions": [],
+      "checklist": [],
+      "markdown": null
+    },
+    {
+      "fixture": "privacy_policy",
+      "op": {
+        "label": "prepare:privacy_policy",
+        "startedAt": "2026-09-23T08:51:39.614Z",
+        "durationMs": 0,
+        "outcome": "skipped",
+        "httpCallSeqs": [],
+        "skippedReason": "quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)"
+      },
+      "state": null,
+      "modelUsed": null,
+      "promptVersion": null,
+      "lawyerQuestions": [],
+      "checklist": [],
+      "markdown": null
+    },
+    {
+      "fixture": "freelance_service_agreement",
+      "op": {
+        "label": "prepare:freelance_service_agreement",
+        "startedAt": "2026-09-23T08:51:39.617Z",
+        "durationMs": 0,
+        "outcome": "skipped",
+        "httpCallSeqs": [],
+        "skippedReason": "quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)"
+      },
+      "state": null,
+      "modelUsed": null,
+      "promptVersion": null,
+      "lawyerQuestions": [],
+      "checklist": [],
+      "markdown": null
+    },
+    {
+      "fixture": "generic",
+      "op": {
+        "label": "prepare:generic",
+        "startedAt": "2026-09-23T08:51:39.619Z",
+        "durationMs": 4,
+        "outcome": "ok",
+        "httpCallSeqs": []
+      },
+      "state": "not_analyzed",
+      "modelUsed": null,
+      "promptVersion": null,
+      "lawyerQuestions": [],
+      "checklist": [],
+      "markdown": null
+    }
+  ],
+  "computed": {
+    "schemaCheck": {
+      "name": "Prepare response schema has no status/span field",
+      "pass": true,
+      "detail": "no status/verified/span key anywhere in the JSON schema"
+    },
+    "fixtures": [
+      {
+        "fixture": "leave_and_license",
+        "checks": []
+      },
+      {
+        "fixture": "job_offer_letter",
+        "checks": []
+      },
+      {
+        "fixture": "nda",
+        "checks": []
+      },
+      {
+        "fixture": "privacy_policy",
+        "checks": []
+      },
+      {
+        "fixture": "freelance_service_agreement",
+        "checks": []
+      },
+      {
+        "fixture": "generic",
+        "checks": [
+          {
+            "name": "typed state",
+            "pass": true,
+            "detail": "state=not_analyzed; expected one of not_analyzed"
+          }
+        ]
+      }
+    ],
+    "concerns": [
+      "prepare: LLM path NOT MEASURED — 0/6 documents produced Prepare output; only the zero-call checks below ran",
+      "prepare/leave_and_license: not run — quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)",
+      "prepare/job_offer_letter: not run — quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)",
+      "prepare/nda: not run — quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)",
+      "prepare/privacy_policy: not run — quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)",
+      "prepare/freelance_service_agreement: not run — quota exhausted at call 10 (gemini, gemini-2.5-flash, HTTP 429, window per_day)"
+    ]
+  }
+}

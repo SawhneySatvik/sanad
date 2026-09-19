@@ -1,0 +1,1752 @@
+{
+  "meta": {
+    "mode": "live",
+    "startedAt": "2026-09-23T12:53:37.815Z",
+    "finishedAt": "2026-09-23T12:56:13.717Z",
+    "wallTimeMs": 155902,
+    "budget": 4,
+    "callsUsed": 4,
+    "blockedCalls": [
+      {
+        "op": "understand:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:53:38.982Z",
+        "reason": "cap"
+      },
+      {
+        "op": "understand:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:53:38.983Z",
+        "reason": "cap"
+      },
+      {
+        "op": "prepare:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:19.615Z",
+        "reason": "cap"
+      },
+      {
+        "op": "prepare:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:19.617Z",
+        "reason": "cap"
+      },
+      {
+        "op": "understand:leave_and_license",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:32.627Z",
+        "reason": "cap"
+      },
+      {
+        "op": "understand:leave_and_license",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:32.630Z",
+        "reason": "cap"
+      }
+    ],
+    "otherFetches": 0,
+    "env": {
+      "GEMINI_API_KEY": "set",
+      "NVIDIA_API_KEY": "set",
+      "OPENROUTER_API_KEY": "set",
+      "GEMINI_MODEL": "unset",
+      "GEMMA_MODEL": "unset",
+      "GEMMA_MODEL_NIM": "unset",
+      "GEMMA_MODEL_OPENROUTER": "unset",
+      "RATE_LIMIT_PRINCIPAL_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMINI_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMMA_PER_MINUTE": "unset"
+    },
+    "primaryModelId": "gemini-2.5-flash",
+    "understandPromptVersion": "understand-v3",
+    "preparePromptVersion": "prepare-v3",
+    "stops": [],
+    "history": [],
+    "notes": [
+      "A targeted confirmation of the current Prepare version, not a full Understand run: 4 provider calls at most, primary out of its daily quota (capped at 0), so every answer is the fallback model. The NDA replaced the job offer letter because the offer letter and the leave and license produce no checklist gaps, so only the NDA exercises the checklist-gap path."
+    ]
+  },
+  "httpCalls": [
+    {
+      "seq": 1,
+      "op": "understand:nda",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T12:53:38.985Z",
+      "latencyMs": 40495,
+      "outcome": "response",
+      "status": 200
+    },
+    {
+      "seq": 2,
+      "op": "prepare:nda",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T12:54:19.618Z",
+      "latencyMs": 4040,
+      "outcome": "response",
+      "status": 200
+    },
+    {
+      "seq": 3,
+      "op": "understand:leave_and_license",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T12:54:32.633Z",
+      "latencyMs": 55124,
+      "outcome": "response",
+      "status": 200
+    },
+    {
+      "seq": 4,
+      "op": "prepare:leave_and_license",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T12:55:27.857Z",
+      "latencyMs": 45842,
+      "outcome": "response",
+      "status": 200
+    }
+  ],
+  "fixtures": [
+    {
+      "fixture": "nda",
+      "expectedDocumentType": "nda",
+      "op": {
+        "label": "understand:nda",
+        "startedAt": "2026-09-23T12:53:38.957Z",
+        "durationMs": 40614,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          1
+        ],
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "documentId": "f9d6b591-74e4-4273-ac7e-2df1bf057ce4",
+      "document": {
+        "processingStatus": "ready",
+        "documentType": "nda",
+        "detectionConfidence": "1.00",
+        "inputMode": "text",
+        "canonicalTextHash": "364b34c036f86ee8d8cd1548304a8d6a53e9f517818dbdd5fe8fe79110e39a26"
+      },
+      "analysis": {
+        "promptVersion": "understand-v3",
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "findings": [
+        {
+          "id": "01a0ce54-ce77-7b61-a0b4-37c86ff8ab35",
+          "category": "obligation",
+          "claimedQuote": "1.1 \"Confidential Information\" means any and all information, in whatever form or medium, disclosed or made available by or on behalf of the Disclosing Party to the Receiving Party, whether before, on or after the Effective Date, and whether or not marked, designated or otherwise identified as confidential, including without limitation business plans, customer data, pricing, product roadmaps, source code, designs, wireframes, prototypes, know-how, and any information that the Receiving Party may learn or observe during visits to the premises of the Disclosing Party.",
+          "claimedQuoteLength": 572,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "Every piece of information shared, whether spoken, written, or observed during office visits, is treated as confidential even if not marked as such, so your team must exercise extreme caution."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "You are bound to protect all information received or observed without needing a 'Confidential' stamp, so ensure your staff treats all client data and verbal discussions as restricted."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "Your broad definition ensures that all business plans, code, and casual observations made by the other party during site visits are fully protected."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 1678,
+          "spanEnd": 2250,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Every piece of information shared, whether spoken, written, or observed during office visits, is treated as confidential even if not marked as such, so your team must exercise extreme caution."
+        },
+        {
+          "id": "01a0ce54-ce78-74db-8613-7587e828d1e3",
+          "category": "obligation",
+          "claimedQuote": "3.6 Where the Confidential Information disclosed by Brightwater includes personal data of its customers, Pixelkraft shall process such personal data only for the Purpose, on the documented instructions of Brightwater, and in accordance with the Digital Personal Data Protection Act, 2023.",
+          "claimedQuoteLength": 288,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "Pixelkraft must comply strictly with the Digital Personal Data Protection Act, 2023, when handling customer personal data, so verify your data processing workflows comply before signing."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "You must process customer personal data solely per Brightwater's documented instructions and under the Digital Personal Data Protection Act, 2023."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "This clause legally binds Pixelkraft to adhere to Indian data protection laws when handling your customers' personal data."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 4570,
+          "spanEnd": 4858,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Pixelkraft must comply strictly with the Digital Personal Data Protection Act, 2023, when handling customer personal data, so verify your data processing workflows comply before signing."
+        },
+        {
+          "id": "01a0ce54-ce78-74db-8613-758815c736dd",
+          "category": "ambiguity",
+          "claimedQuote": "4.1 Notwithstanding anything contained in this Agreement, nothing shall restrict Brightwater or its Representatives from using, for any purpose, any Residuals. \"Residuals\" means ideas, concepts, know-how and techniques contained in the Confidential Information of Pixelkraft that are retained in the unaided memory of the personnel of Brightwater who had access to such Confidential Information.",
+          "claimedQuoteLength": 395,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "Brightwater carves out an exception to use 'residuals' remembered by its staff, which is favourable to Brightwater but could dilute your IP protection."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "Brightwater's staff can legally use ideas and know-how retained in their unaided memories from your disclosures, making it difficult to police what was memorised."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "This protects your staff from accidental breaches when they retain general ideas or concepts in their memories after viewing the other party's designs."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 4882,
+          "spanEnd": 5277,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Brightwater carves out an exception to use 'residuals' remembered by its staff, which is favourable to Brightwater but could dilute your IP protection."
+        },
+        {
+          "id": "01a0ce54-ce78-74db-8613-7589ed449804",
+          "category": "deadline",
+          "claimedQuote": "5.1 Within five (5) days of a written request from the Disclosing Party, and in any event upon the expiry or termination of this Agreement, the Receiving Party shall return or destroy all Confidential Information of the Disclosing Party in its possession or control, including all copies, notes and extracts, and an authorised officer of the Receiving Party shall certify such return or destruction in writing.",
+          "claimedQuoteLength": 410,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "You will have only five days upon request to return or destroy all materials and provide a formal written certificate of compliance."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "Watch out for written requests or contract termination, as you must return or destroy all files and certify it in writing within five days."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "You have a strict five-day turnaround to force the return or destruction of all data and obtain a formal officer certificate."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 5304,
+          "spanEnd": 5714,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You will have only five days upon request to return or destroy all materials and provide a formal written certificate of compliance."
+        },
+        {
+          "id": "01a0ce54-ce78-74db-8613-758a9743a622",
+          "category": "deadline",
+          "claimedQuote": "6.1 This Agreement shall remain in force for a period of two (2) years from the Effective Date, unless terminated earlier by either Party by giving thirty (30) days' written notice to the other Party.",
+          "claimedQuoteLength": 200,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "The agreement lasts for two years unless ended early with a 30-day written notice."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "The contract continues for two years unless either side gives a 30-day written notice to terminate it early."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "Either party can walk away from the relationship by giving a 30-day written notice during the two-year term."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 5737,
+          "spanEnd": 5937,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "The agreement lasts for two years unless ended early with a 30-day written notice."
+        },
+        {
+          "id": "01a0ce54-ce78-74db-8613-758b62aa7076",
+          "category": "obligation",
+          "claimedQuote": "6.2 The confidentiality obligations of the Parties under this Agreement shall survive the expiry or termination of this Agreement and shall continue in perpetuity.",
+          "claimedQuoteLength": 163,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "Your duty to keep information confidential never expires, meaning you are bound to secrecy forever."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "Even after the agreement ends or is terminated, your obligation to maintain confidentiality continues indefinitely without end."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "Your secrets remain protected by perpetual confidentiality obligations even after the business engagement concludes."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 5938,
+          "spanEnd": 6101,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Your duty to keep information confidential never expires, meaning you are bound to secrecy forever."
+        },
+        {
+          "id": "01a0ce54-ce78-74db-8613-758c91933e4f",
+          "category": "penalty",
+          "claimedQuote": "7.1 During the term of this Agreement and for a period of twelve (12) months after its expiry or termination, Pixelkraft shall not, directly or indirectly, provide design, user experience or technology services to any person engaged in the business of online retail of apparel, footwear or home furnishings in India that competes with Brightwater.",
+          "claimedQuoteLength": 347,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "Pixelkraft faces a one-year post-termination non-compete restricting services to competing online retailers in India, which could limit future business."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "You are barred from providing design or technology services to any competing online retail businesses in India for 12 months after the contract ends."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "This prevents Pixelkraft from taking your designs or know-how to a direct competitor in the Indian online retail space for a year after ending."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 6143,
+          "spanEnd": 6490,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Pixelkraft faces a one-year post-termination non-compete restricting services to competing online retailers in India, which could limit future business."
+        },
+        {
+          "id": "01a0ce54-ce78-74db-8613-758d56d81576",
+          "category": "obligation",
+          "claimedQuote": "7.2 During the term of this Agreement and for a period of twenty-four (24) months after its expiry or termination, neither Party shall solicit for employment or hire any employee of the other Party with whom it had contact in connection with the Purpose.",
+          "claimedQuoteLength": 254,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "Neither party can hire or poach the other's employees for two years after the engagement ends, if they had contact during the project."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "You cannot hire or solicit any employee of the other party whom you contacted during the project for 24 months post-termination."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "Your personnel are protected from poaching or hiring by the other party for the duration and for two years following termination."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 6491,
+          "spanEnd": 6745,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Neither party can hire or poach the other's employees for two years after the engagement ends, if they had contact during the project."
+        },
+        {
+          "id": "01a0ce54-ce78-74db-8613-758e99090e15",
+          "category": "penalty",
+          "claimedQuote": "9.2 In the event of any breach of this Agreement by Pixelkraft or its Representatives, Pixelkraft shall pay to Brightwater liquidated damages of Rs. 50,00,000/- (Rupees Fifty Lakh only) for each instance of breach, which the Parties agree is a genuine pre-estimate of the loss likely to be suffered by Brightwater and not a penalty.",
+          "claimedQuoteLength": 332,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "Pixelkraft faces a heavy fixed penalty of Rs. 50,00,000 per breach instance, so you should negotiate this or ensure compliance is foolproof."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "You are exposed to a steep liquidated damages claim of Rs. 50,00,000 for every single breach instance."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "You have a pre-agreed fixed damage amount of Rs. 50,00,000 per breach by Pixelkraft to deter leaks or violations."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 7833,
+          "spanEnd": 8165,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Pixelkraft faces a heavy fixed penalty of Rs. 50,00,000 per breach instance, so you should negotiate this or ensure compliance is foolproof."
+        },
+        {
+          "id": "01a0ce54-ce78-74db-8613-758f7e5642cb",
+          "category": "penalty",
+          "claimedQuote": "9.3 Pixelkraft shall indemnify and keep indemnified Brightwater, its Affiliates and their respective directors and employees against all losses, damages, costs (including legal fees), claims and liabilities, including indirect and consequential losses and loss of profit, arising out of or in connection with any breach of this Agreement by Pixelkraft or its Representatives.",
+          "claimedQuoteLength": 375,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "Pixelkraft must cover all losses, legal fees, and even indirect or consequential loss of profits for Brightwater in the event of a breach."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "You must pay for all direct and indirect losses, damages, and legal costs suffered by Brightwater if you or your team breach this agreement."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "Pixelkraft provides an expansive indemnity covering all direct and indirect losses, including lost profits and legal costs resulting from any breach."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 8166,
+          "spanEnd": 8541,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Pixelkraft must cover all losses, legal fees, and even indirect or consequential loss of profits for Brightwater in the event of a breach."
+        },
+        {
+          "id": "01a0ce54-ce78-74db-8613-7590e7c8cbf9",
+          "category": "obligation",
+          "claimedQuote": "10.2 Any dispute arising out of or in connection with this Agreement shall be referred to arbitration by a sole arbitrator to be appointed by Brightwater, in accordance with the Arbitration and Conciliation Act, 1996. The seat and venue of arbitration shall be Mumbai, and the language of the arbitration shall be English.",
+          "claimedQuoteLength": 322,
+          "lensExplanations": [
+            {
+              "lens": "receiving_party_about_to_sign",
+              "explanation": "Brightwater alone gets to appoint the sole arbitrator if a dispute arises, which heavily favours Brightwater in dispute resolution."
+            },
+            {
+              "lens": "receiving_party_already_signed",
+              "explanation": "Any disputes will be resolved through arbitration in Mumbai, with the sole arbitrator chosen entirely by Brightwater."
+            },
+            {
+              "lens": "disclosing_party_about_to_sign",
+              "explanation": "You retain the sole right to appoint the arbitrator in Mumbai for any disputes arising under this agreement."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 8677,
+          "spanEnd": 8999,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Brightwater alone gets to appoint the sole arbitrator if a dispute arises, which heavily favours Brightwater in dispute resolution."
+        },
+        {
+          "id": "49b25f3e-2de3-8d26-8d27-51a64ba9f66c",
+          "category": "missing_clause",
+          "claimedQuote": null,
+          "claimedQuoteLength": 0,
+          "lensExplanations": [],
+          "status": null,
+          "spanStart": null,
+          "spanEnd": null,
+          "modelUsed": "none",
+          "provenance": "checklist",
+          "explanation": "The agreement does not appear to exclude information the recipient develops independently, without using the disclosed information. This standard exclusion protects the recipient's own separate work."
+        },
+        {
+          "id": "e92f280d-63f9-8c2d-858f-a8f7c2bca690",
+          "category": "missing_clause",
+          "claimedQuote": null,
+          "claimedQuoteLength": 0,
+          "lensExplanations": [],
+          "status": null,
+          "spanStart": null,
+          "spanEnd": null,
+          "modelUsed": "none",
+          "provenance": "checklist",
+          "explanation": "The agreement does not appear to allow disclosure when a law, court or regulator requires it. Without this, a recipient served with a legal order could be caught between the order and the agreement. Such clauses usually ask for prompt notice to the other side first, where the law permits."
+        }
+      ]
+    },
+    {
+      "fixture": "leave_and_license",
+      "expectedDocumentType": "leave_and_license",
+      "op": {
+        "label": "understand:leave_and_license",
+        "startedAt": "2026-09-23T12:54:32.592Z",
+        "durationMs": 55229,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          3
+        ],
+        "events": [
+          {
+            "event": "llm_circuit_open",
+            "tier": "gemini:gemini-2.5-flash",
+            "consecutiveFailures": 3,
+            "openMs": 60000,
+            "code": "UPSTREAM_UNAVAILABLE"
+          }
+        ],
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "documentId": "54ea7d43-b902-448e-aeb1-f3fb94ffc0d5",
+      "document": {
+        "processingStatus": "ready",
+        "documentType": "leave_and_license",
+        "detectionConfidence": "0.52",
+        "inputMode": "text",
+        "canonicalTextHash": "ff6ce0563a9135dd5fe24dcb663bae4bfbc41aaac7bdab7541a97ce501c86245"
+      },
+      "analysis": {
+        "promptVersion": "understand-v3",
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "findings": [
+        {
+          "id": "01a0ce55-d922-7daf-b700-cde38029b464",
+          "category": "deadline",
+          "claimedQuote": "This license shall be for a period of eleven (11) months commencing from the Commencement Date and ending on 31st August, 2027 (both days inclusive), unless terminated earlier in accordance with this Agreement.",
+          "claimedQuoteLength": 210,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You are committing to an 11-month stay, which gives you stable housing for almost a year before any renewal discussion is needed."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Your license runs until 31st August 2027, so you must plan either to renew or vacate by that date unless you terminate earlier."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "This sets a fixed 11-month term, which aligns with standard practice in Maharashtra to avoid lease complications."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "The agreement expires on 31st August 2027, giving you a clear timeline when you can choose to take back possession or negotiate a renewal."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 3493,
+          "spanEnd": 3703,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You are committing to an 11-month stay, which gives you stable housing for almost a year before any renewal discussion is needed."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cde4e30222f0",
+          "category": "obligation",
+          "claimedQuote": "The Licensee shall pay to the Licensor a monthly License Fee of Rs. 32,000/- (Rupees Thirty-Two Thousand only) for the use of the Licensed Premises.",
+          "claimedQuoteLength": 148,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You must budget Rs. 32,000 each month for the license fee, in addition to maintenance and utilities."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "You are legally required to pay Rs. 32,000 monthly as the license fee."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You are securing a monthly license fee of Rs. 32,000, payable directly to your designated bank account."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You must ensure the tenant pays the Rs. 32,000 monthly fee without fail."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 4026,
+          "spanEnd": 4174,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You must budget Rs. 32,000 each month for the license fee, in addition to maintenance and utilities."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cde56bfc062e",
+          "category": "deadline",
+          "claimedQuote": "The License Fee shall be payable in advance on or before the 5th day of each English calendar month by bank transfer to the account designated by the Licensor in writing.",
+          "claimedQuoteLength": 170,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You must arrange your monthly salary or bank transfers so that the money reaches the landlord by the 5th of every month."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "You must make sure your rent is paid on or before the 5th of each month to avoid heavy late fees."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "This ensures your cash flow arrives early in the month, specifically by the 5th."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "Check your bank account by the 5th of each month to confirm the licensee has transferred the fee on time."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 4179,
+          "spanEnd": 4349,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You must arrange your monthly salary or bank transfers so that the money reaches the landlord by the 5th of every month."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cde69ac342df",
+          "category": "penalty",
+          "claimedQuote": "If any License Fee or other amount payable by the Licensee is not paid on its due date, the Licensee shall pay interest on the outstanding amount at the rate of twenty-four percent (24%) per annum from the due date until the date of actual payment, together with a late payment charge of Rs. 500/- (Rupees Five Hundred only) for every day of delay.",
+          "claimedQuoteLength": 348,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "Be aware that paying rent even a few days late triggers a severe financial penalty: 24% annual interest plus Rs. 500 per day."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Always pay on time, because missing the 5th-of-the-month deadline stacks up expensive daily fines and 24% interest quickly."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "This clause strongly deters late payments by charging hefty penalties if the tenant delays."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "If the tenant delays payment, you are legally entitled to levy the daily Rs. 500 charge and 24% interest."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 4354,
+          "spanEnd": 4702,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Be aware that paying rent even a few days late triggers a severe financial penalty: 24% annual interest plus Rs. 500 per day."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cde798e2650e",
+          "category": "obligation",
+          "claimedQuote": "In addition to the License Fee, the Licensee shall bear and pay the monthly maintenance charges of the Society, together with all special levies, sinking fund contributions, repair fund contributions and non-occupancy charges levied by the Society in respect of the Licensed Premises during the License Period.",
+          "claimedQuoteLength": 310,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "Factor in that you, not the landlord, must pay society maintenance, non-occupancy charges, and special repair funds, which can fluctuate."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "You must regularly pay the society maintenance bills and special levies directly or as billed, on top of your monthly rent."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You are protected from paying society maintenance and special repair funds while the tenant occupies the flat."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "Ensure the tenant keeps up with society maintenance and special levies so the housing society does not penalize you as the owner."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 4707,
+          "spanEnd": 5017,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Factor in that you, not the landlord, must pay society maintenance, non-occupancy charges, and special repair funds, which can fluctuate."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cde8e291b016",
+          "category": "obligation",
+          "claimedQuote": "The Licensee shall pay the electricity charges as per the bills of the electricity supply company, the piped gas charges, and the charges for internet and cable television directly to the concerned service providers, and shall produce the paid receipts to the Licensor on demand.",
+          "claimedQuoteLength": 279,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You must manage and pay your own utility bills (electricity, gas, internet) and keep receipts ready to show the landlord."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Keep your utility payment receipts safe because the landlord can demand to see them at any time."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You will not have to worry about paying utility bills, but you have the right to inspect paid receipts."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You can ask the tenant for paid utility receipts whenever you want to ensure no utility arrears are piling up."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 5022,
+          "spanEnd": 5301,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You must manage and pay your own utility bills (electricity, gas, internet) and keep receipts ready to show the landlord."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cde919124075",
+          "category": "obligation",
+          "claimedQuote": "The municipal property tax in respect of the Licensed Premises shall be borne and paid by the Licensor.",
+          "claimedQuoteLength": 103,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You do not have to pay municipal property taxes; the landlord remains responsible for them."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "You can refuse any demands for municipal property tax since the landlord agreed to pay it."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You retain the responsibility for paying municipal property taxes for your property."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "Remember to pay the municipal property taxes yourself as they are your obligation under the agreement."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 5306,
+          "spanEnd": 5409,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You do not have to pay municipal property taxes; the landlord remains responsible for them."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdea03f2dd99",
+          "category": "obligation",
+          "claimedQuote": "The Licensee has, on or before the execution of this Agreement, paid to the Licensor an interest-free refundable Security Deposit of Rs. 1,50,000/- (Rupees One Lakh Fifty Thousand only) by bank transfer, the receipt whereof the Licensor hereby admits and acknowledges.",
+          "claimedQuoteLength": 268,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You must arrange Rs. 1,50,000 upfront as an interest-free security deposit upon signing."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Your Rs. 1,50,000 deposit is held by the landlord without earning interest."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You will receive a substantial Rs. 1,50,000 security deposit upon agreement execution."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You hold the tenant's Rs. 1,50,000 security deposit interest-free."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 5435,
+          "spanEnd": 5703,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You must arrange Rs. 1,50,000 upfront as an interest-free security deposit upon signing."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdebe9b9791b",
+          "category": "ambiguity",
+          "claimedQuote": "The Security Deposit shall be refunded to the Licensee within a reasonable time after the Licensee has handed over vacant and peaceful possession of the Licensed Premises to the Licensor, subject to the deductions permitted under this Clause 5.",
+          "claimedQuoteLength": 244,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "The phrase 'within a reasonable time' is vague and does not give an exact date by which you will get your Rs. 1,50,000 back. Try to negotiate a specific timeline like 7 or 15 days."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Because 'reasonable time' is undefined, you may face delays when trying to recover your deposit after moving out."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "The flexible refund timeline gives you breathing room after move-out to inspect the property and calculate deductions."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "The lack of a specific refund deadline gives you discretion, but could potentially lead to disputes with the tenant over timing."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 5878,
+          "spanEnd": 6122,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "The phrase 'within a reasonable time' is vague and does not give an exact date by which you will get your Rs. 1,50,000 back. Try to negotiate a specific timeline like 7 or 15 days."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdec25c292d4",
+          "category": "penalty",
+          "claimedQuote": "The Licensor shall be entitled to deduct from the Security Deposit such amounts as the Licensor may, in his sole discretion, consider necessary towards unpaid dues, damage to the Licensed Premises or its contents, cleaning, and any other expenses incurred by the Licensor on account of the Licensee.",
+          "claimedQuoteLength": 299,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "The landlord has broad, one-sided discretion to deduct money from your deposit for damages, cleaning, or vague expenses, so inspect thoroughly before moving in."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Be careful with the property and keep records, as the landlord can unilaterally decide what to deduct from your deposit when you leave."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You have wide discretion to deduct repair and cleaning costs from the security deposit upon the tenant's departure."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You can deduct amounts for damage, cleaning, and unpaid dues directly from the deposit based on your assessment."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 6127,
+          "spanEnd": 6426,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "The landlord has broad, one-sided discretion to deduct money from your deposit for damages, cleaning, or vague expenses, so inspect thoroughly before moving in."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdedd227f457",
+          "category": "penalty",
+          "claimedQuote": "Notwithstanding anything contained in this Agreement, a sum equal to one (1) month's License Fee shall in all cases be retained by the Licensor from the Security Deposit towards repainting of the Licensed Premises, irrespective of the condition in which the Licensed Premises are handed back.",
+          "claimedQuoteLength": 292,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You are automatically losing one month's rent (Rs. 32,000) from your deposit for repainting, even if you leave the walls spotless."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Do not expect a full refund of your deposit, because Rs. 32,000 is non-refundable painting charges by default."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You automatically retain one month's fee for painting costs when the tenant leaves, regardless of wear and tear."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You are entitled to keep one month's license fee from the deposit for repainting when the agreement ends."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 6431,
+          "spanEnd": 6723,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You are automatically losing one month's rent (Rs. 32,000) from your deposit for repainting, even if you leave the walls spotless."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdee5872868c",
+          "category": "deadline",
+          "claimedQuote": "If the amounts due from the Licensee exceed the Security Deposit, the Licensee shall pay the shortfall to the Licensor within seven (7) days of a written demand.",
+          "claimedQuoteLength": 161,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "If damages or unpaid bills exceed your deposit, you have only 7 days to pay the extra cash upon demand."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "If the landlord sends a written demand for extra money because damages exceeded the deposit, you must pay within 7 days."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "If repair or due costs exceed the deposit, you can demand the shortfall and expect payment within 7 days."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You can issue a written demand for any shortfall exceeding the deposit, requiring payment within 7 days."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 6728,
+          "spanEnd": 6889,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "If damages or unpaid bills exceed your deposit, you have only 7 days to pay the extra cash upon demand."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdef87abdaf8",
+          "category": "deadline",
+          "claimedQuote": "The Licensee agrees that the first eight (8) months of the License Period, that is, from 1st October, 2026 to 31st May, 2027, shall be a lock-in period during which the Licensee shall not terminate this Agreement or vacate the Licensed Premises.",
+          "claimedQuoteLength": 245,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You are locked into this flat for 8 months; you cannot legally walk away without penalty before 31st May 2027."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "You are currently within the 8-month lock-in period and cannot terminate early without financial consequences."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You are guaranteed at least 8 months of stable occupancy and rent from this tenant."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "The tenant is bound by the lock-in period until 31st May 2027, protecting you against sudden vacancies."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 6913,
+          "spanEnd": 7158,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You are locked into this flat for 8 months; you cannot legally walk away without penalty before 31st May 2027."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdf032c2f336",
+          "category": "penalty",
+          "claimedQuote": "If the Licensee terminates this Agreement or vacates the Licensed Premises for any reason before the expiry of the lock-in period, the Licensee shall be liable to pay to the Licensor the License Fee for the entire unexpired portion of the lock-in period, and the Licensor shall be entitled to recover such amount from the Security Deposit.",
+          "claimedQuoteLength": 339,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "If you leave early during the first 8 months, you must pay rent for all the remaining months of that lock-in period, which the landlord can deduct from your deposit."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Leaving before May 2027 will cost you all remaining rent for the lock-in period, taken directly from your deposit."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "If the tenant breaks the lock-in, you are legally protected and can collect the remaining lock-in rent from their deposit."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "If the tenant vacates early, you have the right to deduct the unexpired lock-in rent from their security deposit."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 7163,
+          "spanEnd": 7502,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "If you leave early during the first 8 months, you must pay rent for all the remaining months of that lock-in period, which the landlord can deduct from your deposit."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdf138c63efe",
+          "category": "deadline",
+          "claimedQuote": "After the expiry of the lock-in period, the Licensee may terminate this Agreement by giving to the Licensor not less than thirty (30) days' prior written notice.",
+          "claimedQuoteLength": 161,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "After the 8-month mark, you can end the agreement by giving a 30-day written notice."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Once the lock-in period ends, you can give a 30-day written notice to move out."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "The tenant can exit after the lock-in by providing a 30-day notice."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "The tenant is permitted to terminate the agreement after the lock-in with a 30-day written notice."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 7673,
+          "spanEnd": 7834,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "After the 8-month mark, you can end the agreement by giving a 30-day written notice."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdf21547a416",
+          "category": "deadline",
+          "claimedQuote": "The Licensor may terminate this Agreement at any time, including during the lock-in period, by giving the Licensee fifteen (15) days' written notice, without assigning any reason.",
+          "claimedQuoteLength": 179,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "Be aware that the landlord can kick you out at any time—even during the 8-month lock-in—with just 15 days' notice and no reason required. This is heavily one-sided."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "The landlord holds the right to terminate your stay on 15 days' notice even during the lock-in period, so keep backup plans ready."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You retain the powerful one-sided right to terminate the license at any time on 15 days' notice without giving a reason."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You can terminate this agreement whenever you need to by giving a 15-day written notice to the tenant."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 7839,
+          "spanEnd": 8018,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Be aware that the landlord can kick you out at any time—even during the 8-month lock-in—with just 15 days' notice and no reason required. This is heavily one-sided."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdf33a557e70",
+          "category": "penalty",
+          "claimedQuote": "If the Licensee commits a breach of any of the terms of this Agreement, including non-payment of the License Fee for two consecutive months, the Licensor shall be entitled to terminate this Agreement forthwith by written notice and to recover possession of the Licensed Premises in accordance with law.",
+          "claimedQuoteLength": 302,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "Failing to pay rent for two consecutive months or breaking any rule allows the landlord to terminate immediately."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Breaching terms or missing rent for two months gives the landlord the right to terminate your agreement on the spot."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You retain the right to terminate immediately if terms are broken or rent is unpaid for two consecutive months."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You can immediately serve notice to terminate if the tenant defaults for two months or breaks a clause."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 8023,
+          "spanEnd": 8325,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Failing to pay rent for two consecutive months or breaking any rule allows the landlord to terminate immediately."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdf46a76f308",
+          "category": "penalty",
+          "claimedQuote": "If the Licensee fails to hand over vacant possession of the Licensed Premises on the expiry or earlier termination of this Agreement, the Licensee shall be liable to pay to the Licensor damages calculated at three (3) times the License Fee, on a per-day basis, for every day of such unauthorised occupation, without prejudice to the other rights and remedies of the Licensor.",
+          "claimedQuoteLength": 375,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "Overstaying after termination or expiry results in a massive penalty: triple the daily license fee for every single day you remain."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Do not overstay your move-out date; doing so triggers a punitive daily fine equal to three times your normal rent rate."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You are heavily protected against overstaying tenants by collecting a penalty of triple the daily rent."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "If the tenant refuses to leave after termination, you can claim damages at 3x the daily license fee for each day of unauthorized occupation."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 8673,
+          "spanEnd": 9048,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Overstaying after termination or expiry results in a massive penalty: triple the daily license fee for every single day you remain."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdf586bfdd8c",
+          "category": "obligation",
+          "claimedQuote": "The Licensee shall, at her own cost, carry out all repairs to the Licensed Premises, whether minor or major, including repairs to plumbing, electrical wiring, water seepage and leakage, and the replacement of any fixture or appliance that ceases to function during the License Period.",
+          "claimedQuoteLength": 284,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You are taking on all repair costs—both major and minor—including plumbing, electrical, and appliance replacements. This is unusual as major structural/plumbing repairs are normally landlord duties in India."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "You must pay out of pocket for any plumbing, electrical, seepage, or appliance repairs that come up during your stay."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You are completely exempt from repair expenses; the tenant must handle all major and minor maintenance at their own cost."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "The tenant is responsible for funding all repairs, whether minor or major, including plumbing, wiring, and appliances."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 9384,
+          "spanEnd": 9668,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You are taking on all repair costs—both major and minor—including plumbing, electrical, and appliance replacements. This is unusual as major structural/plumbing repairs are normally landlord duties in India."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdf6fabbe31b",
+          "category": "obligation",
+          "claimedQuote": "The Licensee shall not make any structural additions or alterations to the Licensed Premises, nor drill into or fix anything to the external walls, without the prior written consent of the Licensor.",
+          "claimedQuoteLength": 198,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You cannot make alterations or even drill into external walls without written permission from the landlord."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Avoid drilling into external walls or making structural changes without getting written consent first."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "Your property structure and external walls are protected from unauthorized alterations or drilling."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You can object if the tenant drills into external walls or alters the structure without your written approval."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 9673,
+          "spanEnd": 9871,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You cannot make alterations or even drill into external walls without written permission from the landlord."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdf7a627f8c6",
+          "category": "obligation",
+          "claimedQuote": "The Licensee shall not sub-license, sublet, assign or part with the possession of the Licensed Premises or any part thereof, or permit any other person to occupy the same.",
+          "claimedQuoteLength": 171,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You cannot sublet the flat or let anyone else move in with you outside your immediate family."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "You are strictly forbidden from subletting or sharing possession of the flat with unauthorized people."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You are legally protected against unauthorized subletting or ghost tenants."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You can take action if the tenant attempts to sublet the premises or let unauthorized occupants move in."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 10066,
+          "spanEnd": 10237,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You cannot sublet the flat or let anyone else move in with you outside your immediate family."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdf8127d38b4",
+          "category": "obligation",
+          "claimedQuote": "Guests of the Licensee shall not stay overnight in the Licensed Premises for more than three (3) nights in any calendar month without the prior written consent of the Licensor.",
+          "claimedQuoteLength": 176,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "Your guests can only stay overnight for a maximum of 3 nights per month without written permission, which restricts hosting friends or family long-term."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "Make sure overnight guests do not exceed 3 nights in a month to avoid violating the agreement."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "This restricts long-term unauthorized guests staying over, maintaining security in your property."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You can monitor and restrict overnight guests if they stay past the 3-night monthly limit without your consent."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 10243,
+          "spanEnd": 10419,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "Your guests can only stay overnight for a maximum of 3 nights per month without written permission, which restricts hosting friends or family long-term."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdf9588e2d44",
+          "category": "obligation",
+          "claimedQuote": "The Licensor, and any person authorised by him, shall be entitled to enter upon the Licensed Premises at all reasonable times, with or without prior notice to the Licensee, to inspect the condition of the Licensed Premises or to show the same to prospective licensees or purchasers.",
+          "claimedQuoteLength": 282,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "The landlord can enter your home at any reasonable time without giving prior notice. This compromises your privacy; try to negotiate for required advance notice."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "The landlord or their agents may walk in without prior notice for inspections or to show the flat to buyers/tenants."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You retain the right to enter the premises at reasonable times with or without notice to inspect or show it to buyers."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "You can legally enter the premises at reasonable times without advance notice to check its condition or show prospective buyers."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 10819,
+          "spanEnd": 11101,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "The landlord can enter your home at any reasonable time without giving prior notice. This compromises your privacy; try to negotiate for required advance notice."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdfa2b822083",
+          "category": "obligation",
+          "claimedQuote": "The entire stamp duty and registration charges payable on this Agreement, and all incidental expenses thereof, shall be borne and paid solely by the Licensee.",
+          "claimedQuoteLength": 158,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "You must pay 100% of the stamp duty, registration fees, and incidental costs for registering this agreement."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "You are responsible for all expenses tied to the stamping and registration of this document."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "You will not incur any expenses for the stamp duty or registration of the agreement."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "The tenant bears all costs for registering the agreement and paying stamp duty as agreed."
+            }
+          ],
+          "status": "verified",
+          "spanStart": 11638,
+          "spanEnd": 11796,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "You must pay 100% of the stamp duty, registration fees, and incidental costs for registering this agreement."
+        },
+        {
+          "id": "01a0ce55-d922-7daf-b700-cdfb7ebb5c3c",
+          "category": "missing_clause",
+          "claimedQuote": null,
+          "claimedQuoteLength": 0,
+          "lensExplanations": [
+            {
+              "lens": "tenant_about_to_sign",
+              "explanation": "The document does not specify what happens to your security deposit if the landlord fails to refund it on time. You may want to add an interest penalty for delayed refund."
+            },
+            {
+              "lens": "tenant_already_signed",
+              "explanation": "There is no stated penalty if the landlord delays returning your deposit after you move out, which could leave you chasing them for your money."
+            },
+            {
+              "lens": "landlord_about_to_sign",
+              "explanation": "The agreement lacks a detailed inventory list attached as an annexure, which can make proving damage to fixtures or furniture difficult later."
+            },
+            {
+              "lens": "landlord_already_signed",
+              "explanation": "Without an explicit inventory list of furniture and appliances, proving pre-existing damage versus tenant damage can be challenging."
+            }
+          ],
+          "status": null,
+          "spanStart": null,
+          "spanEnd": null,
+          "modelUsed": "gemini-3.5-flash-lite",
+          "provenance": "ai_generated",
+          "explanation": "The document does not specify what happens to your security deposit if the landlord fails to refund it on time. You may want to add an interest penalty for delayed refund."
+        }
+      ]
+    }
+  ],
+  "diagnostics": [],
+  "computed": {
+    "fixtures": [
+      {
+        "fixture": "nda",
+        "metrics": {
+          "findings": 11,
+          "claimedQuotes": 11,
+          "verified": 11,
+          "approximate": 0,
+          "notFound": 0,
+          "verifiedRate": 1,
+          "unquotedNonMissing": 0,
+          "categoryCounts": {
+            "obligation": 5,
+            "ambiguity": 1,
+            "deadline": 2,
+            "penalty": 3
+          },
+          "outOfEnum": 0,
+          "requiredTotal": 11,
+          "requiredAssigned": [
+            "ND-01",
+            "ND-07",
+            "ND-02",
+            "ND-11",
+            "ND-04",
+            "ND-10",
+            "ND-06",
+            "ND-08"
+          ],
+          "requiredCarried": [],
+          "requiredHit": 8,
+          "recall": 0.7272727272727273,
+          "optionalAssigned": [
+            "ND-05",
+            "ND-09"
+          ],
+          "missedRequired": [
+            "ND-03",
+            "ND-12",
+            "ND-13"
+          ],
+          "assignments": [
+            {
+              "findingId": "01a0ce54-ce77-7b61-a0b4-37c86ff8ab35",
+              "entryId": "ND-01",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 568,
+              "keywords": [],
+              "categoryAgrees": false
+            },
+            {
+              "findingId": "01a0ce54-ce78-74db-8613-7589ed449804",
+              "entryId": "ND-07",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 406,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce54-ce78-74db-8613-758815c736dd",
+              "entryId": "ND-02",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 391,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce54-ce78-74db-8613-758f7e5642cb",
+              "entryId": "ND-11",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 371,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce54-ce78-74db-8613-758c91933e4f",
+              "entryId": "ND-04",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 343,
+              "keywords": [],
+              "categoryAgrees": false
+            },
+            {
+              "findingId": "01a0ce54-ce78-74db-8613-758e99090e15",
+              "entryId": "ND-10",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 328,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce54-ce78-74db-8613-7590e7c8cbf9",
+              "entryId": "ND-06",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 212,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce54-ce78-74db-8613-758b62aa7076",
+              "entryId": "ND-08",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 159,
+              "keywords": [],
+              "categoryAgrees": false
+            },
+            {
+              "findingId": "01a0ce54-ce78-74db-8613-758d56d81576",
+              "entryId": "ND-05",
+              "required": false,
+              "kind": "anchored",
+              "overlap": 250,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce54-ce78-74db-8613-758a9743a622",
+              "entryId": "ND-09",
+              "required": false,
+              "kind": "anchored",
+              "overlap": 196,
+              "keywords": [],
+              "categoryAgrees": true
+            }
+          ],
+          "unmatchedFindingIds": [
+            "01a0ce54-ce78-74db-8613-7587e828d1e3"
+          ],
+          "duplicateFindingIds": [],
+          "unmatchedShare": 0.09090909090909091,
+          "categoryAgreement": {
+            "agree": 7,
+            "total": 10
+          },
+          "missingClauseFindings": [],
+          "nearMisses": []
+        },
+        "checklist": {
+          "requiredMissing": [
+            "ND-12",
+            "ND-13"
+          ],
+          "credited": [
+            "ND-13",
+            "ND-12"
+          ],
+          "creditedServed": [
+            "ND-13",
+            "ND-12"
+          ],
+          "gaps": [
+            {
+              "gapId": "nda.exclusion_independent_development",
+              "topic": "Exclusion for independently developed information",
+              "explanation": "The agreement does not appear to exclude information the recipient develops independently, without using the disclosed information. This standard exclusion protects the recipient's own separate work.",
+              "served": true,
+              "matches": [
+                {
+                  "entryId": "ND-13",
+                  "required": true,
+                  "keywords": [
+                    "independently developed"
+                  ]
+                }
+              ],
+              "assignedTo": "ND-13",
+              "mayBeCoveredBy": []
+            },
+            {
+              "gapId": "nda.compelled_disclosure",
+              "topic": "Disclosure required by law",
+              "explanation": "The agreement does not appear to allow disclosure when a law, court or regulator requires it. Without this, a recipient served with a legal order could be caught between the order and the agreement. Such clauses usually ask for prompt notice to the other side first, where the law permits.",
+              "served": true,
+              "matches": [
+                {
+                  "entryId": "ND-12",
+                  "required": true,
+                  "keywords": [
+                    "required by law",
+                    "regulator"
+                  ]
+                }
+              ],
+              "assignedTo": "ND-12",
+              "mayBeCoveredBy": []
+            }
+          ],
+          "unconfirmed": 0,
+          "documentType": "nda",
+          "hasChecklist": true,
+          "source": "served by get()",
+          "mismatches": 0
+        },
+        "combined": {
+          "hit": 10,
+          "total": 11,
+          "missingHit": 2,
+          "missingTotal": 2
+        },
+        "repairRetry": false,
+        "concerns": [
+          "understand/nda: answered by the fallback model gemini-3.5-flash-lite, not gemini-2.5-flash",
+          "understand/nda: recall 72.7% (8/11) < 80%"
+        ]
+      },
+      {
+        "fixture": "leave_and_license",
+        "metrics": {
+          "findings": 25,
+          "claimedQuotes": 24,
+          "verified": 24,
+          "approximate": 0,
+          "notFound": 0,
+          "verifiedRate": 1,
+          "unquotedNonMissing": 0,
+          "categoryCounts": {
+            "deadline": 6,
+            "obligation": 11,
+            "penalty": 6,
+            "ambiguity": 1,
+            "missing_clause": 1
+          },
+          "outOfEnum": 0,
+          "requiredTotal": 14,
+          "requiredAssigned": [
+            "LL-11",
+            "LL-10",
+            "LL-09",
+            "LL-18",
+            "LL-14",
+            "LL-12",
+            "LL-02",
+            "LL-15",
+            "LL-05",
+            "LL-13",
+            "LL-07",
+            "LL-04",
+            "LL-01",
+            "LL-16"
+          ],
+          "requiredCarried": [],
+          "requiredHit": 14,
+          "recall": 1,
+          "optionalAssigned": [
+            "LL-08",
+            "LL-06",
+            "LL-03"
+          ],
+          "missedRequired": [],
+          "assignments": [
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdf46a76f308",
+              "entryId": "LL-11",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 375,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cde69ac342df",
+              "entryId": "LL-10",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 348,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdf032c2f336",
+              "entryId": "LL-09",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 339,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdf33a557e70",
+              "entryId": "LL-18",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 302,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdec25c292d4",
+              "entryId": "LL-14",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 299,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdedd227f457",
+              "entryId": "LL-12",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 292,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdf586bfdd8c",
+              "entryId": "LL-02",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 284,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdf9588e2d44",
+              "entryId": "LL-15",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 282,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdef87abdaf8",
+              "entryId": "LL-05",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 245,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdebe9b9791b",
+              "entryId": "LL-13",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 244,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdf21547a416",
+              "entryId": "LL-07",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 179,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdf8127d38b4",
+              "entryId": "LL-04",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 176,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cde798e2650e",
+              "entryId": "LL-01",
+              "required": true,
+              "kind": "anchored",
+              "overlap": 135,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdfb7ebb5c3c",
+              "entryId": "LL-16",
+              "required": true,
+              "kind": "missing_clause",
+              "overlap": 0,
+              "keywords": [
+                "inventory",
+                "list of furniture"
+              ],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cde56bfc062e",
+              "entryId": "LL-08",
+              "required": false,
+              "kind": "anchored",
+              "overlap": 170,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdf138c63efe",
+              "entryId": "LL-06",
+              "required": false,
+              "kind": "anchored",
+              "overlap": 161,
+              "keywords": [],
+              "categoryAgrees": true
+            },
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdfa2b822083",
+              "entryId": "LL-03",
+              "required": false,
+              "kind": "anchored",
+              "overlap": 158,
+              "keywords": [],
+              "categoryAgrees": true
+            }
+          ],
+          "unmatchedFindingIds": [
+            "01a0ce55-d922-7daf-b700-cde38029b464",
+            "01a0ce55-d922-7daf-b700-cde4e30222f0",
+            "01a0ce55-d922-7daf-b700-cde8e291b016",
+            "01a0ce55-d922-7daf-b700-cde919124075",
+            "01a0ce55-d922-7daf-b700-cdea03f2dd99",
+            "01a0ce55-d922-7daf-b700-cdee5872868c",
+            "01a0ce55-d922-7daf-b700-cdf6fabbe31b",
+            "01a0ce55-d922-7daf-b700-cdf7a627f8c6"
+          ],
+          "duplicateFindingIds": [],
+          "unmatchedShare": 0.32,
+          "categoryAgreement": {
+            "agree": 17,
+            "total": 17
+          },
+          "missingClauseFindings": [
+            {
+              "findingId": "01a0ce55-d922-7daf-b700-cdfb7ebb5c3c",
+              "matches": [
+                {
+                  "entryId": "LL-16",
+                  "keywords": [
+                    "inventory",
+                    "list of furniture"
+                  ]
+                }
+              ],
+              "assignedTo": "LL-16"
+            }
+          ],
+          "nearMisses": []
+        },
+        "checklist": {
+          "requiredMissing": [
+            "LL-16"
+          ],
+          "credited": [],
+          "creditedServed": [],
+          "gaps": [],
+          "unconfirmed": 0,
+          "documentType": "leave_and_license",
+          "hasChecklist": true,
+          "source": "served by get()",
+          "mismatches": 0
+        },
+        "combined": {
+          "hit": 14,
+          "total": 14,
+          "missingHit": 1,
+          "missingTotal": 1
+        },
+        "repairRetry": false,
+        "concerns": [
+          "understand/leave_and_license: answered by the fallback model gemini-3.5-flash-lite, not gemini-2.5-flash"
+        ]
+      }
+    ],
+    "aggregate": {
+      "analysedFixtures": 2,
+      "claimedQuotes": 35,
+      "verified": 35,
+      "approximate": 0,
+      "notFound": 0,
+      "requiredTotal": 25,
+      "requiredHit": 22,
+      "findings": 36,
+      "unmatched": 9,
+      "duplicates": 0,
+      "outOfEnum": 0,
+      "optionalAssigned": 5,
+      "missingTotal": 3,
+      "modelMissingHit": 1,
+      "checklistMissingHit": 2,
+      "combinedMissingHit": 3,
+      "combinedHit": 24,
+      "combinedTotal": 25,
+      "checklistEveryFixtureHit": 5,
+      "checklistEveryFixtureTotal": 7,
+      "checklistGapsEveryFixture": 5,
+      "checklistUnconfirmedEveryFixture": 0
+    },
+    "concerns": [
+      "understand/aggregate: only 2/6 fixtures analysed — every aggregate below is partial; not measured: job_offer_letter, privacy_policy, freelance_service_agreement, generic",
+      "understand/nda: answered by the fallback model gemini-3.5-flash-lite, not gemini-2.5-flash",
+      "understand/nda: recall 72.7% (8/11) < 80%",
+      "understand/leave_and_license: answered by the fallback model gemini-3.5-flash-lite, not gemini-2.5-flash"
+    ]
+  }
+}

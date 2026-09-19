@@ -1,0 +1,143 @@
+{
+  "fixture": "privacy_policy",
+  "entries": [
+    {
+      "id": "PP-01",
+      "category": "ambiguity",
+      "altCategories": ["obligation"],
+      "required": true,
+      "description": "Consent is 'deemed' from merely downloading or using the app. The DPDP Act, 2023 (Section 6) requires free, specific, informed and unambiguous consent given by a clear affirmative action.",
+      "anchor": "By downloading, installing, accessing or using the Platform, you are deemed to have given your consent to the collection and processing of your Personal Data in the manner and for the purposes described in this Privacy Policy."
+    },
+    {
+      "id": "PP-02",
+      "category": "ambiguity",
+      "required": true,
+      "description": "An open-ended purpose ('such other purposes as we may consider necessary') defeats purpose limitation and specific notice.",
+      "anchor": "We may also process your Personal Data for such other purposes as we may consider necessary or appropriate in connection with our business."
+    },
+    {
+      "id": "PP-03",
+      "category": "ambiguity",
+      "required": true,
+      "description": "Personal data may be shared with unnamed 'other third parties', including for their own marketing. The recipients are unbounded.",
+      "anchor": "We may share your Personal Data with our Partners, group companies and other third parties for the purposes described in this Privacy Policy, including for their own marketing and analytics purposes."
+    },
+    {
+      "id": "PP-04",
+      "category": "ambiguity",
+      "altCategories": ["obligation"],
+      "required": true,
+      "description": "Breach notification is discretionary ('endeavour', 'where we consider it appropriate'). The DPDP Act (Section 8(6)) requires intimation of a personal data breach to the Data Protection Board and to each affected Data Principal.",
+      "anchor": "In the event of a Personal Data breach, we shall endeavour to inform affected users where we consider it appropriate to do so."
+    },
+    {
+      "id": "PP-05",
+      "category": "ambiguity",
+      "required": false,
+      "description": "Data may go to 'any country' with no list of destinations or safeguards, with consent implied by use. Common wording, and the DPDP Act permits transfers except to notified countries, so not required.",
+      "anchor": "Your Personal Data may be transferred to, stored and processed in any country in which we or our service providers operate, and by using the Platform you agree to such transfer."
+    },
+    {
+      "id": "PP-06",
+      "category": "ambiguity",
+      "required": true,
+      "description": "The policy can change at any time without notice, effective immediately, with continued use treated as acceptance. This is a one-sided change mechanism.",
+      "anchor": "We may modify this Privacy Policy at any time without prior notice to you. The modified Privacy Policy shall be effective immediately upon being posted on the Platform, and your continued use of the Platform shall constitute your acceptance of the modified Privacy Policy."
+    },
+    {
+      "id": "PP-07",
+      "category": "obligation",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "The Rent Now Pay Later facility makes the app read the user's entire contact list, SMS inbox and call logs and share them with lenders. This is highly intrusive, disproportionate collection.",
+      "anchor": "Contacts and messages: if you apply for the Rent Now Pay Later facility, the App will access your contact list, SMS inbox and call logs in order to assess your creditworthiness and to share such data with our lending partners."
+    },
+    {
+      "id": "PP-08",
+      "category": "obligation",
+      "required": true,
+      "description": "The user must confirm consent from every other person whose data is in an uploaded document (owner, co-tenant, family) and is 'solely responsible' for any claim. This shifts the platform's compliance burden onto the user.",
+      "anchor": "Where you upload a rent agreement, identity document or any other document containing the Personal Data of another individual, such as a property owner, co-tenant or family member, you confirm that you have obtained that individual's consent for such upload, and you shall be solely responsible for any claim arising out of it."
+    },
+    {
+      "id": "PP-09",
+      "category": "obligation",
+      "altCategories": ["deadline"],
+      "required": false,
+      "description": "The user must update their data within 7 days of any change. A standard duty, so not required.",
+      "anchor": "You must provide accurate information on the Platform and must update your Personal Data within seven (7) days of any change in it."
+    },
+    {
+      "id": "PP-10",
+      "category": "obligation",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "The app collects precise location, including in the background when it is not in use. Continuous background tracking goes well beyond showing nearby homes and verifying visits.",
+      "anchor": "Device and location data: your device identifiers, IP address, operating system, and your precise location, including in the background when the App is not in use, to show you homes near you and to verify property visits."
+    },
+    {
+      "id": "PP-18",
+      "category": "obligation",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "Personal data is used for promotional offers from NestNagar and its Partners (who include advertisers) by SMS, WhatsApp, email and push, and only an email unsubscribe is offered. Marketing rides on the general 'deemed' consent instead of a separate, specific consent for that purpose, as the DPDP Act, 2023 (Section 6(1)) expects.",
+      "anchor": "We may use your Personal Data to send you promotional offers from NestNagar and our Partners by SMS, WhatsApp, email and push notifications. You may unsubscribe from promotional emails using the link provided in them."
+    },
+    {
+      "id": "PP-11",
+      "category": "deadline",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "Data is kept 10 years after account closure 'or for such longer period as we may consider necessary'. The retention is long and open-ended, contrary to erasure once the purpose is served.",
+      "anchor": "We retain your Personal Data for as long as your account is active and for a period of ten (10) years after your account is closed, or for such longer period as we may consider necessary for our business purposes."
+    },
+    {
+      "id": "PP-12",
+      "category": "deadline",
+      "required": false,
+      "carriedBy": ["PP-11"],
+      "description": "Deletion requests take up to 90 days and remain subject to the 10-year retention in PP-11, which carries that issue. Not required.",
+      "anchor": "Deletion requests shall be processed within ninety (90) days of receipt, subject to our retention rights under Clause 8.1."
+    },
+    {
+      "id": "PP-13",
+      "category": "deadline",
+      "required": false,
+      "description": "The grievance officer aims to acknowledge within 72 hours and resolve within 30 days, but only 'shall endeavour'. Standard wording, so not required.",
+      "anchor": "The Grievance Officer shall endeavour to acknowledge your grievance within seventy-two (72) hours and to resolve it within thirty (30) days of receipt."
+    },
+    {
+      "id": "PP-14",
+      "category": "penalty",
+      "required": true,
+      "description": "Withdrawing consent forfeits cashback, reward points and wallet balance. The DPDP Act (Section 6(5)) does place the consequences of withdrawal on the Data Principal, so losing features that need the data is expected; forfeiting value already credited goes further than that and may deter users from withdrawing, which the Act says must be as easy as giving consent.",
+      "anchor": "If you withdraw your consent, we may suspend or terminate your account, and any cashback, reward points or NestNagar Wallet balance credited to your account shall stand forfeited."
+    },
+    {
+      "id": "PP-15",
+      "category": "penalty",
+      "required": false,
+      "description": "The policy warns of a penalty of up to Rs. 10,000 for false or frivolous grievances. This accurately restates the DPDP Act's Data Principal duties, so not required, though its placement may deter complaints.",
+      "anchor": "Please note that under the DPDP Act, a Data Principal who registers a false or frivolous grievance or complaint, or who furnishes false particulars, may be liable to a penalty of up to Rs. 10,000/-."
+    },
+    {
+      "id": "PP-16",
+      "category": "missing_clause",
+      "required": true,
+      "description": "Nothing covers children's personal data or verifiable parental consent (DPDP Act, Section 9), though the platform collects IDs, selfies and family members' data.",
+      "anchor": null,
+      "matchKeywords": ["child", "children", "minor", "minors", "parental", "parental consent", "guardian", "guardians", "under 18", "below 18", "under eighteen", "below eighteen", "age of 18", "kids"],
+      "absentPhrases": ["child", "minor", "parental", "guardian", "below the age", "under the age"]
+    },
+    {
+      "id": "PP-17",
+      "category": "missing_clause",
+      "required": true,
+      "description": "The rights section omits the Data Principal's statutory right to nominate someone to exercise their rights on death or incapacity (DPDP Act, Section 14).",
+      "anchor": null,
+      "matchKeywords": ["nominate", "nominates", "nominated", "nominating", "nomination", "nominations", "nominee", "nominees"],
+      "absentPhrases": ["nominat"]
+    }
+  ]
+}

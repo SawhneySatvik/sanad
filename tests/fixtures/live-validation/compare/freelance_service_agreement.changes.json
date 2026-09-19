@@ -1,0 +1,65 @@
+{
+  "id": "freelance_service_agreement",
+  "before": "documents/freelance_service_agreement.txt",
+  "after": "compare/freelance_service_agreement.after.txt",
+  "changes": [
+    {
+      "id": "FS-C1",
+      "type": "changed",
+      "description": "Client's payment window lengthened from 30 to 60 days after receiving each invoice (clause 6.2).",
+      "before": {
+        "line": 46,
+        "start": 4071,
+        "end": 4299,
+        "text": "6.2 The Freelancer shall raise an invoice for each Milestone after the Client's written acceptance of the Deliverables for that Milestone, and the Client shall pay each undisputed invoice within thirty (30) days of receiving it.",
+        "snippet": "within thirty (30) days of receiving it"
+      },
+      "after": {
+        "line": 46,
+        "start": 4071,
+        "end": 4298,
+        "text": "6.2 The Freelancer shall raise an invoice for each Milestone after the Client's written acceptance of the Deliverables for that Milestone, and the Client shall pay each undisputed invoice within sixty (60) days of receiving it.",
+        "snippet": "within sixty (60) days of receiving it"
+      },
+      "expectedMentions": [
+        "60",
+        "sixty"
+      ]
+    },
+    {
+      "id": "FS-C2",
+      "type": "removed",
+      "description": "Clause 7.5 (freelancer's right to show the final designs in her portfolio) removed.",
+      "before": {
+        "line": 57,
+        "start": 5865,
+        "end": 6021,
+        "text": "7.5 The Freelancer may display the final designs in her personal portfolio and on her website after the Client has publicly launched the redesigned website.",
+        "snippet": "display the final designs in her personal portfolio"
+      },
+      "after": null,
+      "expectedMentions": [
+        "portfolio",
+        "portfolios"
+      ]
+    },
+    {
+      "id": "FS-C3",
+      "type": "added",
+      "description": "New clause 8.4 added: no use of generative AI tools without the client's prior written consent.",
+      "before": null,
+      "after": {
+        "line": 62,
+        "start": 6422,
+        "end": 6586,
+        "text": "8.4 The Freelancer shall not use any generative artificial intelligence tool to create any part of the Deliverables without the prior written consent of the Client.",
+        "snippet": "shall not use any generative artificial intelligence tool"
+      },
+      "expectedMentions": [
+        "generative",
+        "artificial intelligence",
+        "AI"
+      ]
+    }
+  ]
+}

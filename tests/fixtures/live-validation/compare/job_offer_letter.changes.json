@@ -1,0 +1,48 @@
+{
+  "id": "job_offer_letter",
+  "before": "documents/job_offer_letter.txt",
+  "after": "compare/job_offer_letter.after.txt",
+  "changes": [
+    {
+      "id": "JO-C1",
+      "type": "removed",
+      "description": "Clause 3.5 (relocation reimbursement of up to Rs. 50,000) removed.",
+      "before": {
+        "line": 34,
+        "start": 2768,
+        "end": 3016,
+        "text": "3.5 The Company will reimburse your actual and reasonable relocation expenses from Chennai to Bengaluru, up to a maximum of Rs. 50,000/- (Rupees Fifty Thousand only), against original bills submitted within thirty (30) days of your date of joining.",
+        "snippet": "up to a maximum of Rs. 50,000/- (Rupees Fifty Thousand only)"
+      },
+      "after": null,
+      "expectedMentions": [
+        "relocation",
+        "relocate",
+        "relocating"
+      ]
+    },
+    {
+      "id": "JO-C2",
+      "type": "changed",
+      "description": "Employee's post-confirmation resignation notice lengthened from 60 to 90 days (clause 5.1).",
+      "before": {
+        "line": 42,
+        "start": 3559,
+        "end": 3675,
+        "text": "5.1 After confirmation, you shall be required to give sixty (60) days' written notice of resignation to the Company.",
+        "snippet": "sixty (60) days' written notice"
+      },
+      "after": {
+        "line": 41,
+        "start": 3310,
+        "end": 3427,
+        "text": "5.1 After confirmation, you shall be required to give ninety (90) days' written notice of resignation to the Company.",
+        "snippet": "ninety (90) days' written notice"
+      },
+      "expectedMentions": [
+        "90",
+        "ninety"
+      ]
+    }
+  ]
+}

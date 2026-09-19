@@ -1,0 +1,53 @@
+{
+  "fixtures": [
+    {
+      "id": "leave_and_license",
+      "expectedDocumentType": "leave_and_license",
+      "document": "documents/leave_and_license.txt",
+      "key": "keys/leave_and_license.json",
+      "ask": "ask/leave_and_license.json"
+    },
+    {
+      "id": "job_offer_letter",
+      "expectedDocumentType": "job_offer_letter",
+      "document": "documents/job_offer_letter.txt",
+      "key": "keys/job_offer_letter.json",
+      "ask": "ask/job_offer_letter.json"
+    },
+    {
+      "id": "nda",
+      "expectedDocumentType": "nda",
+      "document": "documents/nda.txt",
+      "key": "keys/nda.json",
+      "ask": "ask/nda.json"
+    },
+    {
+      "id": "privacy_policy",
+      "expectedDocumentType": "privacy_policy",
+      "document": "documents/privacy_policy.txt",
+      "key": "keys/privacy_policy.json",
+      "ask": "ask/privacy_policy.json"
+    },
+    {
+      "id": "freelance_service_agreement",
+      "expectedDocumentType": "freelance_service_agreement",
+      "document": "documents/freelance_service_agreement.txt",
+      "key": "keys/freelance_service_agreement.json",
+      "ask": "ask/freelance_service_agreement.json"
+    },
+    {
+      "id": "generic",
+      "expectedDocumentType": "generic",
+      "document": "documents/generic.txt",
+      "key": "keys/generic.json",
+      "ask": "ask/generic.json"
+    }
+  ],
+  "comparePairs": [
+    "compare/leave_and_license.changes.json",
+    "compare/job_offer_letter.changes.json",
+    "compare/freelance_service_agreement.changes.json"
+  ],
+  "askNonLegal": "ask/non_legal.json",
+  "draftExpectations": "draft/expectations.json"
+}

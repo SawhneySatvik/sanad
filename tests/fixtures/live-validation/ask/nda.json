@@ -1,0 +1,96 @@
+{
+  "fixture": "nda",
+  "questions": [
+    {
+      "id": "ND-Q1",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "How long do our confidentiality obligations last under this NDA?",
+      "expectedAnchors": ["shall continue in perpetuity"],
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "ND-Q2",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "What happens if someone in our studio accidentally leaks Brightwater's information?",
+      "expectedAnchors": ["liquidated damages of Rs. 50,00,000/- (Rupees Fifty Lakh only) for each instance of breach", "The Receiving Party shall be responsible for any breach of this Agreement by its Representatives."],
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "ND-Q3",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Can our studio take on work for another online fashion retailer while this agreement is in force?",
+      "expectedAnchors": ["online retail of apparel, footwear or home furnishings in India that competes with Brightwater"],
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "ND-Q4",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "Who chooses the arbitrator if we end up in a dispute with Brightwater?",
+      "expectedAnchors": ["a sole arbitrator to be appointed by Brightwater"],
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "ND-Q5",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "What is the difference between a mutual NDA and a one-way NDA?",
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false
+    },
+    {
+      "id": "ND-Q6",
+      "kind": "general",
+      "attachFixture": false,
+      "question": "Are liquidated damages clauses enforceable in India, or does the other side still have to prove its actual loss?",
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false,
+      "note": "A contract-law question with no contracts_nda registry keyword in it."
+    },
+    {
+      "id": "ND-Q7",
+      "kind": "grounded",
+      "attachFixture": true,
+      "question": "The NDA says we may receive Brightwater's customer data. What are our duties under the DPDP Act for that data?",
+      "expectedAnchors": ["Pixelkraft shall process such personal data only for the Purpose, on the documented instructions of Brightwater"],
+      "expectedSpecialist": "privacy",
+      "routingAmbiguous": false,
+      "note": "Cross-domain question asked with the NDA attached (grounded, so outside the routing bar): the question is squarely about data-protection duties."
+    },
+    {
+      "id": "ND-Q8",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "One of our designers is leaving to join a competitor. Can we stop her from working there using the NDA she signed with us?",
+      "expectedSpecialist": "employment",
+      "routingAmbiguous": true,
+      "acceptableSpecialists": ["employment", "contracts_nda"],
+      "note": "Post-employment restraint on an employee (employment) enforced through an NDA (contracts_nda)."
+    },
+    {
+      "id": "ND-Q9",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "A client wants me, as an individual freelancer, to sign their NDA personally instead of through my LLP. Does it bind me personally?",
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false,
+      "note": "'freelancer' is a distractor; the question is about who is bound by an NDA."
+    },
+    {
+      "id": "ND-Q10",
+      "kind": "routing",
+      "attachFixture": false,
+      "question": "A vendor passed our pricing sheet, which was covered by our NDA, to a competitor. Can we sue them for breach and claim damages?",
+      "expectedSpecialist": "contracts_nda",
+      "routingAmbiguous": false,
+      "note": "'sue' is a general litigation word; the question is about enforcing an NDA."
+    }
+  ]
+}

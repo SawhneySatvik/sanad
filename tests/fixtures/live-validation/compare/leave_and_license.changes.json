@@ -1,0 +1,72 @@
+{
+  "id": "leave_and_license",
+  "before": "documents/leave_and_license.txt",
+  "after": "compare/leave_and_license.after.txt",
+  "changes": [
+    {
+      "id": "LL-C1",
+      "type": "changed",
+      "description": "Security deposit raised from Rs. 1,50,000 to Rs. 2,25,000 (clause 5.1).",
+      "before": {
+        "line": 47,
+        "start": 5431,
+        "end": 5703,
+        "text": "5.1 The Licensee has, on or before the execution of this Agreement, paid to the Licensor an interest-free refundable Security Deposit of Rs. 1,50,000/- (Rupees One Lakh Fifty Thousand only) by bank transfer, the receipt whereof the Licensor hereby admits and acknowledges.",
+        "snippet": "Rs. 1,50,000/- (Rupees One Lakh Fifty Thousand only)"
+      },
+      "after": {
+        "line": 47,
+        "start": 5431,
+        "end": 5709,
+        "text": "5.1 The Licensee has, on or before the execution of this Agreement, paid to the Licensor an interest-free refundable Security Deposit of Rs. 2,25,000/- (Rupees Two Lakh Twenty-Five Thousand only) by bank transfer, the receipt whereof the Licensor hereby admits and acknowledges.",
+        "snippet": "Rs. 2,25,000/- (Rupees Two Lakh Twenty-Five Thousand only)"
+      },
+      "expectedMentions": [
+        "2,25,000",
+        "Two Lakh Twenty-Five Thousand"
+      ]
+    },
+    {
+      "id": "LL-C2",
+      "type": "changed",
+      "description": "Licensee's post-lock-in termination notice lengthened from 30 to 60 days (clause 7.2).",
+      "before": {
+        "line": 60,
+        "start": 7669,
+        "end": 7834,
+        "text": "7.2 After the expiry of the lock-in period, the Licensee may terminate this Agreement by giving to the Licensor not less than thirty (30) days' prior written notice.",
+        "snippet": "thirty (30) days' prior written notice"
+      },
+      "after": {
+        "line": 60,
+        "start": 7675,
+        "end": 7839,
+        "text": "7.2 After the expiry of the lock-in period, the Licensee may terminate this Agreement by giving to the Licensor not less than sixty (60) days' prior written notice.",
+        "snippet": "sixty (60) days' prior written notice"
+      },
+      "expectedMentions": [
+        "60",
+        "sixty"
+      ]
+    },
+    {
+      "id": "LL-C3",
+      "type": "added",
+      "description": "New clause 10.6 added at the end of the use restrictions: no pets or birds.",
+      "before": null,
+      "after": {
+        "line": 80,
+        "start": 10792,
+        "end": 10873,
+        "text": "10.6 The Licensee shall not keep any pet animal or bird in the Licensed Premises.",
+        "snippet": "shall not keep any pet animal or bird"
+      },
+      "expectedMentions": [
+        "pet",
+        "pets",
+        "animal",
+        "animals"
+      ]
+    }
+  ]
+}

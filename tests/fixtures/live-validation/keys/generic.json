@@ -1,0 +1,143 @@
+{
+  "fixture": "generic",
+  "entries": [
+    {
+      "id": "GN-01",
+      "category": "deadline",
+      "altCategories": ["obligation"],
+      "required": true,
+      "description": "The membership auto-renews every 3 months unless the member gives notice of non-renewal at least 60 days before the term ends. For a 3-month term that is two-thirds of the term, so it is easy to miss the window.",
+      "anchor": "At the end of the Initial Term and of every renewal term, the membership shall automatically renew for a further period of three (3) months on the then-prevailing terms, unless the Member gives written notice of non-renewal at least sixty (60) days before the end of the then-current term."
+    },
+    {
+      "id": "GN-02",
+      "category": "obligation",
+      "required": true,
+      "description": "Non-renewal or termination notice counts only by email to one specific address from the registered email. Notice in person, in the app, on WhatsApp or to staff is invalid. This procedural trap works with the auto-renewal.",
+      "anchor": "Notices of non-renewal or termination shall be valid only if sent by email to membership@deskhaven.example from the Member's registered email address. Notices given orally, through the Deskhaven app, by WhatsApp or to the staff at the Centre shall not be valid."
+    },
+    {
+      "id": "GN-03",
+      "category": "deadline",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "The operator can end the membership at any time on 15 days' notice, while the member who leaves early forfeits the deposit and pays out the term (GN-06). One-sided.",
+      "anchor": "The Operator may terminate the membership at any time by giving the Member fifteen (15) days' written notice."
+    },
+    {
+      "id": "GN-04",
+      "category": "ambiguity",
+      "altCategories": ["deadline"],
+      "required": true,
+      "description": "The operator can raise the fee 'at any time' on 7 days' email notice, with no cap, even mid-term while the member cannot exit without forfeiture.",
+      "anchor": "The Operator may revise the Membership Fee at any time by giving the Member seven (7) days' notice by email, and the revised Membership Fee shall apply from the next billing cycle."
+    },
+    {
+      "id": "GN-05",
+      "category": "penalty",
+      "required": true,
+      "description": "A late fee of Rs. 500 per day (about 4% of the monthly fee per day) plus access-card deactivation after 5 days. Steep.",
+      "anchor": "If any amount is not paid within five (5) days of its due date, the Member shall pay a late fee of Rs. 500/- (Rupees Five Hundred only) for each day of delay, and the Operator may deactivate the Member's access card until all dues are paid."
+    },
+    {
+      "id": "GN-06",
+      "category": "penalty",
+      "required": true,
+      "description": "Leaving before the current term ends forfeits the whole Rs. 23,000 deposit and also requires paying the rest of the term's fees. That is a double recovery.",
+      "anchor": "If the Member terminates the membership before the end of the then-current term, the Refundable Deposit shall be forfeited in full, and the Member shall also pay the Membership Fee for the remainder of that term."
+    },
+    {
+      "id": "GN-07",
+      "category": "deadline",
+      "required": false,
+      "description": "The deposit is refunded within 45 days, less dues and damage costs. Standard, so not required.",
+      "anchor": "The Refundable Deposit shall be refunded without interest within forty-five (45) days after the end of the membership, after deducting any unpaid dues and the cost of repairing any damage caused by the Member, its associate or its guests."
+    },
+    {
+      "id": "GN-08",
+      "category": "ambiguity",
+      "required": false,
+      "description": "House Rules can be changed at the operator's sole discretion and bind the member from display. Common in co-working agreements, so not required.",
+      "anchor": "The Member shall comply with the House Rules of the Centre, which may be amended by the Operator from time to time at its sole discretion and which shall be binding on the Member from the date of their display at the Centre or on the Deskhaven app."
+    },
+    {
+      "id": "GN-09",
+      "category": "ambiguity",
+      "required": true,
+      "description": "Although the member pays for a specific dedicated desk (D-14), the operator can move them to any desk or any other Deskhaven centre in Bengaluru on 48 hours' notice, at its discretion.",
+      "anchor": "The Operator may, at its discretion, relocate the Member to any other desk in the Centre or to any other Deskhaven centre in Bengaluru by giving the Member forty-eight (48) hours' notice."
+    },
+    {
+      "id": "GN-10",
+      "category": "ambiguity",
+      "altCategories": ["obligation", "penalty"],
+      "required": true,
+      "description": "The operator excludes all liability for internet, power or other service failures 'howsoever caused', even its own negligence, although those services are the core of what is sold. (Liability exclusions fit none of the five categories cleanly, hence the alternates.)",
+      "anchor": "The Operator shall not be liable for any loss or damage, including loss of data, business, income or profits, arising from any interruption, failure or unavailability of internet, electricity or any other service, howsoever caused, including by the negligence of the Operator or its staff."
+    },
+    {
+      "id": "GN-18",
+      "category": "ambiguity",
+      "altCategories": ["penalty"],
+      "required": true,
+      "description": "Access can be suspended immediately and without notice the moment any payment is late, which contradicts the 5-day grace before card deactivation in 3.4; a breach of House Rules the operator can change at will (5.1) is enough too. The member cannot tell which rule applies.",
+      "anchor": "The Operator may suspend the Member's access to the Centre immediately and without notice if the Member breaches the House Rules or fails to pay any amount when due."
+    },
+    {
+      "id": "GN-11",
+      "category": "penalty",
+      "required": false,
+      "description": "A Rs. 2,00,000 placement fee per person for hiring any operator staff, up to 12 months after membership ends. A common serviced-office term, so not required.",
+      "anchor": "If the Member does so, the Member shall pay the Operator a placement fee of Rs. 2,00,000/- (Rupees Two Lakh only) for each such person."
+    },
+    {
+      "id": "GN-12",
+      "category": "penalty",
+      "required": false,
+      "description": "Belongings left after 6:00 p.m. on the last day may be disposed of, and storage costs Rs. 1,000 per day. Standard end-of-term housekeeping, so not required.",
+      "anchor": "Any belongings left at the Centre after that time may be removed, stored or disposed of by the Operator without any liability, and the Member shall pay a storage and handling charge of Rs. 1,000/- (Rupees One Thousand only) per day until they are collected."
+    },
+    {
+      "id": "GN-17",
+      "category": "penalty",
+      "altCategories": ["obligation"],
+      "required": true,
+      "description": "The member indemnifies the operator against all claims, losses and costs from any act or omission of the member, its associate or its guests. Uncapped, needs no fault and is one-way: the operator gives no indemnity and excludes its own liability (6.2, 6.3).",
+      "anchor": "The Member shall indemnify the Operator against all claims, losses and costs arising from any act or omission of the Member, its associate or its guests at the Centre."
+    },
+    {
+      "id": "GN-13",
+      "category": "obligation",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "The force majeure clause excuses both parties except the member's duty to pay fees, which continues even if a government order or epidemic shuts the centre. One-sided and potentially costly.",
+      "anchor": "Neither Party shall be liable for any failure to perform its obligations due to events beyond its reasonable control, including natural disasters, epidemics, orders of any government authority and civil disturbances, except that the obligation of the Member to pay the Membership Fee shall continue."
+    },
+    {
+      "id": "GN-14",
+      "category": "penalty",
+      "required": false,
+      "carriedBy": ["GN-06"],
+      "description": "A 'material breach', which is undefined, lets the operator terminate immediately and forfeit the deposit. Termination for material breach is standard and the forfeiture issue is carried by GN-06, so not required.",
+      "anchor": "The Operator may terminate the membership immediately by written notice if the Member commits a material breach of this Agreement, and in such case the Refundable Deposit shall be forfeited."
+    },
+    {
+      "id": "GN-15",
+      "category": "missing_clause",
+      "required": true,
+      "description": "There is no service level (internet or power uptime) and no fee credit, pro-rata refund or exit right if services fail or the centre is closed. Only 'reasonable efforts' (6.1).",
+      "anchor": null,
+      "matchKeywords": ["service level", "service levels", "service-level", "sla", "slas", "uptime", "outage", "outages", "downtime", "downtimes", "fee credit", "fee credits", "service credit", "service credits", "abatement", "pro-rata refund", "pro rata refund", "pro-rata refunds", "prorated refund"],
+      "absentPhrases": ["service level", "uptime", "fee credit", "pro rata", "pro-rata", "abatement"]
+    },
+    {
+      "id": "GN-16",
+      "category": "missing_clause",
+      "required": false,
+      "description": "CCTV and visitor-log collection is disclosed (5.5), but nothing says how that data is used, stored, shared or deleted. Not a standard term of membership agreements, so not required.",
+      "anchor": null,
+      "matchKeywords": ["footage", "privacy", "personal data", "visitor data", "visitor information", "data protection", "DPDP", "recordings"],
+      "absentPhrases": ["personal data", "privacy", "footage", "retention", "data protection"]
+    }
+  ]
+}

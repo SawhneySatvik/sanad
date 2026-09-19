@@ -1,0 +1,105 @@
+{
+  "fixture": "nda",
+  "entries": [
+    {
+      "id": "ND-01",
+      "category": "ambiguity",
+      "required": true,
+      "description": "Confidential Information covers everything disclosed, before or after signing, whether or not marked confidential, plus anything merely observed on premises. A receiving party cannot tell what is and is not protected.",
+      "anchor": "\"Confidential Information\" means any and all information, in whatever form or medium, disclosed or made available by or on behalf of the Disclosing Party to the Receiving Party, whether before, on or after the Effective Date, and whether or not marked, designated or otherwise identified as confidential, including without limitation business plans, customer data, pricing, product roadmaps, source code, designs, wireframes, prototypes, know-how, and any information that the Receiving Party may learn or observe during visits to the premises of the Disclosing Party."
+    },
+    {
+      "id": "ND-02",
+      "category": "ambiguity",
+      "required": true,
+      "description": "The residuals clause is one-way. Brightwater (only) may use anything its staff remember of Pixelkraft's information 'for any purpose', which largely hollows out the protection of Pixelkraft's ideas in a supposedly mutual NDA.",
+      "anchor": "Notwithstanding anything contained in this Agreement, nothing shall restrict Brightwater or its Representatives from using, for any purpose, any Residuals. \"Residuals\" means ideas, concepts, know-how and techniques contained in the Confidential Information of Pixelkraft that are retained in the unaided memory of the personnel of Brightwater who had access to such Confidential Information."
+    },
+    {
+      "id": "ND-03",
+      "category": "ambiguity",
+      "required": true,
+      "description": "Brightwater's 'Representatives' alone include its affiliates, vendors and consultants, so it can pass Pixelkraft's information to a much wider circle than Pixelkraft may. One-sided in a 'mutual' NDA.",
+      "anchor": "\"Representatives\" means, in relation to a Party, its directors, partners, employees and professional advisers and, in the case of Brightwater only, also its Affiliates, vendors and consultants."
+    },
+    {
+      "id": "ND-04",
+      "category": "obligation",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "A one-way non-compete inside a 'mutual' NDA: Pixelkraft may not serve any competing online apparel, footwear or home-furnishing retailer for the term plus 12 months. A restraint of trade, likely void under Section 27 of the Indian Contract Act, 1872.",
+      "anchor": "During the term of this Agreement and for a period of twelve (12) months after its expiry or termination, Pixelkraft shall not, directly or indirectly, provide design, user experience or technology services to any person engaged in the business of online retail of apparel, footwear or home furnishings in India that competes with Brightwater."
+    },
+    {
+      "id": "ND-05",
+      "category": "obligation",
+      "altCategories": ["deadline"],
+      "required": false,
+      "description": "A 24-month no-solicit/no-hire of employees. Genuinely mutual and a common NDA term, so not required.",
+      "anchor": "During the term of this Agreement and for a period of twenty-four (24) months after its expiry or termination, neither Party shall solicit for employment or hire any employee of the other Party with whom it had contact in connection with the Purpose."
+    },
+    {
+      "id": "ND-06",
+      "category": "obligation",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "Brightwater alone appoints the sole arbitrator. The Supreme Court has held that a party cannot unilaterally appoint a sole arbitrator (for example Perkins Eastman, 2019), so the clause is legally doubtful as well as one-sided.",
+      "anchor": "Any dispute arising out of or in connection with this Agreement shall be referred to arbitration by a sole arbitrator to be appointed by Brightwater, in accordance with the Arbitration and Conciliation Act, 1996."
+    },
+    {
+      "id": "ND-07",
+      "category": "deadline",
+      "altCategories": ["obligation"],
+      "required": true,
+      "description": "All confidential material must be returned or destroyed, with written certification, within 5 days of a request. That is a very short deadline.",
+      "anchor": "Within five (5) days of a written request from the Disclosing Party, and in any event upon the expiry or termination of this Agreement, the Receiving Party shall return or destroy all Confidential Information of the Disclosing Party in its possession or control, including all copies, notes and extracts, and an authorised officer of the Receiving Party shall certify such return or destruction in writing."
+    },
+    {
+      "id": "ND-08",
+      "category": "deadline",
+      "required": true,
+      "description": "Confidentiality obligations last forever ('in perpetuity') rather than for a fixed period after the NDA ends.",
+      "anchor": "The confidentiality obligations of the Parties under this Agreement shall survive the expiry or termination of this Agreement and shall continue in perpetuity."
+    },
+    {
+      "id": "ND-09",
+      "category": "deadline",
+      "required": false,
+      "description": "The agreement runs for two years and either party can end it on 30 days' notice. Standard, so not required.",
+      "anchor": "This Agreement shall remain in force for a period of two (2) years from the Effective Date, unless terminated earlier by either Party by giving thirty (30) days' written notice to the other Party."
+    },
+    {
+      "id": "ND-10",
+      "category": "penalty",
+      "required": true,
+      "description": "Pixelkraft alone pays Rs. 50,00,000 in liquidated damages per instance of breach. The amount is large and one-way, and under Section 74 of the Indian Contract Act only reasonable compensation is recoverable, whatever the clause calls the sum.",
+      "anchor": "In the event of any breach of this Agreement by Pixelkraft or its Representatives, Pixelkraft shall pay to Brightwater liquidated damages of Rs. 50,00,000/- (Rupees Fifty Lakh only) for each instance of breach, which the Parties agree is a genuine pre-estimate of the loss likely to be suffered by Brightwater and not a penalty."
+    },
+    {
+      "id": "ND-11",
+      "category": "penalty",
+      "altCategories": ["obligation"],
+      "required": true,
+      "description": "Only Pixelkraft indemnifies, and the indemnity covers indirect and consequential losses and loss of profit. It is uncapped and one-way in a 'mutual' NDA.",
+      "anchor": "Pixelkraft shall indemnify and keep indemnified Brightwater, its Affiliates and their respective directors and employees against all losses, damages, costs (including legal fees), claims and liabilities, including indirect and consequential losses and loss of profit, arising out of or in connection with any breach of this Agreement by Pixelkraft or its Representatives."
+    },
+    {
+      "id": "ND-12",
+      "category": "missing_clause",
+      "required": true,
+      "description": "There is no exception for disclosure required by law, a court order or a regulator, and no process for notifying the other party before such disclosure. A party served with a legal demand would technically be in breach.",
+      "anchor": null,
+      "matchKeywords": ["required by law", "required by a court", "court order", "court orders", "order of a court", "orders of a court", "compelled", "legally compelled", "compulsory disclosure", "legal requirement", "legal requirements", "legally required", "regulator", "regulators", "regulatory", "government authority", "government authorities", "law enforcement", "subpoena", "subpoenas", "summons", "legal process"],
+      "absentPhrases": ["required by law", "court order", "order of a court", "compelled", "subpoena", "legal process", "regulator"]
+    },
+    {
+      "id": "ND-13",
+      "category": "missing_clause",
+      "required": true,
+      "description": "The exclusions omit two standard carve-outs: information independently developed by the receiving party, and information received lawfully from a third party. Pixelkraft's own design work could be claimed as Brightwater's confidential information.",
+      "anchor": null,
+      "matchKeywords": ["independently developed", "independently develop", "independently develops", "developed independently", "independent development", "received from a third party", "received from third parties", "obtained from a third party", "rightfully received"],
+      "absentPhrases": ["independently developed", "independently develop", "received from a third party", "rightfully received"]
+    }
+  ]
+}

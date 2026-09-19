@@ -1,0 +1,1024 @@
+{
+  "meta": {
+    "part": "ask",
+    "mode": "live",
+    "startedAt": "2026-09-23T10:16:09.941Z",
+    "finishedAt": "2026-09-23T10:17:12.635Z",
+    "wallTimeMs": 62769,
+    "flashLiteAllocation": 5,
+    "caps": {
+      "gemini:gemini-2.5-flash": 1,
+      "gemini:gemini-3.5-flash-lite": 5,
+      "gemini:gemma-4-31b-it": 1,
+      "nim:google/gemma-4-31b-it": 0,
+      "openrouter:google/gemma-4-31b-it:free": 1
+    },
+    "models": {
+      "primary": "gemini-2.5-flash",
+      "flashLite": "gemini-3.5-flash-lite",
+      "gemmaGoogle": "gemma-4-31b-it",
+      "nim": "google/gemma-4-31b-it",
+      "openrouter": "google/gemma-4-31b-it:free"
+    },
+    "callsSent": 4,
+    "blocked": [
+      {
+        "op": "ask:JO-Q1",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T10:16:30.035Z",
+        "reason": "cap"
+      },
+      {
+        "op": "ask:JO-Q1",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T10:16:30.041Z",
+        "reason": "cap"
+      },
+      {
+        "op": "ask:FS-Q1",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T10:16:50.071Z",
+        "reason": "cap"
+      },
+      {
+        "op": "ask:FS-Q1",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T10:16:50.077Z",
+        "reason": "cap"
+      },
+      {
+        "op": "ask:PP-Q5",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T10:17:10.044Z",
+        "reason": "cap"
+      },
+      {
+        "op": "ask:PP-Q5",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T10:17:10.058Z",
+        "reason": "cap"
+      }
+    ],
+    "otherFetches": 0,
+    "env": {
+      "GEMINI_API_KEY": "set",
+      "NVIDIA_API_KEY": "set",
+      "OPENROUTER_API_KEY": "set",
+      "GEMINI_MODEL": "unset",
+      "GEMMA_MODEL": "unset",
+      "GEMMA_MODEL_NIM": "unset",
+      "GEMMA_MODEL_OPENROUTER": "unset",
+      "RATE_LIMIT_PRINCIPAL_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMINI_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMMA_PER_MINUTE": "unset"
+    },
+    "stops": []
+  },
+  "httpCalls": [
+    {
+      "seq": 1,
+      "op": "ask:LL-Q2",
+      "provider": "gemini",
+      "model": "gemini-2.5-flash",
+      "startedAt": "2026-09-23T10:16:09.991Z",
+      "latencyMs": 3145,
+      "outcome": "response",
+      "status": 200
+    },
+    {
+      "seq": 2,
+      "op": "ask:JO-Q1",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T10:16:30.067Z",
+      "latencyMs": 1392,
+      "outcome": "response",
+      "status": 200
+    },
+    {
+      "seq": 3,
+      "op": "ask:FS-Q1",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T10:16:50.083Z",
+      "latencyMs": 1374,
+      "outcome": "response",
+      "status": 200
+    },
+    {
+      "seq": 4,
+      "op": "ask:PP-Q5",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T10:17:10.065Z",
+      "latencyMs": 1018,
+      "outcome": "response",
+      "status": 200
+    }
+  ],
+  "routing": [
+    {
+      "id": "LL-Q5",
+      "fixture": "leave_and_license",
+      "kind": "general",
+      "top": "tenancy",
+      "expected": "tenancy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "LL-Q6",
+      "fixture": "leave_and_license",
+      "kind": "general",
+      "top": "tenancy",
+      "expected": "tenancy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "LL-Q8",
+      "fixture": "leave_and_license",
+      "kind": "routing",
+      "top": "tenancy",
+      "expected": "tenancy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "LL-Q9",
+      "fixture": "leave_and_license",
+      "kind": "routing",
+      "top": "tenancy",
+      "expected": "tenancy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "LL-Q10",
+      "fixture": "leave_and_license",
+      "kind": "routing",
+      "top": "tenancy",
+      "expected": "tenancy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "JO-Q5",
+      "fixture": "job_offer_letter",
+      "kind": "general",
+      "top": "employment",
+      "expected": "employment",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "JO-Q6",
+      "fixture": "job_offer_letter",
+      "kind": "general",
+      "top": "employment",
+      "expected": "employment",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "JO-Q8",
+      "fixture": "job_offer_letter",
+      "kind": "routing",
+      "top": "employment",
+      "expected": "employment",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "JO-Q9",
+      "fixture": "job_offer_letter",
+      "kind": "routing",
+      "top": "employment",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 1
+    },
+    {
+      "id": "JO-Q10",
+      "fixture": "job_offer_letter",
+      "kind": "routing",
+      "top": "contracts_nda",
+      "expected": "employment",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 2
+    },
+    {
+      "id": "ND-Q5",
+      "fixture": "nda",
+      "kind": "general",
+      "top": "contracts_nda",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "ND-Q6",
+      "fixture": "nda",
+      "kind": "general",
+      "top": "general_legal",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 1
+    },
+    {
+      "id": "ND-Q8",
+      "fixture": "nda",
+      "kind": "routing",
+      "top": "contracts_nda",
+      "expected": "employment",
+      "acceptable": [
+        "employment",
+        "contracts_nda"
+      ],
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "ND-Q9",
+      "fixture": "nda",
+      "kind": "routing",
+      "top": "contracts_nda",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "ND-Q10",
+      "fixture": "nda",
+      "kind": "routing",
+      "top": "contracts_nda",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "PP-Q5",
+      "fixture": "privacy_policy",
+      "kind": "general",
+      "top": "privacy",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "PP-Q6",
+      "fixture": "privacy_policy",
+      "kind": "general",
+      "top": "privacy",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "PP-Q8",
+      "fixture": "privacy_policy",
+      "kind": "routing",
+      "top": "tenancy",
+      "expected": "privacy",
+      "acceptable": [
+        "privacy",
+        "tenancy"
+      ],
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "PP-Q9",
+      "fixture": "privacy_policy",
+      "kind": "routing",
+      "top": "general_legal",
+      "expected": "general_legal",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "PP-Q10",
+      "fixture": "privacy_policy",
+      "kind": "routing",
+      "top": "privacy",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "FS-Q5",
+      "fixture": "freelance_service_agreement",
+      "kind": "general",
+      "top": "freelance",
+      "expected": "freelance",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "FS-Q6",
+      "fixture": "freelance_service_agreement",
+      "kind": "general",
+      "top": "freelance",
+      "expected": "freelance",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "FS-Q8",
+      "fixture": "freelance_service_agreement",
+      "kind": "routing",
+      "top": "contracts_nda",
+      "expected": "freelance",
+      "acceptable": [
+        "freelance",
+        "contracts_nda"
+      ],
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "FS-Q9",
+      "fixture": "freelance_service_agreement",
+      "kind": "routing",
+      "top": "employment",
+      "expected": "employment",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "FS-Q10",
+      "fixture": "freelance_service_agreement",
+      "kind": "routing",
+      "top": "contracts_nda",
+      "expected": "freelance",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 1
+    },
+    {
+      "id": "GN-Q5",
+      "fixture": "generic",
+      "kind": "general",
+      "top": "contracts_nda",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "GN-Q6",
+      "fixture": "generic",
+      "kind": "general",
+      "top": "general_legal",
+      "expected": "general_legal",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "GN-Q8",
+      "fixture": "generic",
+      "kind": "routing",
+      "top": "freelance",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 2
+    },
+    {
+      "id": "GN-Q9",
+      "fixture": "generic",
+      "kind": "routing",
+      "top": "general_legal",
+      "expected": "general_legal",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "GN-Q10",
+      "fixture": "generic",
+      "kind": "routing",
+      "top": "general_legal",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 1
+    }
+  ],
+  "groundedRouting": [
+    {
+      "id": "LL-Q1",
+      "fixture": "leave_and_license",
+      "kind": "grounded",
+      "top": "tenancy",
+      "expected": "tenancy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "LL-Q2",
+      "fixture": "leave_and_license",
+      "kind": "grounded",
+      "top": "tenancy",
+      "expected": "tenancy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "LL-Q3",
+      "fixture": "leave_and_license",
+      "kind": "grounded",
+      "top": "tenancy",
+      "expected": "tenancy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "LL-Q4",
+      "fixture": "leave_and_license",
+      "kind": "grounded",
+      "top": "tenancy",
+      "expected": "tenancy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "LL-Q7",
+      "fixture": "leave_and_license",
+      "kind": "grounded",
+      "top": "tenancy",
+      "expected": "tenancy",
+      "acceptable": [
+        "tenancy",
+        "privacy"
+      ],
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "JO-Q1",
+      "fixture": "job_offer_letter",
+      "kind": "grounded",
+      "top": "employment",
+      "expected": "employment",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "JO-Q2",
+      "fixture": "job_offer_letter",
+      "kind": "grounded",
+      "top": "employment",
+      "expected": "employment",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "JO-Q3",
+      "fixture": "job_offer_letter",
+      "kind": "grounded",
+      "top": "employment",
+      "expected": "employment",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "JO-Q4",
+      "fixture": "job_offer_letter",
+      "kind": "grounded",
+      "top": "employment",
+      "expected": "employment",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "JO-Q7",
+      "fixture": "job_offer_letter",
+      "kind": "grounded",
+      "top": "employment",
+      "expected": "employment",
+      "acceptable": [
+        "employment",
+        "contracts_nda"
+      ],
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "ND-Q1",
+      "fixture": "nda",
+      "kind": "grounded",
+      "top": "contracts_nda",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "ND-Q2",
+      "fixture": "nda",
+      "kind": "grounded",
+      "top": "contracts_nda",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "ND-Q3",
+      "fixture": "nda",
+      "kind": "grounded",
+      "top": "contracts_nda",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "ND-Q4",
+      "fixture": "nda",
+      "kind": "grounded",
+      "top": "contracts_nda",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "ND-Q7",
+      "fixture": "nda",
+      "kind": "grounded",
+      "top": "contracts_nda",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 2
+    },
+    {
+      "id": "PP-Q1",
+      "fixture": "privacy_policy",
+      "kind": "grounded",
+      "top": "privacy",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "PP-Q2",
+      "fixture": "privacy_policy",
+      "kind": "grounded",
+      "top": "privacy",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "PP-Q3",
+      "fixture": "privacy_policy",
+      "kind": "grounded",
+      "top": "privacy",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "PP-Q4",
+      "fixture": "privacy_policy",
+      "kind": "grounded",
+      "top": "privacy",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "PP-Q7",
+      "fixture": "privacy_policy",
+      "kind": "grounded",
+      "top": "tenancy",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 2
+    },
+    {
+      "id": "FS-Q1",
+      "fixture": "freelance_service_agreement",
+      "kind": "grounded",
+      "top": "freelance",
+      "expected": "freelance",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "FS-Q2",
+      "fixture": "freelance_service_agreement",
+      "kind": "grounded",
+      "top": "freelance",
+      "expected": "freelance",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "FS-Q3",
+      "fixture": "freelance_service_agreement",
+      "kind": "grounded",
+      "top": "freelance",
+      "expected": "freelance",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "FS-Q4",
+      "fixture": "freelance_service_agreement",
+      "kind": "grounded",
+      "top": "freelance",
+      "expected": "freelance",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 1
+    },
+    {
+      "id": "FS-Q7",
+      "fixture": "freelance_service_agreement",
+      "kind": "grounded",
+      "top": "freelance",
+      "expected": "freelance",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    },
+    {
+      "id": "GN-Q1",
+      "fixture": "generic",
+      "kind": "grounded",
+      "top": "general_legal",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 1
+    },
+    {
+      "id": "GN-Q2",
+      "fixture": "generic",
+      "kind": "grounded",
+      "top": "general_legal",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 2
+    },
+    {
+      "id": "GN-Q3",
+      "fixture": "generic",
+      "kind": "grounded",
+      "top": "general_legal",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 1
+    },
+    {
+      "id": "GN-Q4",
+      "fixture": "generic",
+      "kind": "grounded",
+      "top": "general_legal",
+      "expected": "contracts_nda",
+      "acceptable": null,
+      "pass": false,
+      "dispatched": 1
+    },
+    {
+      "id": "GN-Q7",
+      "fixture": "generic",
+      "kind": "grounded",
+      "top": "privacy",
+      "expected": "privacy",
+      "acceptable": null,
+      "pass": true,
+      "dispatched": 2
+    }
+  ],
+  "nonLegal": [
+    {
+      "id": "NL-Q1",
+      "ambiguous": false,
+      "localKind": "non_legal",
+      "op": {
+        "label": "ask:NL-Q1",
+        "startedAt": "2026-09-23T10:16:09.943Z",
+        "durationMs": 4,
+        "outcome": "ok",
+        "httpCallSeqs": []
+      },
+      "redirect": true,
+      "modelUsed": "none"
+    },
+    {
+      "id": "NL-Q2",
+      "ambiguous": false,
+      "localKind": "non_legal",
+      "op": {
+        "label": "ask:NL-Q2",
+        "startedAt": "2026-09-23T10:16:09.947Z",
+        "durationMs": 0,
+        "outcome": "ok",
+        "httpCallSeqs": []
+      },
+      "redirect": true,
+      "modelUsed": "none"
+    },
+    {
+      "id": "NL-Q3",
+      "ambiguous": false,
+      "localKind": "non_legal",
+      "op": {
+        "label": "ask:NL-Q3",
+        "startedAt": "2026-09-23T10:16:09.947Z",
+        "durationMs": 0,
+        "outcome": "ok",
+        "httpCallSeqs": []
+      },
+      "redirect": true,
+      "modelUsed": "none"
+    },
+    {
+      "id": "NL-Q4",
+      "ambiguous": false,
+      "localKind": "non_legal",
+      "op": {
+        "label": "ask:NL-Q4",
+        "startedAt": "2026-09-23T10:16:09.948Z",
+        "durationMs": 0,
+        "outcome": "ok",
+        "httpCallSeqs": []
+      },
+      "redirect": true,
+      "modelUsed": "none"
+    },
+    {
+      "id": "NL-Q5",
+      "ambiguous": false,
+      "localKind": "non_legal",
+      "op": {
+        "label": "ask:NL-Q5",
+        "startedAt": "2026-09-23T10:16:09.948Z",
+        "durationMs": 0,
+        "outcome": "ok",
+        "httpCallSeqs": []
+      },
+      "redirect": true,
+      "modelUsed": "none"
+    },
+    {
+      "id": "NL-Q6",
+      "ambiguous": true,
+      "localKind": "legal",
+      "op": {
+        "label": "ask:NL-Q6",
+        "startedAt": "2026-09-23T10:16:09.948Z",
+        "durationMs": 0,
+        "outcome": "skipped",
+        "httpCallSeqs": [],
+        "skippedReason": "classified legal locally, so a live run would spend a model call"
+      },
+      "redirect": null,
+      "modelUsed": null
+    }
+  ],
+  "live": [
+    {
+      "id": "LL-Q2",
+      "fixture": "leave_and_license",
+      "kind": "grounded",
+      "question": "If I move out in April 2027, will I have to pay anything extra?",
+      "op": {
+        "label": "ask:LL-Q2",
+        "startedAt": "2026-09-23T10:16:09.985Z",
+        "durationMs": 5251,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          1
+        ],
+        "modelUsed": "gemini-2.5-flash"
+      },
+      "answeredBy": "gemini-2.5-flash",
+      "modelUsed": "gemini-2.5-flash",
+      "mode": "grounded",
+      "routedDomains": [
+        "tenancy"
+      ],
+      "redirect": null,
+      "label": null,
+      "answerExcerpt": "Yes, if you move out in April 2027, you will have to pay an extra amount. Your Leave and License Agreement includes a lock-in period for the first eight months, which runs from October 1, 2026, to May 31, 2027. Since April 2027 falls within this lock-in period, terminating the agreement and vacating the premises would make you liable to pay the License Fee for the entire unexpired portion of the l",
+      "answerChars": 531,
+      "streamedChars": 531,
+      "citations": [
+        {
+          "claimedQuote": "This license shall be for a period of eleven (11) months commencing from the Commencement Date and ending on 31st August, 2027 (both days inclusive), unless terminated earlier in accordance with this Agreement.",
+          "sourceDocumentId": "48687fcc-40c0-4cb8-afd1-ce74514d3d33",
+          "status": "verified",
+          "spanStart": 3493,
+          "spanEnd": 3703,
+          "spanText": "This license shall be for a period of eleven (11) months commencing from the Commencement Date and ending on 31st August, 2027 (both days inclusive), unless terminated earlier in accordance with this Agreement.",
+          "overlapsExpectedAnchor": false
+        },
+        {
+          "claimedQuote": "The Licensee agrees that the first eight (8) months of the License Period, that is, from 1st October, 2026 to 31st May, 2027, shall be a lock-in period during which the Licensee shall not terminate this Agreement or vacate the Licensed Premises.",
+          "sourceDocumentId": "48687fcc-40c0-4cb8-afd1-ce74514d3d33",
+          "status": "verified",
+          "spanStart": 6913,
+          "spanEnd": 7158,
+          "spanText": "The Licensee agrees that the first eight (8) months of the License Period, that is, from 1st October, 2026 to 31st May, 2027, shall be a lock-in period during which the Licensee shall not terminate this Agreement or vacate the Licensed Premises.",
+          "overlapsExpectedAnchor": true
+        },
+        {
+          "claimedQuote": "If the Licensee terminates this Agreement or vacates the Licensed Premises for any reason before the expiry of the lock-in period, the Licensee shall be liable to pay to the Licensor the License Fee for the entire unexpired portion of the lock-in period, and the Licensor shall be entitled to recover such amount from the Security Deposit.",
+          "sourceDocumentId": "48687fcc-40c0-4cb8-afd1-ce74514d3d33",
+          "status": "verified",
+          "spanStart": 7163,
+          "spanEnd": 7502,
+          "spanText": "If the Licensee terminates this Agreement or vacates the Licensed Premises for any reason before the expiry of the lock-in period, the Licensee shall be liable to pay to the Licensor the License Fee for the entire unexpired portion of the lock-in period, and the Licensor shall be entitled to recover such amount from the Security Deposit.",
+          "overlapsExpectedAnchor": true
+        },
+        {
+          "claimedQuote": "The Licensee shall pay to the Licensor a monthly License Fee of Rs. 32,000/- (Rupees Thirty-Two Thousand only) for the use of the Licensed Premises.",
+          "sourceDocumentId": "48687fcc-40c0-4cb8-afd1-ce74514d3d33",
+          "status": "verified",
+          "spanStart": 4026,
+          "spanEnd": 4174,
+          "spanText": "The Licensee shall pay to the Licensor a monthly License Fee of Rs. 32,000/- (Rupees Thirty-Two Thousand only) for the use of the Licensed Premises.",
+          "overlapsExpectedAnchor": false
+        }
+      ],
+      "forbiddenKeys": []
+    },
+    {
+      "id": "JO-Q1",
+      "fixture": "job_offer_letter",
+      "kind": "grounded",
+      "question": "What is my fixed salary per month, leaving out the variable pay?",
+      "op": {
+        "label": "ask:JO-Q1",
+        "startedAt": "2026-09-23T10:16:29.989Z",
+        "durationMs": 2184,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          2
+        ],
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "answeredBy": "gemini-3.5-flash-lite",
+      "modelUsed": "gemini-3.5-flash-lite",
+      "mode": "grounded",
+      "routedDomains": [
+        "employment"
+      ],
+      "redirect": null,
+      "label": null,
+      "answerExcerpt": "Your total fixed gross salary is Rs. 1,33,218 per month, as shown in Annexure A.",
+      "answerChars": 80,
+      "streamedChars": 80,
+      "citations": [
+        {
+          "claimedQuote": "Total Fixed Gross | 15,98,614 | 1,33,218",
+          "sourceDocumentId": "1470fa2e-5fe2-4674-aa34-eb8ffd56f002",
+          "status": "verified",
+          "spanStart": 9268,
+          "spanEnd": 9308,
+          "spanText": "Total Fixed Gross | 15,98,614 | 1,33,218",
+          "overlapsExpectedAnchor": true
+        }
+      ],
+      "forbiddenKeys": []
+    },
+    {
+      "id": "FS-Q1",
+      "fixture": "freelance_service_agreement",
+      "kind": "grounded",
+      "question": "When will I get paid for each milestone?",
+      "op": {
+        "label": "ask:FS-Q1",
+        "startedAt": "2026-09-23T10:16:49.992Z",
+        "durationMs": 2593,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          3
+        ],
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "answeredBy": "gemini-3.5-flash-lite",
+      "modelUsed": "gemini-3.5-flash-lite",
+      "mode": "grounded",
+      "routedDomains": [
+        "freelance"
+      ],
+      "redirect": null,
+      "label": null,
+      "answerExcerpt": "Under the agreement, you will get paid after raising an invoice for each milestone following the client's written acceptance of the deliverables for that milestone. The client is required to pay each undisputed invoice within thirty (30) days of receiving it.",
+      "answerChars": 259,
+      "streamedChars": 259,
+      "citations": [
+        {
+          "claimedQuote": "The Freelancer shall raise an invoice for each Milestone after the Client's written acceptance of the Deliverables for that Milestone, and the Client shall pay each undisputed invoice within thirty (30) days of receiving it.",
+          "sourceDocumentId": "0dddbbdb-46db-46f5-8944-e12599f21d5f",
+          "status": "verified",
+          "spanStart": 4075,
+          "spanEnd": 4299,
+          "spanText": "The Freelancer shall raise an invoice for each Milestone after the Client's written acceptance of the Deliverables for that Milestone, and the Client shall pay each undisputed invoice within thirty (30) days of receiving it.",
+          "overlapsExpectedAnchor": true
+        }
+      ],
+      "forbiddenKeys": []
+    },
+    {
+      "id": "PP-Q5",
+      "fixture": "privacy_policy",
+      "kind": "general",
+      "question": "What rights do I have over my personal data under the DPDP Act, 2023?",
+      "op": {
+        "label": "ask:PP-Q5",
+        "startedAt": "2026-09-23T10:17:09.996Z",
+        "durationMs": 2603,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          4
+        ],
+        "events": [
+          {
+            "event": "llm_circuit_open",
+            "tier": "gemini:gemini-2.5-flash",
+            "consecutiveFailures": 3,
+            "openMs": 60000,
+            "code": "UPSTREAM_UNAVAILABLE"
+          }
+        ],
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "answeredBy": "gemini-3.5-flash-lite",
+      "modelUsed": "gemini-3.5-flash-lite",
+      "mode": "general",
+      "routedDomains": [
+        "privacy"
+      ],
+      "redirect": false,
+      "label": "General information, not verified against a document.",
+      "answerExcerpt": "Under the Digital Personal Data Protection (DPDP) Act, 2023, you are referred to as a \"Data Principal\" and you hold several key rights regarding your personal data. These include: 1. Right to Information: The right to obtain confirmation from a Data Fiduciary whether your personal data is being processed, a summary of the personal data being processed, and the identities of all other Data Fiduciar",
+      "answerChars": 1226,
+      "streamedChars": 1226,
+      "citations": [],
+      "forbiddenKeys": []
+    }
+  ],
+  "computed": {
+    "routingPass": 24,
+    "verified": 6,
+    "citations": 6,
+    "concerns": [
+      "routing: 24/30 meets the 80% bar exactly, with no slack (misses: JO-Q9, JO-Q10, ND-Q6, FS-Q10, GN-Q8, GN-Q10)"
+    ]
+  },
+  "routingMeasuredAt": "2026-09-23T13:01:58.749Z"
+}

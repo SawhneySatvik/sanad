@@ -1,0 +1,124 @@
+{
+  "fixture": "freelance_service_agreement",
+  "entries": [
+    {
+      "id": "FS-01",
+      "category": "obligation",
+      "required": true,
+      "description": "All IP, including drafts and work in progress, vests in the client on creation 'whether or not the Fees for them have been paid'. The freelancer loses all leverage over unpaid work.",
+      "anchor": "All intellectual property rights in the Deliverables, including all drafts, concepts, sketches and work in progress, shall vest in the Client absolutely upon their creation, whether or not the Fees for them have been paid, and the Freelancer hereby assigns all such rights to the Client."
+    },
+    {
+      "id": "FS-02",
+      "category": "obligation",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "A 12-month post-engagement non-compete across the whole Indian packaged-food and beverage sector. A restraint of trade, likely void under Section 27 of the Indian Contract Act, 1872.",
+      "anchor": "During the term of this Agreement and for a period of twelve (12) months after its termination or completion, the Freelancer shall not provide design or development services to any business engaged in the manufacture or sale of packaged foods, snacks or beverages in India."
+    },
+    {
+      "id": "FS-03",
+      "category": "obligation",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "The freelancer must make unlimited revisions, free, 'until the Client is satisfied'. There is no cap on rounds and no boundary with the paid change-request process in 3.2.",
+      "anchor": "The Freelancer shall make such revisions to the Deliverables as the Client may request from time to time until the Client is satisfied with them, at no additional cost."
+    },
+    {
+      "id": "FS-04",
+      "category": "obligation",
+      "required": false,
+      "description": "The freelancer bears all expenses (stock images, fonts, plugins, software) unless pre-approved in writing. Standard for a fixed-fee engagement, so not required.",
+      "anchor": "The Fees are inclusive of all costs and expenses of the Freelancer, including the cost of stock images, fonts, plugins and software subscriptions, and the Client shall not reimburse any expense unless it has approved the expense in writing in advance."
+    },
+    {
+      "id": "FS-05",
+      "category": "deadline",
+      "required": false,
+      "carriedBy": ["FS-12"],
+      "description": "Payment is due 30 days after an invoice, which can only be raised after written acceptance. A standard 30-day term; the real problem is the discretionary acceptance that gates it (FS-12), so not required on its own.",
+      "anchor": "The Freelancer shall raise an invoice for each Milestone after the Client's written acceptance of the Deliverables for that Milestone, and the Client shall pay each undisputed invoice within thirty (30) days of receiving it."
+    },
+    {
+      "id": "FS-06",
+      "category": "deadline",
+      "altCategories": ["ambiguity"],
+      "required": false,
+      "carriedBy": ["FS-09"],
+      "description": "The client may terminate for convenience at any time on 7 days' notice. Termination for convenience is standard; the harm is the payment consequence in 10.3, carried by FS-09, so not required.",
+      "anchor": "The Client may terminate this Agreement at any time, for any reason, by giving the Freelancer seven (7) days' written notice."
+    },
+    {
+      "id": "FS-07",
+      "category": "deadline",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "The freelancer can terminate only after an undisputed invoice has been unpaid for 60 days following a reminder, and for no other breach. One-sided against the client's right to leave at any time (FS-06).",
+      "anchor": "The Freelancer may terminate this Agreement only if the Client fails to pay an undisputed invoice for sixty (60) days after receiving a written reminder from the Freelancer."
+    },
+    {
+      "id": "FS-08",
+      "category": "penalty",
+      "required": true,
+      "description": "Late delivery costs 2% of the total fees per day, with no cap and 'irrespective of the cause', even when the client's own late inputs caused the delay.",
+      "anchor": "If the Freelancer fails to deliver any Deliverable by its Milestone Date, the Client may deduct from the Fees an amount equal to two percent (2%) of the total Fees for each day of delay, without any upper limit, irrespective of the cause of the delay."
+    },
+    {
+      "id": "FS-09",
+      "category": "penalty",
+      "required": true,
+      "description": "If the client terminates, it pays only for deliverables already accepted in writing: nothing for work in progress. There is no kill fee.",
+      "anchor": "Upon any termination by the Client, the Client shall pay only for Deliverables accepted in writing before the date of termination, and no payment shall be due for work in progress or for Deliverables not yet accepted."
+    },
+    {
+      "id": "FS-10",
+      "category": "penalty",
+      "altCategories": ["obligation"],
+      "required": true,
+      "description": "The freelancer gives an uncapped indemnity covering indirect and consequential losses and loss of profit, 'arising out of or in connection with the Services'. The exposure is out of all proportion to a Rs. 4,80,000 engagement.",
+      "anchor": "The Freelancer shall indemnify and hold harmless the Client, its directors, employees and affiliates from and against all losses, damages, claims, costs and expenses, including indirect and consequential losses, loss of profit and legal fees, arising out of or in connection with the Services or any breach of this Agreement by the Freelancer, without any limit."
+    },
+    {
+      "id": "FS-11",
+      "category": "penalty",
+      "altCategories": ["ambiguity"],
+      "required": false,
+      "carriedBy": ["FS-10"],
+      "description": "The client's own liability is capped at one month's fees while the freelancer's is unlimited. The other half of the risk-allocation issue FS-10 carries, so not required.",
+      "anchor": "The total aggregate liability of the Client under or in connection with this Agreement shall not exceed the Fees paid to the Freelancer in the one (1) month immediately preceding the claim."
+    },
+    {
+      "id": "FS-12",
+      "category": "ambiguity",
+      "required": true,
+      "description": "Acceptance happens only when the client says the work is satisfactory 'in its sole discretion'. With no objective criteria and no deemed-acceptance period, and payment tied to acceptance, the client can delay payment indefinitely.",
+      "anchor": "A Deliverable shall be deemed to be accepted only when the Client confirms in writing that it is satisfactory to the Client in its sole discretion."
+    },
+    {
+      "id": "FS-13",
+      "category": "ambiguity",
+      "altCategories": ["deadline"],
+      "required": true,
+      "description": "The client may withhold any amount it labels 'disputed' until the dispute is resolved, with no dispute procedure or time limit. One-sided: it lets the client delay payment indefinitely.",
+      "anchor": "If the Client disputes any invoice or any part of it, the Client may withhold payment of the disputed amount until the dispute is resolved."
+    },
+    {
+      "id": "FS-14",
+      "category": "missing_clause",
+      "required": true,
+      "description": "There is no interest or other consequence for the client's late payment. (A freelancer registered as a micro or small enterprise may still have statutory rights under the MSMED Act, 2006, but the contract says nothing.)",
+      "anchor": null,
+      "matchKeywords": ["late payment", "late payments", "late-payment", "delayed payment", "delayed payments", "payment delay", "payment delays", "delay in payment", "delays in payment", "pays late", "paying late", "pay late", "interest on late", "late fee", "late fees", "MSMED", "MSME", "MSMEs"],
+      "absentPhrases": ["late payment", "delayed payment", "interest"]
+    },
+    {
+      "id": "FS-15",
+      "category": "missing_clause",
+      "required": false,
+      "description": "There is no right for the freelancer to pause or suspend work while invoices are unpaid. Common in freelancer-drafted contracts but not a universal standard, so not required.",
+      "anchor": null,
+      "matchKeywords": ["suspend", "suspends", "suspended", "suspending", "suspension", "pause work", "pausing work", "pause the work", "stop work", "stop working", "stopping work", "stop the work", "withhold work", "withhold deliverables"],
+      "absentPhrases": ["suspend"]
+    }
+  ]
+}

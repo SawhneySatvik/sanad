@@ -1,0 +1,686 @@
+{
+  "meta": {
+    "mode": "live",
+    "startedAt": "2026-09-23T12:53:37.815Z",
+    "finishedAt": "2026-09-23T12:56:13.717Z",
+    "wallTimeMs": 155902,
+    "budget": 4,
+    "callsUsed": 4,
+    "blockedCalls": [
+      {
+        "op": "understand:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:53:38.982Z",
+        "reason": "cap"
+      },
+      {
+        "op": "understand:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:53:38.983Z",
+        "reason": "cap"
+      },
+      {
+        "op": "prepare:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:19.615Z",
+        "reason": "cap"
+      },
+      {
+        "op": "prepare:nda",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:19.617Z",
+        "reason": "cap"
+      },
+      {
+        "op": "understand:leave_and_license",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:32.627Z",
+        "reason": "cap"
+      },
+      {
+        "op": "understand:leave_and_license",
+        "provider": "gemini",
+        "model": "gemini-2.5-flash",
+        "at": "2026-09-23T12:54:32.630Z",
+        "reason": "cap"
+      }
+    ],
+    "otherFetches": 0,
+    "env": {
+      "GEMINI_API_KEY": "set",
+      "NVIDIA_API_KEY": "set",
+      "OPENROUTER_API_KEY": "set",
+      "GEMINI_MODEL": "unset",
+      "GEMMA_MODEL": "unset",
+      "GEMMA_MODEL_NIM": "unset",
+      "GEMMA_MODEL_OPENROUTER": "unset",
+      "RATE_LIMIT_PRINCIPAL_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMINI_PER_MINUTE": "unset",
+      "RATE_LIMIT_GEMMA_PER_MINUTE": "unset"
+    },
+    "primaryModelId": "gemini-2.5-flash",
+    "understandPromptVersion": "understand-v3",
+    "preparePromptVersion": "prepare-v3",
+    "stops": [],
+    "history": [],
+    "notes": [
+      "A targeted confirmation of the current Prepare version, not a full Understand run: 4 provider calls at most, primary out of its daily quota (capped at 0), so every answer is the fallback model. The NDA replaced the job offer letter because the offer letter and the leave and license produce no checklist gaps, so only the NDA exercises the checklist-gap path."
+    ]
+  },
+  "httpCalls": [
+    {
+      "seq": 2,
+      "op": "prepare:nda",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T12:54:19.618Z",
+      "latencyMs": 4040,
+      "outcome": "response",
+      "status": 200
+    },
+    {
+      "seq": 4,
+      "op": "prepare:leave_and_license",
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "startedAt": "2026-09-23T12:55:27.857Z",
+      "latencyMs": 45842,
+      "outcome": "response",
+      "status": 200
+    }
+  ],
+  "fixtures": [
+    {
+      "fixture": "nda",
+      "op": {
+        "label": "prepare:nda",
+        "startedAt": "2026-09-23T12:54:19.589Z",
+        "durationMs": 4118,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          2
+        ],
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "state": "complete",
+      "modelUsed": "gemini-3.5-flash-lite",
+      "promptVersion": "prepare-v3",
+      "lawyerQuestions": [
+        {
+          "question": "How can we negotiate the sole appointment of the arbitrator by Brightwater, and can we agree on a neutral arbitrator or an independent institution instead?",
+          "whyItMatters": "The dispute resolution clause gives Brightwater the sole power to appoint the sole arbitrator in Mumbai, which heavily favours them if a conflict arises.",
+          "findingIds": [
+            "01a0ce54-ce78-74db-8613-7590e7c8cbf9"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce54-ce78-74db-8613-7590e7c8cbf9",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 8677,
+              "spanEnd": 8999,
+              "spanText": "10.2 Any dispute arising out of or in connection with this Agreement shall be referred to arbitration by a sole arbitrator to be appointed by Brightwater, in accordance with the Arbitration and Conciliation Act, 1996. The seat and venue of arbitration shall be Mumbai, and the language of the arbitration shall be English."
+            }
+          ]
+        },
+        {
+          "question": "Can we negotiate the liquidated damages amount of Rs. 50,00,000 per breach and limit our total liability, particularly regarding indirect and consequential losses?",
+          "whyItMatters": "You face a massive fixed penalty per instance of breach as well as a broad indemnity covering indirect and lost profit damages, exposing your business to severe financial risk.",
+          "findingIds": [
+            "01a0ce54-ce78-74db-8613-758e99090e15",
+            "01a0ce54-ce78-74db-8613-758f7e5642cb"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce54-ce78-74db-8613-758e99090e15",
+              "category": "penalty",
+              "status": "verified",
+              "spanStart": 7833,
+              "spanEnd": 8165,
+              "spanText": "9.2 In the event of any breach of this Agreement by Pixelkraft or its Representatives, Pixelkraft shall pay to Brightwater liquidated damages of Rs. 50,00,000/- (Rupees Fifty Lakh only) for each instance of breach, which the Parties agree is a genuine pre-estimate of the loss likely to be suffered by Brightwater and not a penalty."
+            },
+            {
+              "id": "01a0ce54-ce78-74db-8613-758f7e5642cb",
+              "category": "penalty",
+              "status": "verified",
+              "spanStart": 8166,
+              "spanEnd": 8541,
+              "spanText": "9.3 Pixelkraft shall indemnify and keep indemnified Brightwater, its Affiliates and their respective directors and employees against all losses, damages, costs (including legal fees), claims and liabilities, including indirect and consequential losses and loss of profit, arising out of or in connection with any breach of this Agreement by Pixelkraft or its Representatives."
+            }
+          ]
+        },
+        {
+          "question": "Should we narrow the one-year non-compete scope restricting services to competing online apparel and home furnishings retailers in India, or remove it entirely?",
+          "whyItMatters": "The non-compete clause restricts you from working with competing online retailers in India for twelve months after the agreement ends, potentially harming your future business.",
+          "findingIds": [
+            "01a0ce54-ce78-74db-8613-758c91933e4f"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce54-ce78-74db-8613-758c91933e4f",
+              "category": "penalty",
+              "status": "verified",
+              "spanStart": 6143,
+              "spanEnd": 6490,
+              "spanText": "7.1 During the term of this Agreement and for a period of twelve (12) months after its expiry or termination, Pixelkraft shall not, directly or indirectly, provide design, user experience or technology services to any person engaged in the business of online retail of apparel, footwear or home furnishings in India that competes with Brightwater."
+            }
+          ]
+        },
+        {
+          "question": "Can we add standard protective exclusions for independently developed information and legally mandated disclosures?",
+          "whyItMatters": "The agreement currently lacks carve-outs for information you develop independently without using their data, and lacks protection if a court or regulator legally requires you to disclose information.",
+          "findingIds": [
+            "49b25f3e-2de3-8d26-8d27-51a64ba9f66c",
+            "e92f280d-63f9-8c2d-858f-a8f7c2bca690"
+          ],
+          "findings": [
+            {
+              "id": "49b25f3e-2de3-8d26-8d27-51a64ba9f66c",
+              "category": "missing_clause",
+              "status": null,
+              "spanStart": null,
+              "spanEnd": null,
+              "spanText": null
+            },
+            {
+              "id": "e92f280d-63f9-8c2d-858f-a8f7c2bca690",
+              "category": "missing_clause",
+              "status": null,
+              "spanStart": null,
+              "spanEnd": null,
+              "spanText": null
+            }
+          ]
+        },
+        {
+          "question": "How can we protect our intellectual property given that Brightwater staff can retain and use 'residuals' in their unaided memory?",
+          "whyItMatters": "Brightwater carves out an exception to use ideas and know-how retained in their personnel's memory, which may dilute your proprietary IP protection.",
+          "findingIds": [
+            "01a0ce54-ce78-74db-8613-758815c736dd"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce54-ce78-74db-8613-758815c736dd",
+              "category": "ambiguity",
+              "status": "verified",
+              "spanStart": 4882,
+              "spanEnd": 5277,
+              "spanText": "4.1 Notwithstanding anything contained in this Agreement, nothing shall restrict Brightwater or its Representatives from using, for any purpose, any Residuals. \"Residuals\" means ideas, concepts, know-how and techniques contained in the Confidential Information of Pixelkraft that are retained in the unaided memory of the personnel of Brightwater who had access to such Confidential Information."
+            }
+          ]
+        }
+      ],
+      "checklist": [
+        {
+          "item": "Review your data processing workflows and internal protocols to ensure full compliance with the Digital Personal Data Protection Act, 2023.",
+          "findingIds": [
+            "01a0ce54-ce78-74db-8613-7587e828d1e3"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce54-ce78-74db-8613-7587e828d1e3",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 4570,
+              "spanEnd": 4858,
+              "spanText": "3.6 Where the Confidential Information disclosed by Brightwater includes personal data of its customers, Pixelkraft shall process such personal data only for the Purpose, on the documented instructions of Brightwater, and in accordance with the Digital Personal Data Protection Act, 2023."
+            }
+          ]
+        },
+        {
+          "item": "Set up an internal tracking mechanism to flag the 5-day deadline for returning or destroying confidential information and issuing a written certificate upon request or termination.",
+          "findingIds": [
+            "01a0ce54-ce78-74db-8613-7589ed449804"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce54-ce78-74db-8613-7589ed449804",
+              "category": "deadline",
+              "status": "verified",
+              "spanStart": 5304,
+              "spanEnd": 5714,
+              "spanText": "5.1 Within five (5) days of a written request from the Disclosing Party, and in any event upon the expiry or termination of this Agreement, the Receiving Party shall return or destroy all Confidential Information of the Disclosing Party in its possession or control, including all copies, notes and extracts, and an authorised officer of the Receiving Party shall certify such return or destruction in writing."
+            }
+          ]
+        },
+        {
+          "item": "Prepare a list of your current and prospective clients in the online apparel, footwear, and home furnishings sectors to discuss potential non-compete conflicts with your lawyer.",
+          "findingIds": [
+            "01a0ce54-ce78-74db-8613-758c91933e4f"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce54-ce78-74db-8613-758c91933e4f",
+              "category": "penalty",
+              "status": "verified",
+              "spanStart": 6143,
+              "spanEnd": 6490,
+              "spanText": "7.1 During the term of this Agreement and for a period of twelve (12) months after its expiry or termination, Pixelkraft shall not, directly or indirectly, provide design, user experience or technology services to any person engaged in the business of online retail of apparel, footwear or home furnishings in India that competes with Brightwater."
+            }
+          ]
+        },
+        {
+          "item": "Identify any current employee contacts with Brightwater to ensure your HR and hiring teams are aware of the 24-month non-solicit and hiring restriction.",
+          "findingIds": [
+            "01a0ce54-ce78-74db-8613-758d56d81576"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce54-ce78-74db-8613-758d56d81576",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 6491,
+              "spanEnd": 6745,
+              "spanText": "7.2 During the term of this Agreement and for a period of twenty-four (24) months after its expiry or termination, neither Party shall solicit for employment or hire any employee of the other Party with whom it had contact in connection with the Purpose."
+            }
+          ]
+        },
+        {
+          "item": "Compile a record of all internal business units and team members who will have access to Brightwater's information, noting that confidentiality obligations apply in perpetuity.",
+          "findingIds": [
+            "01a0ce54-ce77-7b61-a0b4-37c86ff8ab35",
+            "01a0ce54-ce78-74db-8613-758b62aa7076"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce54-ce77-7b61-a0b4-37c86ff8ab35",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 1678,
+              "spanEnd": 2250,
+              "spanText": "1.1 \"Confidential Information\" means any and all information, in whatever form or medium, disclosed or made available by or on behalf of the Disclosing Party to the Receiving Party, whether before, on or after the Effective Date, and whether or not marked, designated or otherwise identified as confidential, including without limitation business plans, customer data, pricing, product roadmaps, source code, designs, wireframes, prototypes, know-how, and any information that the Receiving Party may learn or observe during visits to the premises of the Disclosing Party."
+            },
+            {
+              "id": "01a0ce54-ce78-74db-8613-758b62aa7076",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 5938,
+              "spanEnd": 6101,
+              "spanText": "6.2 The confidentiality obligations of the Parties under this Agreement shall survive the expiry or termination of this Agreement and shall continue in perpetuity."
+            }
+          ]
+        }
+      ],
+      "markdown": "# Prepare for your lawyer\n\n**This is not legal advice.** It is a plain-language summary to help you prepare for a conversation with a qualified lawyer about this document.\n\nThe questions and checklist below are AI-generated general information, not verified statements. Only the quoted passage under each one has been checked against your document — the question, explanation and checklist text itself is not verified.\n\nDocument: nda\\.txt\n\n## Questions to ask your lawyer\n\n- **AI-suggested question:** How can we negotiate the sole appointment of the arbitrator by Brightwater\\, and can we agree on a neutral arbitrator or an independent institution instead\\?\n  **Why it may matter (AI-generated, not verified):** The dispute resolution clause gives Brightwater the sole power to appoint the sole arbitrator in Mumbai\\, which heavily favours them if a conflict arises\\.\n  - _(obligation)_ **Quote verified against the document:** \"10\\.2 Any dispute arising out of or in connection with this Agreement shall be referred to arbitration by a sole arbitrator to be appointed by Brightwater\\, in accordance with the Arbitration and Conciliation Act\\, 1996\\. The seat and venue of arbitration shall be Mumbai\\, and the language of the arbitration shall be English\\.\"\n\n- **AI-suggested question:** Can we negotiate the liquidated damages amount of Rs\\. 50\\,00\\,000 per breach and limit our total liability\\, particularly regarding indirect and consequential losses\\?\n  **Why it may matter (AI-generated, not verified):** You face a massive fixed penalty per instance of breach as well as a broad indemnity covering indirect and lost profit damages\\, exposing your business to severe financial risk\\.\n  - _(penalty)_ **Quote verified against the document:** \"9\\.2 In the event of any breach of this Agreement by Pixelkraft or its Representatives\\, Pixelkraft shall pay to Brightwater liquidated damages of Rs\\. 50\\,00\\,000\\/\\- \\(Rupees Fifty Lakh only\\) for each instance of breach\\, which the Parties agree is a genuine pre\\-estimate of the loss likely to be suffered by Brightwater and not a penalty\\.\"\n  - _(penalty)_ **Quote verified against the document:** \"9\\.3 Pixelkraft shall indemnify and keep indemnified Brightwater\\, its Affiliates and their respective directors and employees against all losses\\, damages\\, costs \\(including legal fees\\)\\, claims and liabilities\\, including indirect and consequential losses and loss of profit\\, arising out of or in connection with any breach of this Agreement by Pixelkraft or its Representatives\\.\"\n\n- **AI-suggested question:** Should we narrow the one\\-year non\\-compete scope restricting services to competing online apparel and home furnishings retailers in India\\, or remove it entirely\\?\n  **Why it may matter (AI-generated, not verified):** The non\\-compete clause restricts you from working with competing online retailers in India for twelve months after the agreement ends\\, potentially harming your future business\\.\n  - _(penalty)_ **Quote verified against the document:** \"7\\.1 During the term of this Agreement and for a period of twelve \\(12\\) months after its expiry or termination\\, Pixelkraft shall not\\, directly or indirectly\\, provide design\\, user experience or technology services to any person engaged in the business of online retail of apparel\\, footwear or home furnishings in India that competes with Brightwater\\.\"\n\n- **AI-suggested question:** Can we add standard protective exclusions for independently developed information and legally mandated disclosures\\?\n  **Why it may matter (AI-generated, not verified):** The agreement currently lacks carve\\-outs for information you develop independently without using their data\\, and lacks protection if a court or regulator legally requires you to disclose information\\.\n  - _(missing\\_clause)_ Flagged as possibly missing — not checked against the document.\n  - _(missing\\_clause)_ Flagged as possibly missing — not checked against the document.\n\n- **AI-suggested question:** How can we protect our intellectual property given that Brightwater staff can retain and use \\'residuals\\' in their unaided memory\\?\n  **Why it may matter (AI-generated, not verified):** Brightwater carves out an exception to use ideas and know\\-how retained in their personnel\\'s memory\\, which may dilute your proprietary IP protection\\.\n  - _(ambiguity)_ **Quote verified against the document:** \"4\\.1 Notwithstanding anything contained in this Agreement\\, nothing shall restrict Brightwater or its Representatives from using\\, for any purpose\\, any Residuals\\. \\\"Residuals\\\" means ideas\\, concepts\\, know\\-how and techniques contained in the Confidential Information of Pixelkraft that are retained in the unaided memory of the personnel of Brightwater who had access to such Confidential Information\\.\"\n\n## Before you sign / before you meet your lawyer\n\n- **AI-suggested check:** Review your data processing workflows and internal protocols to ensure full compliance with the Digital Personal Data Protection Act\\, 2023\\.\n  - _(obligation)_ **Quote verified against the document:** \"3\\.6 Where the Confidential Information disclosed by Brightwater includes personal data of its customers\\, Pixelkraft shall process such personal data only for the Purpose\\, on the documented instructions of Brightwater\\, and in accordance with the Digital Personal Data Protection Act\\, 2023\\.\"\n\n- **AI-suggested check:** Set up an internal tracking mechanism to flag the 5\\-day deadline for returning or destroying confidential information and issuing a written certificate upon request or termination\\.\n  - _(deadline)_ **Quote verified against the document:** \"5\\.1 Within five \\(5\\) days of a written request from the Disclosing Party\\, and in any event upon the expiry or termination of this Agreement\\, the Receiving Party shall return or destroy all Confidential Information of the Disclosing Party in its possession or control\\, including all copies\\, notes and extracts\\, and an authorised officer of the Receiving Party shall certify such return or destruction in writing\\.\"\n\n- **AI-suggested check:** Prepare a list of your current and prospective clients in the online apparel\\, footwear\\, and home furnishings sectors to discuss potential non\\-compete conflicts with your lawyer\\.\n  - _(penalty)_ **Quote verified against the document:** \"7\\.1 During the term of this Agreement and for a period of twelve \\(12\\) months after its expiry or termination\\, Pixelkraft shall not\\, directly or indirectly\\, provide design\\, user experience or technology services to any person engaged in the business of online retail of apparel\\, footwear or home furnishings in India that competes with Brightwater\\.\"\n\n- **AI-suggested check:** Identify any current employee contacts with Brightwater to ensure your HR and hiring teams are aware of the 24\\-month non\\-solicit and hiring restriction\\.\n  - _(obligation)_ **Quote verified against the document:** \"7\\.2 During the term of this Agreement and for a period of twenty\\-four \\(24\\) months after its expiry or termination\\, neither Party shall solicit for employment or hire any employee of the other Party with whom it had contact in connection with the Purpose\\.\"\n\n- **AI-suggested check:** Compile a record of all internal business units and team members who will have access to Brightwater\\'s information\\, noting that confidentiality obligations apply in perpetuity\\.\n  - _(obligation)_ **Quote verified against the document:** \"1\\.1 \\\"Confidential Information\\\" means any and all information\\, in whatever form or medium\\, disclosed or made available by or on behalf of the Disclosing Party to the Receiving Party\\, whether before\\, on or after the Effective Date\\, and whether or not marked\\, designated or otherwise identified as confidential\\, including without limitation business plans\\, customer data\\, pricing\\, product roadmaps\\, source code\\, designs\\, wireframes\\, prototypes\\, know\\-how\\, and any information that the Receiving Party may learn or observe during visits to the premises of the Disclosing Party\\.\"\n  - _(obligation)_ **Quote verified against the document:** \"6\\.2 The confidentiality obligations of the Parties under this Agreement shall survive the expiry or termination of this Agreement and shall continue in perpetuity\\.\""
+    },
+    {
+      "fixture": "leave_and_license",
+      "op": {
+        "label": "prepare:leave_and_license",
+        "startedAt": "2026-09-23T12:55:27.839Z",
+        "durationMs": 45872,
+        "outcome": "ok",
+        "httpCallSeqs": [
+          4
+        ],
+        "modelUsed": "gemini-3.5-flash-lite"
+      },
+      "state": "complete",
+      "modelUsed": "gemini-3.5-flash-lite",
+      "promptVersion": "prepare-v3",
+      "lawyerQuestions": [
+        {
+          "question": "How can we legally challenge or modify the clause allowing the landlord to terminate the agreement on 15 days' notice while I am bound by an 8-month lock-in period?",
+          "whyItMatters": "The agreement binds you to an 8-month lock-in period with heavy financial penalties for leaving early, yet gives the landlord the right to terminate at any time on just 15 days' notice without assigning any reason.",
+          "findingIds": [
+            "01a0ce55-d922-7daf-b700-cdef87abdaf8",
+            "01a0ce55-d922-7daf-b700-cdf032c2f336",
+            "01a0ce55-d922-7daf-b700-cdf21547a416"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdef87abdaf8",
+              "category": "deadline",
+              "status": "verified",
+              "spanStart": 6913,
+              "spanEnd": 7158,
+              "spanText": "The Licensee agrees that the first eight (8) months of the License Period, that is, from 1st October, 2026 to 31st May, 2027, shall be a lock-in period during which the Licensee shall not terminate this Agreement or vacate the Licensed Premises."
+            },
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdf032c2f336",
+              "category": "penalty",
+              "status": "verified",
+              "spanStart": 7163,
+              "spanEnd": 7502,
+              "spanText": "If the Licensee terminates this Agreement or vacates the Licensed Premises for any reason before the expiry of the lock-in period, the Licensee shall be liable to pay to the Licensor the License Fee for the entire unexpired portion of the lock-in period, and the Licensor shall be entitled to recover such amount from the Security Deposit."
+            },
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdf21547a416",
+              "category": "deadline",
+              "status": "verified",
+              "spanStart": 7839,
+              "spanEnd": 8018,
+              "spanText": "The Licensor may terminate this Agreement at any time, including during the lock-in period, by giving the Licensee fifteen (15) days' written notice, without assigning any reason."
+            }
+          ]
+        },
+        {
+          "question": "Can we negotiate a specific timeline for returning the security deposit and add an interest penalty if the refund is delayed beyond that date?",
+          "whyItMatters": "The document states the security deposit will be refunded within a vague 'reasonable time' and completely lacks a provision specifying what happens if the landlord fails to return it on time.",
+          "findingIds": [
+            "01a0ce55-d922-7daf-b700-cdebe9b9791b",
+            "01a0ce55-d922-7daf-b700-cdfb7ebb5c3c"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdebe9b9791b",
+              "category": "ambiguity",
+              "status": "verified",
+              "spanStart": 5878,
+              "spanEnd": 6122,
+              "spanText": "The Security Deposit shall be refunded to the Licensee within a reasonable time after the Licensee has handed over vacant and peaceful possession of the Licensed Premises to the Licensor, subject to the deductions permitted under this Clause 5."
+            },
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdfb7ebb5c3c",
+              "category": "missing_clause",
+              "status": null,
+              "spanStart": null,
+              "spanEnd": null,
+              "spanText": null
+            }
+          ]
+        },
+        {
+          "question": "Is it standard practice for the tenant to bear all major and minor repair costs, including plumbing, electrical, and appliance replacements, and can we limit this responsibility?",
+          "whyItMatters": "You are taking on all repair costs for plumbing, electrical wiring, water seepage, and fixtures, which is unusual since major structural repairs are typically the landlord's duty in India.",
+          "findingIds": [
+            "01a0ce55-d922-7daf-b700-cdf586bfdd8c"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdf586bfdd8c",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 9384,
+              "spanEnd": 9668,
+              "spanText": "The Licensee shall, at her own cost, carry out all repairs to the Licensed Premises, whether minor or major, including repairs to plumbing, electrical wiring, water seepage and leakage, and the replacement of any fixture or appliance that ceases to function during the License Period."
+            }
+          ]
+        },
+        {
+          "question": "Can we remove or adjust the automatic deduction of one month's rent for repainting regardless of the property's condition?",
+          "whyItMatters": "The terms automatically forfeit one month's rent from your deposit for repainting even if you leave the walls spotless.",
+          "findingIds": [
+            "01a0ce55-d922-7daf-b700-cdedd227f457"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdedd227f457",
+              "category": "penalty",
+              "status": "verified",
+              "spanStart": 6431,
+              "spanEnd": 6723,
+              "spanText": "Notwithstanding anything contained in this Agreement, a sum equal to one (1) month's License Fee shall in all cases be retained by the Licensor from the Security Deposit towards repainting of the Licensed Premises, irrespective of the condition in which the Licensed Premises are handed back."
+            }
+          ]
+        },
+        {
+          "question": "How can we add a requirement for the landlord to provide advance notice before entering the premises?",
+          "whyItMatters": "The landlord is currently permitted to enter your home at any reasonable time with or without prior notice, which compromises your privacy.",
+          "findingIds": [
+            "01a0ce55-d922-7daf-b700-cdf9588e2d44"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdf9588e2d44",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 10819,
+              "spanEnd": 11101,
+              "spanText": "The Licensor, and any person authorised by him, shall be entitled to enter upon the Licensed Premises at all reasonable times, with or without prior notice to the Licensee, to inspect the condition of the Licensed Premises or to show the same to prospective licensees or purchasers."
+            }
+          ]
+        }
+      ],
+      "checklist": [
+        {
+          "item": "Arrange for Rs. 1,50,000 to be paid by bank transfer for the upfront security deposit upon signing.",
+          "findingIds": [
+            "01a0ce55-d922-7daf-b700-cdea03f2dd99"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdea03f2dd99",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 5435,
+              "spanEnd": 5703,
+              "spanText": "The Licensee has, on or before the execution of this Agreement, paid to the Licensor an interest-free refundable Security Deposit of Rs. 1,50,000/- (Rupees One Lakh Fifty Thousand only) by bank transfer, the receipt whereof the Licensor hereby admits and acknowledges."
+            }
+          ]
+        },
+        {
+          "item": "Budget for the monthly license fee of Rs. 32,000, society maintenance charges, special levies, repair funds, and non-occupancy charges.",
+          "findingIds": [
+            "01a0ce55-d922-7daf-b700-cde4e30222f0",
+            "01a0ce55-d922-7daf-b700-cde798e2650e"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce55-d922-7daf-b700-cde4e30222f0",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 4026,
+              "spanEnd": 4174,
+              "spanText": "The Licensee shall pay to the Licensor a monthly License Fee of Rs. 32,000/- (Rupees Thirty-Two Thousand only) for the use of the Licensed Premises."
+            },
+            {
+              "id": "01a0ce55-d922-7daf-b700-cde798e2650e",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 4707,
+              "spanEnd": 5017,
+              "spanText": "In addition to the License Fee, the Licensee shall bear and pay the monthly maintenance charges of the Society, together with all special levies, sinking fund contributions, repair fund contributions and non-occupancy charges levied by the Society in respect of the Licensed Premises during the License Period."
+            }
+          ]
+        },
+        {
+          "item": "Set up a reliable payment mechanism to ensure monthly rent reaches the landlord on or before the 5th day of each calendar month to avoid steep late fees and 24% annual interest.",
+          "findingIds": [
+            "01a0ce55-d922-7daf-b700-cde56bfc062e",
+            "01a0ce55-d922-7daf-b700-cde69ac342df"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce55-d922-7daf-b700-cde56bfc062e",
+              "category": "deadline",
+              "status": "verified",
+              "spanStart": 4179,
+              "spanEnd": 4349,
+              "spanText": "The License Fee shall be payable in advance on or before the 5th day of each English calendar month by bank transfer to the account designated by the Licensor in writing."
+            },
+            {
+              "id": "01a0ce55-d922-7daf-b700-cde69ac342df",
+              "category": "penalty",
+              "status": "verified",
+              "spanStart": 4354,
+              "spanEnd": 4702,
+              "spanText": "If any License Fee or other amount payable by the Licensee is not paid on its due date, the Licensee shall pay interest on the outstanding amount at the rate of twenty-four percent (24%) per annum from the due date until the date of actual payment, together with a late payment charge of Rs. 500/- (Rupees Five Hundred only) for every day of delay."
+            }
+          ]
+        },
+        {
+          "item": "Inspect the premises thoroughly before moving in to document existing damage, as the landlord has broad discretion to make deductions from your deposit.",
+          "findingIds": [
+            "01a0ce55-d922-7daf-b700-cdec25c292d4"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdec25c292d4",
+              "category": "penalty",
+              "status": "verified",
+              "spanStart": 6127,
+              "spanEnd": 6426,
+              "spanText": "The Licensor shall be entitled to deduct from the Security Deposit such amounts as the Licensor may, in his sole discretion, consider necessary towards unpaid dues, damage to the Licensed Premises or its contents, cleaning, and any other expenses incurred by the Licensor on account of the Licensee."
+            }
+          ]
+        },
+        {
+          "item": "Prepare to cover 100% of the stamp duty, registration charges, and incidental expenses for the agreement.",
+          "findingIds": [
+            "01a0ce55-d922-7daf-b700-cdfa2b822083"
+          ],
+          "findings": [
+            {
+              "id": "01a0ce55-d922-7daf-b700-cdfa2b822083",
+              "category": "obligation",
+              "status": "verified",
+              "spanStart": 11638,
+              "spanEnd": 11796,
+              "spanText": "The entire stamp duty and registration charges payable on this Agreement, and all incidental expenses thereof, shall be borne and paid solely by the Licensee."
+            }
+          ]
+        }
+      ],
+      "markdown": "# Prepare for your lawyer\n\n**This is not legal advice.** It is a plain-language summary to help you prepare for a conversation with a qualified lawyer about this document.\n\nThe questions and checklist below are AI-generated general information, not verified statements. Only the quoted passage under each one has been checked against your document — the question, explanation and checklist text itself is not verified.\n\nDocument: leave\\_and\\_license\\.txt\n\n## Questions to ask your lawyer\n\n- **AI-suggested question:** How can we legally challenge or modify the clause allowing the landlord to terminate the agreement on 15 days\\' notice while I am bound by an 8\\-month lock\\-in period\\?\n  **Why it may matter (AI-generated, not verified):** The agreement binds you to an 8\\-month lock\\-in period with heavy financial penalties for leaving early\\, yet gives the landlord the right to terminate at any time on just 15 days\\' notice without assigning any reason\\.\n  - _(deadline)_ **Quote verified against the document:** \"The Licensee agrees that the first eight \\(8\\) months of the License Period\\, that is\\, from 1st October\\, 2026 to 31st May\\, 2027\\, shall be a lock\\-in period during which the Licensee shall not terminate this Agreement or vacate the Licensed Premises\\.\"\n  - _(penalty)_ **Quote verified against the document:** \"If the Licensee terminates this Agreement or vacates the Licensed Premises for any reason before the expiry of the lock\\-in period\\, the Licensee shall be liable to pay to the Licensor the License Fee for the entire unexpired portion of the lock\\-in period\\, and the Licensor shall be entitled to recover such amount from the Security Deposit\\.\"\n  - _(deadline)_ **Quote verified against the document:** \"The Licensor may terminate this Agreement at any time\\, including during the lock\\-in period\\, by giving the Licensee fifteen \\(15\\) days\\' written notice\\, without assigning any reason\\.\"\n\n- **AI-suggested question:** Can we negotiate a specific timeline for returning the security deposit and add an interest penalty if the refund is delayed beyond that date\\?\n  **Why it may matter (AI-generated, not verified):** The document states the security deposit will be refunded within a vague \\'reasonable time\\' and completely lacks a provision specifying what happens if the landlord fails to return it on time\\.\n  - _(ambiguity)_ **Quote verified against the document:** \"The Security Deposit shall be refunded to the Licensee within a reasonable time after the Licensee has handed over vacant and peaceful possession of the Licensed Premises to the Licensor\\, subject to the deductions permitted under this Clause 5\\.\"\n  - _(missing\\_clause)_ Flagged as possibly missing — not checked against the document.\n\n- **AI-suggested question:** Is it standard practice for the tenant to bear all major and minor repair costs\\, including plumbing\\, electrical\\, and appliance replacements\\, and can we limit this responsibility\\?\n  **Why it may matter (AI-generated, not verified):** You are taking on all repair costs for plumbing\\, electrical wiring\\, water seepage\\, and fixtures\\, which is unusual since major structural repairs are typically the landlord\\'s duty in India\\.\n  - _(obligation)_ **Quote verified against the document:** \"The Licensee shall\\, at her own cost\\, carry out all repairs to the Licensed Premises\\, whether minor or major\\, including repairs to plumbing\\, electrical wiring\\, water seepage and leakage\\, and the replacement of any fixture or appliance that ceases to function during the License Period\\.\"\n\n- **AI-suggested question:** Can we remove or adjust the automatic deduction of one month\\'s rent for repainting regardless of the property\\'s condition\\?\n  **Why it may matter (AI-generated, not verified):** The terms automatically forfeit one month\\'s rent from your deposit for repainting even if you leave the walls spotless\\.\n  - _(penalty)_ **Quote verified against the document:** \"Notwithstanding anything contained in this Agreement\\, a sum equal to one \\(1\\) month\\'s License Fee shall in all cases be retained by the Licensor from the Security Deposit towards repainting of the Licensed Premises\\, irrespective of the condition in which the Licensed Premises are handed back\\.\"\n\n- **AI-suggested question:** How can we add a requirement for the landlord to provide advance notice before entering the premises\\?\n  **Why it may matter (AI-generated, not verified):** The landlord is currently permitted to enter your home at any reasonable time with or without prior notice\\, which compromises your privacy\\.\n  - _(obligation)_ **Quote verified against the document:** \"The Licensor\\, and any person authorised by him\\, shall be entitled to enter upon the Licensed Premises at all reasonable times\\, with or without prior notice to the Licensee\\, to inspect the condition of the Licensed Premises or to show the same to prospective licensees or purchasers\\.\"\n\n## Before you sign / before you meet your lawyer\n\n- **AI-suggested check:** Arrange for Rs\\. 1\\,50\\,000 to be paid by bank transfer for the upfront security deposit upon signing\\.\n  - _(obligation)_ **Quote verified against the document:** \"The Licensee has\\, on or before the execution of this Agreement\\, paid to the Licensor an interest\\-free refundable Security Deposit of Rs\\. 1\\,50\\,000\\/\\- \\(Rupees One Lakh Fifty Thousand only\\) by bank transfer\\, the receipt whereof the Licensor hereby admits and acknowledges\\.\"\n\n- **AI-suggested check:** Budget for the monthly license fee of Rs\\. 32\\,000\\, society maintenance charges\\, special levies\\, repair funds\\, and non\\-occupancy charges\\.\n  - _(obligation)_ **Quote verified against the document:** \"The Licensee shall pay to the Licensor a monthly License Fee of Rs\\. 32\\,000\\/\\- \\(Rupees Thirty\\-Two Thousand only\\) for the use of the Licensed Premises\\.\"\n  - _(obligation)_ **Quote verified against the document:** \"In addition to the License Fee\\, the Licensee shall bear and pay the monthly maintenance charges of the Society\\, together with all special levies\\, sinking fund contributions\\, repair fund contributions and non\\-occupancy charges levied by the Society in respect of the Licensed Premises during the License Period\\.\"\n\n- **AI-suggested check:** Set up a reliable payment mechanism to ensure monthly rent reaches the landlord on or before the 5th day of each calendar month to avoid steep late fees and 24\\% annual interest\\.\n  - _(deadline)_ **Quote verified against the document:** \"The License Fee shall be payable in advance on or before the 5th day of each English calendar month by bank transfer to the account designated by the Licensor in writing\\.\"\n  - _(penalty)_ **Quote verified against the document:** \"If any License Fee or other amount payable by the Licensee is not paid on its due date\\, the Licensee shall pay interest on the outstanding amount at the rate of twenty\\-four percent \\(24\\%\\) per annum from the due date until the date of actual payment\\, together with a late payment charge of Rs\\. 500\\/\\- \\(Rupees Five Hundred only\\) for every day of delay\\.\"\n\n- **AI-suggested check:** Inspect the premises thoroughly before moving in to document existing damage\\, as the landlord has broad discretion to make deductions from your deposit\\.\n  - _(penalty)_ **Quote verified against the document:** \"The Licensor shall be entitled to deduct from the Security Deposit such amounts as the Licensor may\\, in his sole discretion\\, consider necessary towards unpaid dues\\, damage to the Licensed Premises or its contents\\, cleaning\\, and any other expenses incurred by the Licensor on account of the Licensee\\.\"\n\n- **AI-suggested check:** Prepare to cover 100\\% of the stamp duty\\, registration charges\\, and incidental expenses for the agreement\\.\n  - _(obligation)_ **Quote verified against the document:** \"The entire stamp duty and registration charges payable on this Agreement\\, and all incidental expenses thereof\\, shall be borne and paid solely by the Licensee\\.\""
+    }
+  ],
+  "computed": {
+    "schemaCheck": {
+      "name": "Prepare response schema has no status/span field",
+      "pass": true,
+      "detail": "no status/verified/span key anywhere in the JSON schema"
+    },
+    "fixtures": [
+      {
+        "fixture": "nda",
+        "checks": [
+          {
+            "name": "typed state",
+            "pass": true,
+            "detail": "state=complete; expected one of complete/no_grounded_findings"
+          },
+          {
+            "name": "non-empty",
+            "pass": true,
+            "detail": "5 questions, 5 checklist items"
+          },
+          {
+            "name": "within caps",
+            "pass": true,
+            "detail": "≤8 questions, ≤10 items"
+          },
+          {
+            "name": "every item references real finding ids",
+            "pass": true,
+            "detail": "13 refs; unknown=0; items with none=0; ids≠refs=0"
+          },
+          {
+            "name": "every referenced finding is grounded (eligible)",
+            "pass": true,
+            "detail": "0 ineligible of 13"
+          },
+          {
+            "name": "statuses/spans are get()'s, not the model's",
+            "pass": true,
+            "detail": "0 mismatches of 13"
+          },
+          {
+            "name": "spanText is the canonical slice",
+            "pass": true,
+            "detail": "0 mismatches of 13"
+          },
+          {
+            "name": "markdown: not-legal-advice notice",
+            "pass": true,
+            "detail": ""
+          },
+          {
+            "name": "markdown: every model-written line has its AI prefix",
+            "pass": true,
+            "detail": "question lines 5/5, why lines 5/5, check lines 5/5"
+          },
+          {
+            "name": "markdown: no badge glyphs",
+            "pass": true,
+            "detail": ""
+          },
+          {
+            "name": "unquoted findings cited under the not-checked label, with no status",
+            "pass": true,
+            "detail": "2 unquoted refs (2 checklist gaps), 2 label lines"
+          },
+          {
+            "name": "no internal finding aliases (F1…) in AI-written text",
+            "pass": true,
+            "detail": "0/10 items leak an alias"
+          }
+        ]
+      },
+      {
+        "fixture": "leave_and_license",
+        "checks": [
+          {
+            "name": "typed state",
+            "pass": true,
+            "detail": "state=complete; expected one of complete/no_grounded_findings"
+          },
+          {
+            "name": "non-empty",
+            "pass": true,
+            "detail": "5 questions, 5 checklist items"
+          },
+          {
+            "name": "within caps",
+            "pass": true,
+            "detail": "≤8 questions, ≤10 items"
+          },
+          {
+            "name": "every item references real finding ids",
+            "pass": true,
+            "detail": "15 refs; unknown=0; items with none=0; ids≠refs=0"
+          },
+          {
+            "name": "every referenced finding is grounded (eligible)",
+            "pass": true,
+            "detail": "0 ineligible of 15"
+          },
+          {
+            "name": "statuses/spans are get()'s, not the model's",
+            "pass": true,
+            "detail": "0 mismatches of 15"
+          },
+          {
+            "name": "spanText is the canonical slice",
+            "pass": true,
+            "detail": "0 mismatches of 15"
+          },
+          {
+            "name": "markdown: not-legal-advice notice",
+            "pass": true,
+            "detail": ""
+          },
+          {
+            "name": "markdown: every model-written line has its AI prefix",
+            "pass": true,
+            "detail": "question lines 5/5, why lines 5/5, check lines 5/5"
+          },
+          {
+            "name": "markdown: no badge glyphs",
+            "pass": true,
+            "detail": ""
+          },
+          {
+            "name": "unquoted findings cited under the not-checked label, with no status",
+            "pass": true,
+            "detail": "1 unquoted refs (0 checklist gaps), 1 label lines"
+          },
+          {
+            "name": "no internal finding aliases (F1…) in AI-written text",
+            "pass": true,
+            "detail": "0/10 items leak an alias"
+          }
+        ]
+      }
+    ],
+    "concerns": [
+      "prepare/nda: answered by the fallback model gemini-3.5-flash-lite",
+      "prepare/leave_and_license: answered by the fallback model gemini-3.5-flash-lite"
+    ]
+  }
+}

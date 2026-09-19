@@ -1,0 +1,112 @@
+FREELANCE SERVICE AGREEMENT
+
+This Freelance Service Agreement (this "Agreement") is made at Mumbai on this 10th day of September, 2026 (the "Effective Date")
+
+BETWEEN
+
+Orchid Lane Foods Private Limited, a company incorporated under the Companies Act, 2013, having its registered office at Unit 12, Kamdhenu Industrial Estate, Off Link Road, Andheri (West), Mumbai, Maharashtra 400053 (hereinafter referred to as the "Client");
+
+AND
+
+Ms. Tanvi Rajesh Mehra, an individual carrying on an independent design practice under the name "Tanvi Mehra Design", residing at 27, Saket Nagar, Indore, Madhya Pradesh 452018 (hereinafter referred to as the "Freelancer").
+
+The Client and the Freelancer are hereinafter individually referred to as a "Party" and collectively as the "Parties".
+
+WHEREAS the Client is engaged in the business of manufacturing and selling packaged snacks and ready-to-cook foods under the brand "Orchid Lane", including directly to consumers through its website and mobile application; the Freelancer is an independent user experience and user interface designer and Webflow developer; and the Client wishes to engage the Freelancer to redesign its website and mobile application on the terms set out below.
+
+NOW, THEREFORE, the Parties agree as follows:
+
+1. DEFINITIONS
+1.1 "Deliverables" means the designs, files, code and other materials described in Schedule A that the Freelancer is required to deliver under this Agreement, including all drafts and intermediate versions of them.
+1.2 "Milestone" means each stage of the Services set out in Schedule A, and "Milestone Date" means the date by which the Deliverables for that Milestone are to be delivered.
+1.3 "Services" means the services described in the Scope of Work in Schedule A.
+1.4 "Fees" means the fees set out in Schedule B.
+
+2. ENGAGEMENT AND INDEPENDENT CONTRACTOR STATUS
+2.1 The Client engages the Freelancer to perform the Services and to deliver the Deliverables in accordance with this Agreement, and the Freelancer accepts the engagement.
+2.2 The Freelancer is an independent contractor. Nothing in this Agreement creates an employment, partnership, agency or joint venture relationship between the Parties, and the Freelancer shall not be entitled to any salary, provident fund, gratuity, leave or other benefit available to the employees of the Client.
+2.3 The Freelancer shall determine the manner, method and hours of performing the Services, and shall use her own equipment and software for the purpose.
+
+3. SCOPE OF WORK
+3.1 The Freelancer shall perform the Services and deliver the Deliverables described in Schedule A by the respective Milestone Dates.
+3.2 Any work outside the Scope of Work in Schedule A shall be undertaken only on the basis of a written change request agreed by both Parties, which shall record the additional fees and the revised timelines for such work.
+3.3 The Freelancer shall make such revisions to the Deliverables as the Client may request from time to time until the Client is satisfied with them, at no additional cost.
+
+4. CLIENT RESPONSIBILITIES
+4.1 The Client shall provide the Freelancer with its brand guidelines, content, product photographs, access credentials and other inputs reasonably required for the Services.
+4.2 The Client shall designate a single point of contact for giving approvals and feedback on the Deliverables.
+
+5. DELIVERY AND ACCEPTANCE
+5.1 The Freelancer shall deliver each Deliverable by the Milestone Date specified for it in Schedule A.
+5.2 A Deliverable shall be deemed to be accepted only when the Client confirms in writing that it is satisfactory to the Client in its sole discretion.
+5.3 If the Freelancer fails to deliver any Deliverable by its Milestone Date, the Client may deduct from the Fees an amount equal to two percent (2%) of the total Fees for each day of delay, without any upper limit, irrespective of the cause of the delay.
+
+6. FEES AND PAYMENT
+6.1 In consideration of the Services, the Client shall pay the Freelancer the Fees set out in Schedule B, which are exclusive of Goods and Services Tax.
+6.2 The Freelancer shall raise an invoice for each Milestone after the Client's written acceptance of the Deliverables for that Milestone, and the Client shall pay each undisputed invoice within sixty (60) days of receiving it.
+6.3 If the Client disputes any invoice or any part of it, the Client may withhold payment of the disputed amount until the dispute is resolved.
+6.4 The Client shall deduct tax at source from the Fees at the rate applicable under the income-tax law in force and shall issue the corresponding TDS certificate to the Freelancer.
+6.5 If the Freelancer is registered under the Goods and Services Tax laws, she shall issue a tax invoice charging GST at the applicable rate, and the Client shall pay such GST in addition to the Fees.
+6.6 The Fees are inclusive of all costs and expenses of the Freelancer, including the cost of stock images, fonts, plugins and software subscriptions, and the Client shall not reimburse any expense unless it has approved the expense in writing in advance.
+
+7. INTELLECTUAL PROPERTY
+7.1 All intellectual property rights in the Deliverables, including all drafts, concepts, sketches and work in progress, shall vest in the Client absolutely upon their creation, whether or not the Fees for them have been paid, and the Freelancer hereby assigns all such rights to the Client.
+7.2 The assignment under Clause 7.1 is worldwide, perpetual and irrevocable, and shall not lapse even if the Client does not exercise the assigned rights.
+7.3 The Freelancer waives all moral rights in the Deliverables to the extent permitted by law.
+7.4 The Freelancer confirms that the Deliverables will be her original work and will not infringe the rights of any third party, except for third-party materials disclosed to and approved by the Client in writing.
+
+8. CONFIDENTIALITY
+8.1 The Freelancer shall keep confidential all non-public information of the Client, including product recipes, supplier details, sales data and customer information, and shall use it only for performing the Services.
+8.2 The obligations in this Clause 8 shall survive for three (3) years after the termination or completion of this Agreement.
+8.3 On the completion or termination of this Agreement, the Freelancer shall delete all data of the Client and all access credentials in her possession, and shall confirm the deletion by email.
+8.4 The Freelancer shall not use any generative artificial intelligence tool to create any part of the Deliverables without the prior written consent of the Client.
+
+9. NON-COMPETE AND NON-SOLICITATION
+9.1 During the term of this Agreement and for a period of twelve (12) months after its termination or completion, the Freelancer shall not provide design or development services to any business engaged in the manufacture or sale of packaged foods, snacks or beverages in India.
+9.2 During the term of this Agreement and for twelve (12) months thereafter, the Freelancer shall not solicit any employee of the Client for employment or engagement.
+
+10. TERM AND TERMINATION
+10.1 This Agreement commences on the Effective Date and continues until the Client accepts the final Deliverables, unless it is terminated earlier.
+10.2 The Client may terminate this Agreement at any time, for any reason, by giving the Freelancer seven (7) days' written notice.
+10.3 Upon any termination by the Client, the Client shall pay only for Deliverables accepted in writing before the date of termination, and no payment shall be due for work in progress or for Deliverables not yet accepted.
+10.4 The Freelancer may terminate this Agreement only if the Client fails to pay an undisputed invoice for sixty (60) days after receiving a written reminder from the Freelancer.
+10.5 On termination for any reason, the Freelancer shall immediately deliver to the Client all Deliverables and work in progress in their then-current form.
+
+11. WARRANTIES, INDEMNITY AND LIABILITY
+11.1 The Freelancer shall perform the Services with reasonable skill and care and in a professional manner.
+11.2 The Freelancer shall indemnify and hold harmless the Client, its directors, employees and affiliates from and against all losses, damages, claims, costs and expenses, including indirect and consequential losses, loss of profit and legal fees, arising out of or in connection with the Services or any breach of this Agreement by the Freelancer, without any limit.
+11.3 The total aggregate liability of the Client under or in connection with this Agreement shall not exceed the Fees paid to the Freelancer in the one (1) month immediately preceding the claim.
+
+12. GOVERNING LAW AND DISPUTES
+12.1 This Agreement shall be governed by the laws of India.
+12.2 The Parties shall first attempt to resolve any dispute arising under this Agreement amicably through discussion within thirty (30) days, failing which the courts at Mumbai shall have exclusive jurisdiction.
+
+13. GENERAL
+13.1 Notices under this Agreement shall be sent by email to the email addresses notified by each Party in writing.
+13.2 This Agreement, together with its Schedules, constitutes the entire agreement between the Parties and may be amended only in writing signed by both Parties.
+13.3 The Freelancer shall not assign or subcontract any part of the Services without the prior written consent of the Client.
+13.4 If any provision of this Agreement is held to be invalid or unenforceable, the remaining provisions shall continue in full force and effect.
+
+SCHEDULE A - SCOPE OF WORK AND DELIVERABLES
+Milestone 1 - UX Audit and Wireframes: a written UX audit of the existing website and mobile application, and low-fidelity wireframes for up to thirty-four (34) screens. Milestone Date: 9th October, 2026.
+Milestone 2 - High-Fidelity UI Designs: high-fidelity designs in Figma for the approved wireframes, for both desktop and mobile. Milestone Date: 13th November, 2026.
+Milestone 3 - Design System: a component library and style guide covering typography, colours, icons, buttons, forms and product cards. Milestone Date: 4th December, 2026.
+Milestone 4 - Webflow Build: a responsive build of the marketing website on Webflow, integrated with the Client's existing online store. Milestone Date: 15th January, 2027.
+
+SCHEDULE B - FEES
+Milestone 1: Rs. 1,20,000/-
+Milestone 2: Rs. 1,60,000/-
+Milestone 3: Rs. 80,000/-
+Milestone 4: Rs. 1,20,000/-
+Total Fees: Rs. 4,80,000/- (Rupees Four Lakh Eighty Thousand only), exclusive of GST.
+
+IN WITNESS WHEREOF the Parties have signed this Agreement on the Effective Date.
+
+For Orchid Lane Foods Private Limited
+Signature: ______________________
+Name: Vikram Chandok
+Designation: Director
+
+Freelancer
+Signature: ______________________
+Name: Tanvi Rajesh Mehra

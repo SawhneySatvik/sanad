@@ -1,0 +1,140 @@
+{
+  "fixture": "leave_and_license",
+  "entries": [
+    {
+      "id": "LL-01",
+      "category": "obligation",
+      "required": true,
+      "description": "The licensee must pay the Society's special levies, sinking fund, repair fund and non-occupancy charges on top of monthly maintenance. These are normally the owner's liabilities as a member of the housing society.",
+      "anchor": "together with all special levies, sinking fund contributions, repair fund contributions and non-occupancy charges levied by the Society"
+    },
+    {
+      "id": "LL-02",
+      "category": "obligation",
+      "required": true,
+      "description": "Every repair, minor or major (plumbing, wiring, seepage, failed appliances), is put on the licensee at her own cost. Nothing in the agreement makes the licensor responsible for any repair.",
+      "anchor": "The Licensee shall, at her own cost, carry out all repairs to the Licensed Premises, whether minor or major, including repairs to plumbing, electrical wiring, water seepage and leakage, and the replacement of any fixture or appliance that ceases to function during the License Period."
+    },
+    {
+      "id": "LL-03",
+      "category": "obligation",
+      "required": false,
+      "description": "The licensee alone bears the entire stamp duty and registration cost. Lawful and common in Maharashtra practice (sometimes shared), so worth knowing but not required.",
+      "anchor": "The entire stamp duty and registration charges payable on this Agreement, and all incidental expenses thereof, shall be borne and paid solely by the Licensee."
+    },
+    {
+      "id": "LL-04",
+      "category": "obligation",
+      "required": true,
+      "description": "Guests may not stay more than three nights a month without the licensor's written consent. Unusually restrictive (a visiting parent for a week needs permission), and any breach can trigger immediate termination under 7.4.",
+      "anchor": "Guests of the Licensee shall not stay overnight in the Licensed Premises for more than three (3) nights in any calendar month without the prior written consent of the Licensor."
+    },
+    {
+      "id": "LL-05",
+      "category": "deadline",
+      "required": true,
+      "description": "The 8-month lock-in (1 Oct 2026 to 31 May 2027) binds only the licensee. The licensor can still end the agreement on 15 days' notice (7.3).",
+      "anchor": "The Licensee agrees that the first eight (8) months of the License Period, that is, from 1st October, 2026 to 31st May, 2027, shall be a lock-in period during which the Licensee shall not terminate this Agreement or vacate the Licensed Premises."
+    },
+    {
+      "id": "LL-06",
+      "category": "deadline",
+      "required": false,
+      "description": "After the lock-in, the licensee must give 30 days' prior written notice to terminate. A standard notice period, worth knowing but not a departure from practice, so not required.",
+      "anchor": "After the expiry of the lock-in period, the Licensee may terminate this Agreement by giving to the Licensor not less than thirty (30) days' prior written notice."
+    },
+    {
+      "id": "LL-07",
+      "category": "deadline",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "The licensor can terminate at any time, even during the licensee's lock-in, on only 15 days' notice and without giving a reason. The notice rights are asymmetric and one-sided.",
+      "anchor": "The Licensor may terminate this Agreement at any time, including during the lock-in period, by giving the Licensee fifteen (15) days' written notice, without assigning any reason."
+    },
+    {
+      "id": "LL-08",
+      "category": "deadline",
+      "required": false,
+      "description": "The monthly license fee is due in advance by the 5th of each month. A standard payment date (missing it triggers 4.3), so not required.",
+      "anchor": "The License Fee shall be payable in advance on or before the 5th day of each English calendar month by bank transfer to the account designated by the Licensor in writing."
+    },
+    {
+      "id": "LL-09",
+      "category": "penalty",
+      "required": true,
+      "description": "Leaving during the lock-in for any reason makes the licensee liable for the license fee for the whole unexpired lock-in, recoverable from the deposit.",
+      "anchor": "If the Licensee terminates this Agreement or vacates the Licensed Premises for any reason before the expiry of the lock-in period, the Licensee shall be liable to pay to the Licensor the License Fee for the entire unexpired portion of the lock-in period, and the Licensor shall be entitled to recover such amount from the Security Deposit."
+    },
+    {
+      "id": "LL-10",
+      "category": "penalty",
+      "required": true,
+      "description": "Late payment attracts 24% p.a. interest and also a flat Rs. 500 per day charge. These are two stacked, steep late-payment penalties.",
+      "anchor": "If any License Fee or other amount payable by the Licensee is not paid on its due date, the Licensee shall pay interest on the outstanding amount at the rate of twenty-four percent (24%) per annum from the due date until the date of actual payment, together with a late payment charge of Rs. 500/- (Rupees Five Hundred only) for every day of delay."
+    },
+    {
+      "id": "LL-11",
+      "category": "penalty",
+      "required": true,
+      "description": "Overstaying costs damages at three times the license fee per day. That is punitive: Section 24 of the Maharashtra Rent Control Act, 1999 itself sets overstay damages at double the license fee.",
+      "anchor": "If the Licensee fails to hand over vacant possession of the Licensed Premises on the expiry or earlier termination of this Agreement, the Licensee shall be liable to pay to the Licensor damages calculated at three (3) times the License Fee, on a per-day basis, for every day of such unauthorised occupation, without prejudice to the other rights and remedies of the Licensor."
+    },
+    {
+      "id": "LL-12",
+      "category": "penalty",
+      "required": true,
+      "description": "One month's license fee (Rs. 32,000) is kept from the deposit for repainting in every case, whatever condition the flat is returned in. This is an automatic forfeiture.",
+      "anchor": "Notwithstanding anything contained in this Agreement, a sum equal to one (1) month's License Fee shall in all cases be retained by the Licensor from the Security Deposit towards repainting of the Licensed Premises, irrespective of the condition in which the Licensed Premises are handed back."
+    },
+    {
+      "id": "LL-18",
+      "category": "penalty",
+      "altCategories": ["ambiguity"],
+      "required": true,
+      "description": "A breach of any term, however minor (for example one guest night too many under 10.3), lets the licensor terminate immediately by notice, with no chance to cure. The licensee has no equivalent right.",
+      "anchor": "If the Licensee commits a breach of any of the terms of this Agreement, including non-payment of the License Fee for two consecutive months, the Licensor shall be entitled to terminate this Agreement forthwith by written notice and to recover possession of the Licensed Premises in accordance with law."
+    },
+    {
+      "id": "LL-13",
+      "category": "ambiguity",
+      "altCategories": ["deadline"],
+      "required": true,
+      "description": "The deposit is refunded 'within a reasonable time' after handover. There is no fixed refund deadline and no consequence for a late refund.",
+      "anchor": "The Security Deposit shall be refunded to the Licensee within a reasonable time after the Licensee has handed over vacant and peaceful possession of the Licensed Premises to the Licensor, subject to the deductions permitted under this Clause 5."
+    },
+    {
+      "id": "LL-14",
+      "category": "ambiguity",
+      "altCategories": ["penalty"],
+      "required": true,
+      "description": "The licensor may deduct whatever he considers necessary 'in his sole discretion', including open-ended 'any other expenses'. The deductions are undefined and one-sided.",
+      "anchor": "The Licensor shall be entitled to deduct from the Security Deposit such amounts as the Licensor may, in his sole discretion, consider necessary towards unpaid dues, damage to the Licensed Premises or its contents, cleaning, and any other expenses incurred by the Licensor on account of the Licensee."
+    },
+    {
+      "id": "LL-15",
+      "category": "ambiguity",
+      "altCategories": ["obligation"],
+      "required": true,
+      "description": "The licensor, or anyone he authorises, may enter the flat 'with or without prior notice', including to show it to buyers or new licensees. This one-sided entry right is loosely bounded.",
+      "anchor": "The Licensor, and any person authorised by him, shall be entitled to enter upon the Licensed Premises at all reasonable times, with or without prior notice to the Licensee, to inspect the condition of the Licensed Premises or to show the same to prospective licensees or purchasers."
+    },
+    {
+      "id": "LL-16",
+      "category": "missing_clause",
+      "required": true,
+      "description": "The flat is let semi-furnished 'together with the furniture, fixtures, fittings and electrical appliances presently installed', and deductions are allowed for damage to its 'contents'. Yet there is no inventory or move-in condition list, so damage deductions cannot be checked against anything.",
+      "anchor": null,
+      "matchKeywords": ["inventory", "inventories", "inventory of fittings", "list of furniture", "list of the furniture", "list of fixtures", "list of the fixtures", "list of fittings", "itemised", "itemized", "checklist", "checklists", "condition report", "condition reports", "move-in condition", "move-in inspection", "condition at move-in", "record of the condition"],
+      "absentPhrases": ["inventory", "list of furniture", "list of fixtures", "checklist", "condition report"]
+    },
+    {
+      "id": "LL-17",
+      "category": "missing_clause",
+      "required": false,
+      "description": "There is no dispute-resolution or jurisdiction clause saying which court or forum hears disputes, for example over the deposit. The law fills the gap, so its absence does not expose the licensee; not required.",
+      "anchor": null,
+      "matchKeywords": ["jurisdiction", "jurisdictions", "dispute resolution", "dispute-resolution", "arbitration", "arbitrator", "governing law", "which court", "which courts"],
+      "absentPhrases": ["jurisdiction", "arbitration", "dispute"]
+    }
+  ]
+}
