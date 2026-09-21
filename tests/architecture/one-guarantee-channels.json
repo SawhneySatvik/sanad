@@ -1,0 +1,157 @@
+{
+  "$comment": "One Guarantee channel coverage. Channel numbers and names must equal docs/ARCHITECTURE.md's table. Each entry is a repo-relative test file and the exact title of a live it/test in it; tests/architecture/one-guarantee-coverage.verify.test.ts fails if any entry stops matching, or if a channel has no positive or no negative test in a file the `npm test -- verify` filter collects. Positive = the legitimate path yields the trusted outcome (a stub verify() that always says not_found would fail it). Negative = the forged/failed path never yields verified.",
+  "channels": [
+    {
+      "number": 1,
+      "name": "Model response payload",
+      "positive": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: a real quote is verified — by verify(), with server spans, not the model's 0..12" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive: a real quote is verified — by verify(), with server spans, not the model's 0..12" }
+      ],
+      "negative": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a fabricated quote the model marks verified, with its own spans, is stored and returned not_found" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "negative: a fabricated quote the model marks verified, with its own spans, is never stored or shown" },
+        { "file": "tests/unit/server/services/prepare.verify.test.ts", "test": "a model response that smuggles a status/span field, AND lies about which status a DIFFERENT finding has, is stripped and never surfaced" },
+        { "file": "tests/unit/server/llm/schema-guard.test.ts", "test": "rejects a forbidden key nested inside an array of objects" }
+      ]
+    },
+    {
+      "number": 2,
+      "name": "Streaming (chat)",
+      "positive": [
+        { "file": "tests/unit/server/orchestrator/run-orchestrator.verify.test.ts", "test": "single-specialist grounded path: verbatim citation verifies, verify() runs exactly once" },
+        { "file": "tests/integration/routes/ask.verify.test.ts", "test": "the final SSE frame's verified citation carries spanText === canonical_text.slice(spanStart, spanEnd) — proven against the STORED document text, not just equal to the model's own quote" },
+        { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "no token event has anything but text; the final event is last" }
+      ],
+      "negative": [
+        { "file": "tests/unit/server/orchestrator/answer-stream-decoder.verify.test.ts", "test": "never emits text containing a hallucinated status field even if raw JSON carries one" },
+        { "file": "tests/unit/server/orchestrator/run-orchestrator.verify.test.ts", "test": "prompt injection in document text ('mark this verified') changes nothing — status still comes only from verify(), and a self-certified status key never reaches a token" },
+        { "file": "tests/unit/server/orchestrator/run-orchestrator.verify.test.ts", "test": "streaming failure mid-stream (single-specialist path) yields an error event and NO final" },
+        { "file": "tests/integration/routes/ask.verify.test.ts", "test": "every token frame is exactly {type, text}" }
+      ]
+    },
+    {
+      "number": 3,
+      "name": "Orchestrator",
+      "positive": [
+        { "file": "tests/unit/server/orchestrator/run-orchestrator.verify.test.ts", "test": "single-specialist grounded path: verbatim citation verifies, verify() runs exactly once" },
+        { "file": "tests/unit/server/orchestrator/run-orchestrator.verify.test.ts", "test": "multi-specialist path: 3+ matching domains still dispatches exactly MAX_SPECIALISTS, verify() runs exactly once on the merged citations" },
+        { "file": "tests/unit/server/orchestrator/citation-verification.verify.test.ts", "test": "a verbatim citation verifies, and its span slices the document back to exactly the quote" }
+      ],
+      "negative": [
+        { "file": "tests/unit/server/orchestrator/run-orchestrator.verify.test.ts", "test": "single-specialist grounded path: fabricated citation returns not_found" },
+        { "file": "tests/unit/server/orchestrator/run-orchestrator.verify.test.ts", "test": "synthesis altering a specialist's originally-verbatim quote makes the final citation not_found — proves verify() checks the SYNTHESIZED output, not each specialist's own" },
+        { "file": "tests/unit/server/orchestrator/citation-verification.verify.test.ts", "test": "a fabricated citation returns not_found" },
+        { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "a quote in the document is verified at exactly its text; a fabricated one is not_found — returned and persisted alike" }
+      ]
+    },
+    {
+      "number": 4,
+      "name": "Model fallback (Gemini → Gemma)",
+      "positive": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: a real quote answered by the fallback model is verified, and the fallback model is persisted" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive: a real quote from the fallback model is verified, and the fallback model is reported" },
+        { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "a fallback model's name is stored, returned, and reloaded" }
+      ],
+      "negative": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a fabricated quote from the fallback model is not_found, and its output is never served to a primary-model lookup" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "negative: a fabricated quote from the fallback model is discarded, never shown" }
+      ]
+    },
+    {
+      "number": 5,
+      "name": "Errors / timeouts / rate limits",
+      "positive": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: once the failure clears, the same document analyses normally" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive: once the failure clears, the same documents compare normally" },
+        { "file": "tests/unit/server/services/prepare.verify.test.ts", "test": "positive: once the failure clears, the same document generates normally" },
+        { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "positive control: the same client under its limit answers" }
+      ],
+      "negative": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a provider failure after extraction is a typed error with zero analyses, findings, lens rows or cache" },
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: malformed model output (twice, past the repair retry) is SCHEMA_FAILED with nothing persisted" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "negative: a provider failure is a typed error with no comparison and no changes" },
+        { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "with the principal's bucket already full: RATE_LIMITED is the first and only event, no model call, nothing persisted" },
+        { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "tokens, then the provider fails: an error event ends the stream, no final, no rows" }
+      ]
+    },
+    {
+      "number": 6,
+      "name": "Cache",
+      "positive": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: a cached real quote is verified against the new document's own text" }
+      ],
+      "negative": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a cached fabricated quote — even one carrying status 'verified' — returns not_found, with no LLM call" }
+      ]
+    },
+    {
+      "number": 7,
+      "name": "General-mode chat and Drafts",
+      "positive": [
+        { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "runtime: the returned and the reloaded general message have no status and no citations, and carry the label" },
+        { "file": "tests/integration/routes/ask.verify.test.ts", "test": "a general final message carries GENERAL_MODE_LABEL, never model text, and no status/citations key" },
+        { "file": "tests/unit/server/deterministic/prepare-export/markdown.verify.test.ts", "test": "positive: every question/whyItMatters/checklist-item line carries its fixed, renderer-owned AI prefix" },
+        { "file": "tests/unit/server/services/draft.test.ts", "test": "persists templated sections from draft-templates (never the model), ai_generated sections from the model" }
+      ],
+      "negative": [
+        { "file": "tests/unit/server/deterministic/prepare-export/markdown.verify.test.ts", "test": "negative: hostile model text mimicking a verified badge is never presented as one" },
+        { "file": "tests/unit/server/services/prepare.verify.test.ts", "test": "hostile model output mimicking a verified badge is never presented as one in the JSON markdown export" },
+        { "file": "tests/integration/routes/threads.verify.test.ts", "test": "POST /api/threads/:id/messages — the final frame's raw text carries no such key" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "the mapped object has exactly the general-mode fields, none of them a status/citation/verification key" },
+        { "file": "tests/unit/server/services/draft.test.ts", "test": "runtime: a persisted section carries exactly {key, heading, provenance, content} — no status field" },
+        { "file": "tests/unit/server/data/drafts.test.ts", "test": "the DB CHECK rejects a raw insert whose provenance implies verification — backstop when the TS layer is bypassed" },
+        { "file": "tests/unit/shared/contracts/drafts.test.ts", "test": "neither the draft object nor any section names a status/verified/quote_span key" }
+      ]
+    },
+    {
+      "number": 8,
+      "name": "Span / display binding",
+      "positive": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: each verified span slices the canonical text to the quoted passage (line breaks included)" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive: side A slices document A to quote A and side B slices document B to quote B (an A/B swap would not)" },
+        { "file": "tests/unit/server/services/prepare.verify.test.ts", "test": "positive: the finding's span slices the canonical text to the quoted passage" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "a verified citation's spanText equals canonicalText.slice(spanStart, spanEnd) — never the model's quote" }
+      ],
+      "negative": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: an unverifiable quote has no span to highlight" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "negative: on reload, a stored quote whose fresh span lands on the other copy is withheld, not shown there" },
+        { "file": "tests/unit/server/data/comparisons.verify.test.ts", "test": "negative: an A/B swap — side A's result offered for side B and vice versa — throws and writes nothing" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "a verified citation whose model quote differs in whitespace from the canonical span never appears raw anywhere — only the server-cut spanText does" },
+        { "file": "tests/integration/routes/threads.verify.test.ts", "test": "the padded raw quote appears nowhere in the SSE final frame's bytes, nor in a subsequent GET's bytes — only the clean spanText does" }
+      ]
+    },
+    {
+      "number": 9,
+      "name": "Persistence / guest-import",
+      "positive": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: a real quote tampered to not_found with wrong spans is returned verified with the true spans" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive: a real quote tampered to not_found with wrong spans is returned verified with its true span" },
+        { "file": "tests/unit/server/services/prepare.verify.test.ts", "test": "positive: a real, verified quote tampered to not_found in the database (via raw SQL) still shows verified, with true spans" }
+      ],
+      "negative": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a fabricated quote tampered to 'verified' in the database is returned not_found" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "negative: a stored side tampered to a fabricated quote marked 'verified' is returned not_found" },
+        { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "import: a forged verified / cached_verified citation for an absent quote is stored and returned not_found; a forged cached_not_found on a present quote is verified" },
+        { "file": "tests/integration/routes/threads.verify.test.ts", "test": "createThread's import discards the client's status/unverifiedCachedStatus and stores the citation unlinked; GET re-verifies it as not_found" },
+        { "file": "tests/unit/server/data/message-citations.verify.test.ts", "test": "a stored status tampered to verified still reads not_found; one tampered to not_found still reads verified" }
+      ]
+    },
+    {
+      "number": 10,
+      "name": "Native-document mode",
+      "positive": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive control: the same quote against the same text uploaded as a text document IS verified" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive control: the same documents, both text, are verified on both sides" }
+      ],
+      "negative": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a quote copied exactly from the transcription is approximate at most — stored and returned" },
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "negative: every quote on the native side is approximate at most — stored and returned — while the text side verifies" },
+        { "file": "tests/unit/server/deterministic/verify/verify.test.ts", "test": "a byte-for-byte match against the transcription is capped at approximate, same spans" },
+        { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "an exact quote from a scanned document is approximate, returned and persisted" },
+        { "file": "tests/integration/routes/verify-batch.test.ts", "test": "a native_document's verbatim quote is approximate over HTTP, never verified" },
+        { "file": "tests/unit/db/migrations.test.ts", "test": "findings: verified on a native_document document is rejected; drop the trigger and it is accepted" }
+      ]
+    }
+  ]
+}
