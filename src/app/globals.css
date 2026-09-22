@@ -1,0 +1,205 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(0.985 0.006 70);
+  --foreground: oklch(0.24 0.012 55);
+  --card: oklch(0.97 0.008 70);
+  --card-foreground: oklch(0.24 0.012 55);
+  --popover: oklch(0.97 0.008 70);
+  --popover-foreground: oklch(0.24 0.012 55);
+
+  --primary: oklch(0.5 0.11 220); /* the one brand accent */
+  --primary-foreground: oklch(0.99 0.004 220);
+  --primary-hover: oklch(0.44 0.115 220);
+
+  --secondary: oklch(0.97 0.008 70);
+  --secondary-foreground: oklch(0.24 0.012 55);
+  --muted: oklch(0.97 0.008 70);
+  --muted-foreground: oklch(0.46 0.014 55);
+  --muted-faint: oklch(0.62 0.012 55); /* large-text/graphics only — too low-contrast for body copy or a badge label */
+
+  /* shadcn's OWN "accent" slot: a neutral hover/selected wash for menu items etc. NOT the brand
+     accent above — a generated component's className confusing the two (bg-accent where bg-primary
+     was meant) silently produces a gray hover instead of the teal brand color, not a build error. */
+  --accent: oklch(0.94 0.008 70);
+  --accent-foreground: oklch(0.24 0.012 55);
+
+  --destructive: oklch(0.5 0.16 25);
+  --destructive-foreground: oklch(0.99 0.004 25);
+  --destructive-surface: oklch(0.95 0.03 25);
+
+  --border: oklch(0.88 0.01 60);
+  --input: oklch(0.635 0.018 55);
+  --ring: oklch(0.5 0.11 220); /* focus ring = the brand accent */
+
+  --verified: oklch(0.44 0.1 152);
+  --verified-surface: oklch(0.95 0.035 152);
+  --approximate: oklch(0.47 0.1 75);
+  --approximate-surface: oklch(0.95 0.04 80);
+  --not-found: oklch(0.4 0.02 55);
+  --not-found-surface: oklch(0.93 0.008 60);
+
+  --mark: oklch(0.93 0.05 90);
+  --mark-pulse: oklch(0.87 0.075 90);
+  --mark-underline: oklch(0.55 0.11 85); /* the wash alone fails 3:1 — this is the real cue */
+  --selection: oklch(0.86 0.03 220);
+
+  /* Not part of the base palette: the generated src/components/ui/sidebar.tsx and the
+     font-heading utility on card/dialog/sheet titles reference these names. Mapped onto this
+     system's own equivalents rather than left undefined, which would silently drop the sidebar to
+     an unstyled wash and every dialog/card heading to the body sans. */
+  --sidebar: var(--card); /* the sidebar shares its surface with card/popover — one elevated wash, not a fourth */
+  --sidebar-foreground: var(--foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+.dark {
+  --background: oklch(0.19 0.008 55);
+  --foreground: oklch(0.93 0.006 70);
+  --card: oklch(0.23 0.009 55);
+  --card-foreground: oklch(0.93 0.006 70);
+  --popover: oklch(0.23 0.009 55);
+  --popover-foreground: oklch(0.93 0.006 70);
+
+  --primary: oklch(0.72 0.1 220);
+  --primary-foreground: oklch(0.16 0.012 220);
+  --primary-hover: oklch(0.78 0.095 220);
+
+  --secondary: oklch(0.23 0.009 55);
+  --secondary-foreground: oklch(0.93 0.006 70);
+  --muted: oklch(0.23 0.009 55);
+  --muted-foreground: oklch(0.74 0.012 60);
+  --muted-faint: oklch(0.56 0.012 60);
+
+  --accent: oklch(0.27 0.01 55);
+  --accent-foreground: oklch(0.93 0.006 70);
+
+  --destructive: oklch(0.72 0.14 25);
+  --destructive-foreground: oklch(0.16 0.012 25);
+  --destructive-surface: oklch(0.28 0.05 25);
+
+  --border: oklch(0.32 0.012 55);
+  --input: oklch(0.5 0.016 55);
+  --ring: oklch(0.72 0.1 220);
+
+  --verified: oklch(0.75 0.11 152);
+  --verified-surface: oklch(0.27 0.035 152);
+  --approximate: oklch(0.78 0.1 80);
+  --approximate-surface: oklch(0.28 0.03 80);
+  --not-found: oklch(0.78 0.01 60);
+  --not-found-surface: oklch(0.27 0.008 60);
+
+  --mark: oklch(0.34 0.05 90);
+  --mark-pulse: oklch(0.42 0.07 90);
+  --mark-underline: oklch(0.72 0.13 85);
+  --selection: oklch(0.34 0.045 220);
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted-faint: var(--muted-faint);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-surface: var(--destructive-surface);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-verified: var(--verified);
+  --color-verified-surface: var(--verified-surface);
+  --color-approximate: var(--approximate);
+  --color-approximate-surface: var(--approximate-surface);
+  --color-not-found: var(--not-found);
+  --color-not-found-surface: var(--not-found-surface);
+  --color-mark: var(--mark);
+  --color-mark-pulse: var(--mark-pulse);
+  --color-mark-underline: var(--mark-underline);
+  --color-selection: var(--selection);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Every var() below names a custom property only a route's own font loader defines (by putting
+     that face's `variable` class on an ancestor element) — until a layout actually imports and
+     applies one, the name is undefined anywhere in the cascade. A var() to an undefined custom
+     property with no fallback makes the *whole* font-family declaration invalid at computed-value
+     time (not "skip to the next named font," which is how a font-family list normally degrades) —
+     every one of these four stacks needs its own generic fallback, or the entire app silently
+     renders in the browser's default serif the moment any of these utilities is used before its
+     font loader is wired in. */
+  --font-display: var(--font-source-serif, serif), var(--font-devanagari, sans-serif), serif;
+  --font-sans: var(--font-plex-sans, sans-serif), var(--font-devanagari, sans-serif), ui-sans-serif, sans-serif;
+  --font-reading: var(--font-literata, serif), var(--font-devanagari, sans-serif), serif;
+  --font-mono: var(--font-plex-mono, monospace), ui-monospace, monospace;
+  /* card/dialog/sheet titles set font-heading (shadcn's own generated output) — the display serif
+     is this system's heading voice, so that utility resolves to it rather than the body sans.
+     Written as the same literal stack, not var(--font-display): one fewer layer of custom-property
+     nesting to keep valid end to end. */
+  --font-heading: var(--font-source-serif, serif), var(--font-devanagari, sans-serif), serif;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  /* @theme inline resolves a --color-* name only inside a Tailwind-generated utility class, at
+     build time — it never emits --color-* itself as a standalone runtime custom property, so a
+     plain CSS rule like this one has to reference the raw token (--selection, --foreground)
+     directly, or it names an undefined property (confirmed against a real production build's own
+     output, not assumed). */
+  ::selection {
+    background: var(--selection);
+    color: var(--foreground);
+  }
+  /* :focus-visible only — never bare :focus, so a mouse click never paints a ring a keyboard
+     user needs. This is the default a bare focusable element gets (a plain link, anything that
+     adds no focus treatment of its own). Most src/components/ui primitives set their own
+     outline-none alongside a focus-visible:ring-* utility, replacing this outline outright rather
+     than stacking with it — a few (badge; tabs' trigger, which sets its own outline-1/outline-ring
+     instead) don't, so this default can still apply for those. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}

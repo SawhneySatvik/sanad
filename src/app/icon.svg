@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The mark: a highlight bar with locating brackets just beyond each end — "the exact words,
+     located" — never a checkmark, badge or document shape, which would read as a second,
+     unaudited verified mark next to the real one. Colours are the fixed brand values, not CSS
+     custom properties: a favicon renders in browser/OS chrome outside the app's own stylesheet and
+     stays the same regardless of the active in-app theme. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#241E1A" />
+  <rect x="116" y="228" width="280" height="56" rx="28" fill="#FDF9F6" />
+  <path d="M86 246 V206 H122" fill="none" stroke="#006F87" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M390 306 H426 V266" fill="none" stroke="#006F87" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

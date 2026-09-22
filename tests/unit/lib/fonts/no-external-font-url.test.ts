@@ -1,0 +1,90 @@
+/**
+ * Every face is self-hosted via next/font/google — the loader downloads once at build time and
+ * serves every font file from /_next/static/media/, never a live
+ * fonts.googleapis.com/fonts.gstatic.com request from the browser. Two halves:
+ *
+ * 1. A static source scan (this file's main describe block): no literal reference to either host
+ *    anywhere in src/, and the root layout never imports a fonts module itself (each route group
+ *    scopes its own preload list instead). This runs on every `npm test`, with no build required,
+ *    and is red-proven below.
+ * 2. A `.next` build-output scan, run only when a production build's CSS is present. Neither
+ *    (marketing)/fonts.ts nor (app)/fonts.ts is imported by any route yet, so today there is no
+ *    @font-face rule in any build output to check at all; this half stays a no-op until a route
+ *    group actually consumes one of them, and is not what this gate's red-proof rests on. Scans
+ *    the whole of .next/static, not a fixed css/ subfolder — Turbopack places generated CSS under
+ *    static/chunks/ alongside JS, confirmed by inspecting a real build's own output tree rather
+ *    than assumed from convention.
+ */
+
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+
+const FORBIDDEN_HOST = /fonts\.(googleapis|gstatic)\.com/;
+const SOURCE_FILE = /\.(ts|tsx|css)$/;
+
+interface SourceFile {
+  file: string;
+  source: string;
+}
+
+function scanForExternalFontUrls(files: SourceFile[]): string[] {
+  return files.filter((f) => FORBIDDEN_HOST.test(f.source)).map((f) => f.file);
+}
+
+function srcFiles(): SourceFile[] {
+  const root = process.cwd();
+  return readdirSync(path.join(root, "src"), { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile() && SOURCE_FILE.test(entry.name))
+    .map((entry) => path.relative(root, path.join(entry.parentPath, entry.name)).split(path.sep).join("/"))
+    .map((file) => ({ file, source: readFileSync(path.join(root, file), "utf8") }));
+}
+
+describe("no external font URL anywhere in src/", () => {
+  it("scans the whole of src/ (positive control)", () => {
+    const files = srcFiles().map((f) => f.file);
+    expect(files).toEqual(expect.arrayContaining(["src/app/globals.css", "src/app/(app)/fonts.ts", "src/app/(marketing)/fonts.ts"]));
+    expect(files.length).toBeGreaterThan(50);
+  });
+
+  it("finds no fonts.googleapis.com or fonts.gstatic.com reference anywhere in src/", () => {
+    expect(scanForExternalFontUrls(srcFiles())).toEqual([]);
+  });
+
+  it("the root layout never imports a fonts module — each route group scopes its own preload list", () => {
+    const layout = readFileSync(path.join(process.cwd(), "src/app/layout.tsx"), "utf8");
+    expect(layout).not.toMatch(/["'][^"']*fonts["']/);
+  });
+});
+
+describe("red-proof: scanForExternalFontUrls", () => {
+  it("flags a planted external font URL", () => {
+    const planted = [{ file: "src/app/fake.ts", source: 'const href = "https://fonts.googleapis.com/css2?family=Foo";' }];
+    expect(scanForExternalFontUrls(planted)).toEqual(["src/app/fake.ts"]);
+  });
+
+  it("does not flag a clean file", () => {
+    expect(scanForExternalFontUrls([{ file: "src/app/fake.ts", source: "export const x = 1;" }])).toEqual([]);
+  });
+});
+
+describe(".next build-output font-face check (best-effort; a no-op until a route group consumes the fonts modules)", () => {
+  it("every @font-face src in any built CSS is self-hosted under /_next/static/media/, when build output exists", () => {
+    const staticDir = path.join(process.cwd(), ".next/static");
+    if (!existsSync(staticDir)) return; // no production build has run in this session — nothing to check yet
+
+    const cssFiles = readdirSync(staticDir, { recursive: true, withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".css"))
+      .map((entry) => readFileSync(path.join(entry.parentPath, entry.name), "utf8"));
+
+    const externalFontFaceUrls: string[] = [];
+    for (const css of cssFiles) {
+      for (const block of css.matchAll(/@font-face\s*{[^}]*}/g)) {
+        for (const url of block[0].matchAll(/url\(([^)]+)\)/g)) {
+          if (!url[1].includes("/_next/static/media/")) externalFontFaceUrls.push(url[1]);
+        }
+      }
+    }
+    expect(externalFontFaceUrls).toEqual([]);
+  });
+});
