@@ -61,12 +61,12 @@ describe("renderPrepareMarkdown — citations render exactly the given verificat
 describe("renderPrepareMarkdown — the perspective header", () => {
   it("names the reader's role and stage when a lens is given", () => {
     const md = renderPrepareMarkdown({ lawyerQuestions: [], checklist: [] }, { filename: "lease.pdf", lens: { role: "tenant", stage: "already_signed" } });
-    expect(md).toContain("Prepared for: tenant, already signed");
+    expect(md).toContain("Prepared for: Tenant, already signed");
   });
 
   it("about-to-sign renders with a space, not the underscore in the stage id", () => {
     const md = renderPrepareMarkdown({ lawyerQuestions: [], checklist: [] }, { filename: "lease.pdf", lens: { role: "tenant", stage: "about_to_sign" } });
-    expect(md).toContain("Prepared for: tenant, about to sign");
+    expect(md).toContain("Prepared for: Tenant, before signing");
   });
 
   it("omits the line entirely when no lens is given", () => {

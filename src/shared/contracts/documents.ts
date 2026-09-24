@@ -9,7 +9,7 @@
  */
 
 import { z } from "zod";
-import { DOCUMENT_CATEGORIES, INPUT_MODES } from "@/server/core/types";
+import { DOCUMENT_CATEGORIES, INPUT_MODES } from "./vocabulary";
 import { IsoDateTime, VerificationOutput } from "./common";
 
 /** POST /api/documents' request body: the confirmed upload ref to analyze. */
@@ -24,10 +24,14 @@ export const AnalyzeDocumentInput = z.strictObject({
 export type AnalyzeDocumentInput = z.infer<typeof AnalyzeDocumentInput>;
 
 // Deliberately absent: owner columns, storageRef (server-internal; the client already holds the ref
-// it uploaded with), canonical text and its hash.
+// it uploaded with), canonical text and its hash. The one exception is DocumentTextOutput
+// (document-text.ts), a separate output type for GET /api/documents/:id/text that does carry
+// canonical text and its hash by design.
 /** A document's wire shape, never its canonical text. */
 export const DocumentOutput = z.object({
   id: z.guid(),
+  title: z.string(),
+  sampleId: z.string().nullable(),
   projectId: z.guid().nullable(),
   filename: z.string(),
   mimeType: z.string(),

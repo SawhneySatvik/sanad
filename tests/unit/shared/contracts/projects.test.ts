@@ -62,6 +62,7 @@ describe("project payloads carry no canonical text, storage ref, draft content o
       documents: [
         {
           id: "bbbbbbbb-0000-4000-8000-000000000001",
+          title: "f.txt",
           filename: "f.txt",
           mimeType: "text/plain",
           inputMode: "text",
@@ -80,6 +81,7 @@ describe("project payloads carry no canonical text, storage ref, draft content o
       comparisons: [
         {
           id: "cccccccc-0000-4000-8000-000000000001",
+          title: "f.txt vs other.txt",
           documentAId: "bbbbbbbb-0000-4000-8000-000000000001",
           documentBId: "bbbbbbbb-0000-4000-8000-000000000003",
           modelUsed: "gemini-test",
@@ -92,6 +94,7 @@ describe("project payloads carry no canonical text, storage ref, draft content o
       drafts: [
         {
           id: "dddddddd-0000-4000-8000-000000000001",
+          title: "Generic draft",
           documentType: "generic",
           mode: "from_scratch",
           groundingDocumentId: null,

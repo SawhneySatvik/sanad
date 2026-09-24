@@ -7,6 +7,7 @@ const section = { key: "parties_and_purpose", heading: "Parties and Purpose", pr
 
 const draft = {
   id: "0a0a0a0a-0000-4000-8000-00000000000a",
+  title: "NDA draft",
   documentType: "nda",
   mode: "from_scratch",
   groundingDocumentId: null,

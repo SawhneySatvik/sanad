@@ -9,6 +9,7 @@
 
 import { z } from "zod";
 import { IsoDateTime, VerificationOutput } from "./common";
+import { INPUT_MODES } from "./vocabulary";
 
 // ---- caps (mirror src/server/services/ask.ts's own exported constants) ----
 /** Max characters in one query. */
@@ -120,10 +121,13 @@ export type CreateThreadInput = z.infer<typeof CreateThreadInput>;
  * A citation the way every route shows one: the document it named, plus the shared
  * VerificationOutput — never a raw VerifyResult, never spanText built here, and no top-level
  * `quote`/model-text field. The model's claim is reachable only through `verification.claimedQuote`.
+ * `inputMode` is null when the citation is unlinked (no source document to report a mode for) — a
+ * scanned source shows ScannedNotice in chat the same as everywhere else it appears.
  */
 export const AskCitationOutput = z.object({
   id: z.guid().nullable(),
   sourceDocumentId: z.guid().nullable(),
+  inputMode: z.enum(INPUT_MODES).nullable(),
   verification: VerificationOutput,
 });
 export type AskCitationOutput = z.infer<typeof AskCitationOutput>;

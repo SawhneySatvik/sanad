@@ -8,7 +8,7 @@
  */
 
 import { z } from "zod";
-import { INPUT_MODES } from "@/server/core/types";
+import { INPUT_MODES } from "./vocabulary";
 import { IsoDateTime } from "./common";
 
 /** POST /api/projects' request body. */
@@ -42,6 +42,7 @@ export type ProjectsListOutput = z.infer<typeof ProjectsListOutput>;
  */
 export const ProjectDocumentSummaryOutput = z.object({
   id: z.guid(),
+  title: z.string(),
   filename: z.string(),
   mimeType: z.string(),
   inputMode: z.enum(INPUT_MODES).nullable(),
@@ -55,6 +56,7 @@ export type ProjectDocumentSummaryOutput = z.infer<typeof ProjectDocumentSummary
 /** A comparison handle for a project's sidebar. */
 export const ProjectComparisonSummaryOutput = z.object({
   id: z.guid(),
+  title: z.string(),
   documentAId: z.guid(),
   documentBId: z.guid(),
   modelUsed: z.string(),
@@ -66,6 +68,7 @@ export type ProjectComparisonSummaryOutput = z.infer<typeof ProjectComparisonSum
 /** A draft handle for a project's sidebar; no `content` — read through GET /api/drafts/:id. */
 export const ProjectDraftSummaryOutput = z.object({
   id: z.guid(),
+  title: z.string(),
   documentType: z.string(),
   mode: z.enum(["from_scratch", "document_grounded"]),
   groundingDocumentId: z.guid().nullable(),

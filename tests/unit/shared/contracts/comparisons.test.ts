@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { ComparisonOutput, ComparisonWithChangesOutput, CreateComparisonInput } from "@/shared/contracts/comparisons";
 
-const verified = { status: "verified", spanStart: 4, spanEnd: 8, spanText: "rent", verifierVersion: "2.0.0" };
+const verified = { status: "verified", spanStart: 4, spanEnd: 8, spanText: "rent", verifierVersion: "2.0.0", textHash: "h" };
 
 const comparison = {
   id: "0a0a0a0a-0000-4000-8000-00000000000a",
+  title: "Lease A vs Lease B",
+  titleA: "Lease A",
+  titleB: "Lease B",
   documentAId: "0b0b0b0b-0000-4000-8000-00000000000b",
   documentBId: "0c0c0c0c-0000-4000-8000-00000000000c",
   modelUsed: "gemini-2.5-flash",
@@ -114,15 +117,11 @@ describe("ComparisonWithChangesOutput / ComparisonOutput — one shape for both 
     ]);
   });
 
-  // explanationProvenance labels whether `explanation` is model text or compare.ts's fixed fallback
-  // string. It is derived once from the comparison's own modelUsed, not per change, so every change
-  // in a comparison carries the same provenance even though only a per-candidate value would be exact.
-  it("explanationProvenance is templated only when modelUsed is the 'none' sentinel (no model call at all)", () => {
-    expect(ComparisonWithChangesOutput.safeParse({ ...comparison, modelUsed: "none", changes: [] }).success).toBe(true);
+  it("explanationProvenance belongs to each change, including a templated fallback after a model call", () => {
     expect(
       ComparisonWithChangesOutput.safeParse({
         ...comparison,
-        changes: [{ ...comparison.changes[0], explanationProvenance: "templated" }],
+        changes: [comparison.changes[0], { ...comparison.changes[0], id: "0e0e0e0e-0000-4000-8000-00000000000e", explanationProvenance: "templated" }],
       }).success,
     ).toBe(true);
     expect(

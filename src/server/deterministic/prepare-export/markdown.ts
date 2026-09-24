@@ -8,6 +8,9 @@
  */
 
 import type { DocumentCategory, VerificationStatus } from "@/server/core/types";
+import { sanitizeModelText } from "@/server/deterministic/sanitize/model-text";
+import { lensLabelParts } from "@/shared/lens-labels";
+import { LEGAL_ADVICE_COPY } from "@/shared/copy/legal-advice";
 
 /**
  * The only per-finding shape this module sees for a citation — never a VerifyResult. `spanText`
@@ -57,9 +60,6 @@ export interface PrepareMarkdownDocument {
   // only by a caller with no lens at all (a hand-built export in a test).
   lens?: { role: string; stage: string };
 }
-
-const NOT_LEGAL_ADVICE_NOTICE =
-  "**This is not legal advice.** It is a plain-language summary to help you prepare for a conversation with a qualified lawyer about this document.";
 
 // A top-of-document notice only — the per-line prefixes below are what actually stops a per-item forgery.
 const AI_GENERATED_NOTICE =
@@ -117,19 +117,6 @@ const ESCAPABLE = new Set([
   "\\",
 ]);
 
-// Checkmark/badge glyphs a model could prepend to mimic a verified look — outside CommonMark's
-// escapable ASCII set, so escapeMarkdown alone leaves them passing through untouched. Stripped
-// rather than escaped: there's no meaningful "escaped" rendering of an emoji in Markdown. Built from
-// code points: white heavy check, check, heavy check, ballot box with check, light check, ballot box
-// with bold check, square root, squared OK, Aegean check, and the emoji presentation selector that
-// follows some of them.
-const BADGE_GLYPHS = new RegExp(
-  `[${[0x2705, 0x2713, 0x2714, 0x2611, 0x1f5f8, 0x1f5f9, 0x221a, 0x1f197, 0x10102, 0xfe0f]
-    .map((codePoint) => String.fromCodePoint(codePoint))
-    .join("")}]`,
-  "gu",
-);
-
 /** Backslash-escapes CommonMark's escapable ASCII punctuation in `text`. */
 export function escapeMarkdown(text: string): string {
   let out = "";
@@ -141,7 +128,7 @@ export function escapeMarkdown(text: string): string {
 // before escaping: a blank line inside model text would otherwise end the current Markdown list item
 // early and leave a dangling `**`/`_`.
 function inline(text: string): string {
-  return escapeMarkdown(text.replace(BADGE_GLYPHS, "").replace(/\s+/g, " ").trim());
+  return escapeMarkdown(sanitizeModelText(text).replace(/\s+/g, " ").trim());
 }
 
 // A span is the document's own text under a verification label, so it is escaped and never
@@ -178,12 +165,9 @@ function renderChecklistItem(item: PrepareChecklistItem): string {
   return [`- **${AI_CHECK_PREFIX}** ${inline(item.item)}`, ...item.findings.map((ref) => renderCitation(ref))].join("\n");
 }
 
-// "about_to_sign" -> "about to sign", "already_signed" -> "already signed" — every LensStage id is
-// its words joined with "_", so this never needs its own copy of the stage list to stay in sync.
-// role and stage are escaped separately, same as renderCitation's category: the fixed ", " between
-// them is never model/document text, so it stays a literal comma rather than a backslash-escaped one.
 function preparedForLine(lens: { role: string; stage: string }): string {
-  return `Prepared for: ${inline(lens.role)}, ${inline(lens.stage.replace(/_/g, " "))}`;
+  const { role, stage } = lensLabelParts(lens);
+  return `Prepared for: ${escapeMarkdown(role)}, ${escapeMarkdown(stage)}`;
 }
 
 /** Renders a Prepare output as the full Markdown document shown/exported to the user. */
@@ -200,7 +184,7 @@ export function renderPrepareMarkdown(output: PrepareMarkdownOutput, document: P
   return [
     "# Prepare for your lawyer",
     "",
-    NOT_LEGAL_ADVICE_NOTICE,
+    `**${LEGAL_ADVICE_COPY.prepareLead}** ${LEGAL_ADVICE_COPY.prepareDetail}`,
     "",
     AI_GENERATED_NOTICE,
     "",

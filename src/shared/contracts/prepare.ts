@@ -8,19 +8,19 @@
  */
 
 import { z } from "zod";
-import { DOCUMENT_CATEGORIES } from "@/server/core/types";
-import { LENS_STAGES, LENSES_BY_DOCUMENT_TYPE } from "@/server/prompts/understand/lenses";
+import { DOCUMENT_CATEGORIES } from "./vocabulary";
+import { LENS_STAGES, LENS_IDS_BY_DOCUMENT_TYPE } from "@/shared/lens-labels";
 
 // Every lens id across every document type — a request naming an id from this set is at least a
 // real lens somewhere; services/prepare.ts still checks it against the specific document's own type
 // after the ownership check, so a lens of the wrong type for a foreign document never distinguishes
 // itself from a foreign document with no lens at all (both come back 404).
-const ALL_LENS_IDS = [...new Set(Object.values(LENSES_BY_DOCUMENT_TYPE).flatMap((lenses) => lenses.map((lens) => lens.id)))];
+const ALL_LENS_IDS = [...new Set(Object.values(LENS_IDS_BY_DOCUMENT_TYPE).flatMap((lenses) => lenses.map((lens) => lens.id)))];
 
 // Only "verified"/"approximate": a "not_found" finding is never offered to the model, so a
 // spanless/statusless shape here would only mean a service regression — this union makes that a
 // hard parse failure, never a silently-accepted malformed citation.
-const PrepareVerificationOutput = z.discriminatedUnion("status", [
+export const PrepareVerificationOutput = z.discriminatedUnion("status", [
   z.object({
     status: z.literal("verified"),
     spanStart: z.number().int().nonnegative(),

@@ -146,7 +146,8 @@ describe("response shapes — general mode and citation spanText", () => {
   const citation = {
     id: "0c0c0c0c-0000-4000-8000-00000000000c",
     sourceDocumentId: "0d0d0d0d-0000-4000-8000-00000000000d",
-    verification: { status: "verified", spanStart: 0, spanEnd: 10, spanText: "Rs. 32,000", verifierVersion: "2.0.0" },
+    inputMode: "text",
+    verification: { status: "verified", spanStart: 0, spanEnd: 10, spanText: "Rs. 32,000", verifierVersion: "2.0.0", textHash: "h" },
   };
 
   it("AskCitationOutput requires the shared VerificationOutput, never a raw status string, and has no top-level quote/model-text field", () => {
@@ -156,6 +157,17 @@ describe("response shapes — general mode and citation spanText", () => {
     // server-cut spanText, never raw model text beside it.
     const parsed = AskCitationOutput.parse({ ...citation, quote: "the model's own (possibly different) phrasing" });
     expect(Object.keys(parsed)).not.toContain("quote");
+  });
+
+  it("AskCitationOutput.inputMode is null for an unlinked citation (no source document to report a mode for)", () => {
+    const unlinked = { ...citation, sourceDocumentId: null, inputMode: null };
+    expect(AskCitationOutput.safeParse(unlinked).success).toBe(true);
+  });
+
+  it("AskCitationOutput.inputMode is required — omitting the key entirely is rejected, not silently treated as null", () => {
+    const { inputMode: _omit, ...withoutInputMode } = citation;
+    void _omit;
+    expect(AskCitationOutput.safeParse(withoutInputMode).success).toBe(false);
   });
 
   const groundedBase = {

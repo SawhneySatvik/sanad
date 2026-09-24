@@ -35,12 +35,13 @@ describe("HealthOutput", () => {
 });
 
 describe("VerificationOutput — the wire shape", () => {
-  const verified = { status: "verified", spanStart: 4, spanEnd: 8, spanText: "rent", verifierVersion: "2.0.0" };
+  const EMPTY_TEXT_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+  const verified = { status: "verified", spanStart: 4, spanEnd: 8, spanText: "rent", verifierVersion: "2.0.0", textHash: EMPTY_TEXT_HASH };
 
   it("verified and approximate carry a span and its text; not_found carries neither", () => {
     expect(VerificationOutput.safeParse(verified).success).toBe(true);
     expect(VerificationOutput.safeParse({ ...verified, status: "approximate", claimedQuote: "rnt" }).success).toBe(true);
-    const notFound = { status: "not_found", spanStart: null, spanEnd: null, spanText: null, claimedQuote: "x", verifierVersion: "2" };
+    const notFound = { status: "not_found", spanStart: null, spanEnd: null, spanText: null, claimedQuote: "x", verifierVersion: "2", textHash: EMPTY_TEXT_HASH };
     expect(VerificationOutput.safeParse(notFound).success).toBe(true);
     expect(VerificationOutput.safeParse({ ...verified, spanText: null }).success).toBe(false);
     expect(VerificationOutput.safeParse({ ...notFound, spanStart: 0, spanEnd: 1, spanText: "x" }).success).toBe(false);
@@ -49,6 +50,16 @@ describe("VerificationOutput — the wire shape", () => {
 
   it("approximate and not_found must name the model's claim as claimedQuote", () => {
     expect(VerificationOutput.safeParse({ ...verified, status: "approximate" }).success).toBe(false);
+  });
+
+  it("every branch requires textHash — the source document's real hash, or the anti-oracle sentinel", () => {
+    const approximate = { ...verified, status: "approximate" as const, claimedQuote: "rnt" };
+    const notFound = { status: "not_found", spanStart: null, spanEnd: null, spanText: null, claimedQuote: "x", verifierVersion: "2", textHash: EMPTY_TEXT_HASH };
+    for (const branch of [verified, approximate, notFound]) {
+      const { textHash: _omit, ...withoutHash } = branch;
+      void _omit;
+      expect(VerificationOutput.safeParse(withoutHash).success, `${branch.status} without textHash`).toBe(false);
+    }
   });
 
   it("a verified passage never carries model text: a claimedQuote or raw VerifyResult field is stripped", () => {

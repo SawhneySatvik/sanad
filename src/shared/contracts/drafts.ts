@@ -57,6 +57,7 @@ export type DraftSectionOutput = z.infer<typeof DraftSectionOutput>;
 /** A draft with its sections — the response for create, revise and get alike. */
 export const DraftWithSectionsOutput = z.object({
   id: z.guid(),
+  title: z.string(),
   documentType: z.string(),
   mode: z.enum(["from_scratch", "document_grounded"]),
   groundingDocumentId: z.guid().nullable(),

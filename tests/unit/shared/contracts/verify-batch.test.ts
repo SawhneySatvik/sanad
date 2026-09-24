@@ -65,6 +65,7 @@ describe("VerifyBatchOutput", () => {
       spanText: null,
       claimedQuote: "q",
       verifierVersion: "2.0.0",
+      textHash: "h",
     };
     const parsed = VerifyBatchOutput.parse({ results: [{ ...notFound, documentId: ID, reason: "not_owned" }] });
     expect(parsed).toEqual({ results: [notFound] });

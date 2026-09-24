@@ -32,6 +32,9 @@ const ComparisonChangeOutput = z.object({
 /** A comparison with every change, each side's verification bound to its own document. */
 export const ComparisonWithChangesOutput = z.object({
   id: z.guid(),
+  title: z.string(),
+  titleA: z.string(),
+  titleB: z.string(),
   documentAId: z.guid(),
   documentBId: z.guid(),
   modelUsed: z.string(),

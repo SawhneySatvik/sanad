@@ -3,6 +3,8 @@ import { AnalyzeDocumentInput, AnalyzeDocumentOutput, DocumentWithFindingsOutput
 
 const document = {
   id: "0a0a0a0a-0000-4000-8000-00000000000a",
+  title: "lease.txt",
+  sampleId: null,
   projectId: null,
   filename: "lease.txt",
   mimeType: "text/plain",
@@ -26,7 +28,7 @@ const finding = {
   explanation: "Monthly rent.",
   explanationProvenance: "ai_generated",
   lensExplanations: [{ lens: "tenant", explanation: "You pay this.", explanationProvenance: "ai_generated" }],
-  verification: { status: "verified", spanStart: 12, spanEnd: 22, spanText: "Rs. 32,000", verifierVersion: "2.0.0" },
+  verification: { status: "verified", spanStart: 12, spanEnd: 22, spanText: "Rs. 32,000", verifierVersion: "2.0.0", textHash: "h" },
   modelUsed: "gemini-2.5-flash",
 };
 

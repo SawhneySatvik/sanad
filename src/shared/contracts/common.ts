@@ -7,7 +7,7 @@
  */
 
 import { z } from "zod";
-import { APP_ERROR_CODES, ERROR_REASONS } from "@/server/core/errors";
+import { APP_ERROR_CODES, ERROR_REASONS } from "./vocabulary";
 
 /** Returned for any failure that is not a typed AppError. Never carries the underlying message. */
 export const INTERNAL_ERROR_CODE = "INTERNAL_ERROR";
@@ -47,6 +47,10 @@ export const IsoDateTime = z.iso.datetime();
  * to its document. spanText is cut server-side from the exact text verify() ran against — the only
  * text a client may display as the document's passage. The model's own claimed quote appears only
  * as claimedQuote, on approximate/not_found; a verified passage carries no model text at all.
+ * textHash is the source document's canonical_text_hash on every branch — the caller's own usable
+ * document's real hash, or the fixed sha256("") sentinel when there is no real document to bind to
+ * (an unlinked citation, a foreign id, a deleted source) — so bindSpan() can refuse a mark bound
+ * against the wrong document without a second, per-surface textHash field.
  */
 export const VerificationOutput = z.discriminatedUnion("status", [
   z.object({
@@ -55,6 +59,7 @@ export const VerificationOutput = z.discriminatedUnion("status", [
     spanEnd: z.number().int().nonnegative(),
     spanText: z.string(),
     verifierVersion: z.string(),
+    textHash: z.string(),
   }),
   z.object({
     status: z.literal("approximate"),
@@ -63,6 +68,7 @@ export const VerificationOutput = z.discriminatedUnion("status", [
     spanText: z.string(),
     claimedQuote: z.string(),
     verifierVersion: z.string(),
+    textHash: z.string(),
   }),
   z.object({
     status: z.literal("not_found"),
@@ -71,6 +77,7 @@ export const VerificationOutput = z.discriminatedUnion("status", [
     spanText: z.null(),
     claimedQuote: z.string(),
     verifierVersion: z.string(),
+    textHash: z.string(),
   }),
 ]);
 export type VerificationOutput = z.infer<typeof VerificationOutput>;
