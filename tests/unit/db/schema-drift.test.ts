@@ -163,7 +163,7 @@ afterEach(async () => {
 
 describe("(e) schema drift: schema.ts vs the migrated database", () => {
   it("covers every table and enum schema.ts exports (guards against an empty comparison)", () => {
-    expect(tables).toHaveLength(18);
+    expect(tables).toHaveLength(20);
     expect(enums).toHaveLength(8);
   });
 

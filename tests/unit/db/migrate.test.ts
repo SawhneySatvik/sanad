@@ -77,6 +77,9 @@ describe("applyMigrations", () => {
       "0003_comparisons_drafts_model_used.sql",
       "0004_drafts_jurisdiction.sql",
       "0005_titles_samples_updated_at.sql",
+      "0006_storage_cleanup_outbox.sql",
+      "0007_storage_cleanup_retry_and_thread_index.sql",
+      "0008_storage_objects.sql",
     ]);
   });
 });

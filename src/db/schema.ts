@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   check,
+  customType,
   foreignKey,
   index,
   integer,
@@ -24,9 +25,60 @@ import { DOCUMENT_TYPE_IDS } from "../server/deterministic/document-type-registr
 
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
 
+// postgres-js and PGlite both bind a Buffer/Uint8Array parameter to bytea automatically (no
+// serialize/parse mapping needed) — verified against both drivers, not assumed.
+const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
+
 // Built from the registry so this mirror can never disagree with it; the hand-written SQL spells the
 // list out, and schema-kit-parity.test.ts / document-type.test.ts fail if the SQL drifts.
 const documentTypeIn = sql.raw(`IN (${DOCUMENT_TYPE_IDS.map((id) => `'${id}'`).join(", ")})`);
+
+/** Durable storage refs queued by explicit deletion and retained after purge to block reuse. */
+export const storageCleanupOutbox = pgTable(
+  "storage_cleanup_outbox",
+  {
+    storageRef: text("storage_ref").primaryKey(),
+    createdAt: createdAt(),
+    purgedAt: timestamp("purged_at", { withTimezone: true }),
+    nextAttemptAt: timestamp("next_attempt_at", { withTimezone: true }).notNull().defaultNow(),
+    attemptCount: integer("attempt_count").notNull().default(0),
+  },
+  (t) => [
+    check("storage_cleanup_outbox_attempt_count_check", sql`attempt_count >= 0`),
+    index("storage_cleanup_outbox_due_idx").on(t.nextAttemptAt, t.createdAt, t.storageRef).where(sql`purged_at IS NULL`),
+    index("storage_cleanup_outbox_storage_ref_lower_idx").on(sql`lower(${t.storageRef})`),
+  ],
+);
+
+/**
+ * The Postgres-backed StorageAdapter's object store: one row per storage ref, keyed the same way
+ * refs.ts names them. `bytes` is single-write (NULL until writeRelayed's one conditional UPDATE
+ * fills it); `confirmed_at` is the one-shot confirm marker, analogous to LocalFsStorageAdapter's
+ * `@confirmed` marker file.
+ */
+export const storageObjects = pgTable(
+  "storage_objects",
+  {
+    storageRef: text("storage_ref").primaryKey(),
+    ownerPrincipalKey: text("owner_principal_key").notNull(),
+    // Nullable: writeRelayed can originate a row itself (samples/open.ts calls it directly, never
+    // createUploadTarget) — see the SQL migration's comment for why confirmUpload then requires both.
+    filename: text("filename"),
+    mimeType: text("mime_type"),
+    declaredSizeBytes: integer("declared_size_bytes").notNull(),
+    bytes: bytea("bytes"),
+    createdAt: createdAt(),
+    confirmedAt: timestamp("confirmed_at", { withTimezone: true }),
+  },
+  (t) => [
+    check("storage_objects_declared_size_bytes_positive_check", sql`declared_size_bytes > 0`),
+    check("storage_objects_owner_principal_key_not_blank_check", sql`owner_principal_key ~ '[^[:space:]]'`),
+    check("storage_objects_confirmed_requires_bytes_check", sql`confirmed_at IS NULL OR bytes IS NOT NULL`),
+    check("storage_objects_filename_iff_mime_type_check", sql`(filename IS NULL) = (mime_type IS NULL)`),
+    check("storage_objects_confirmed_requires_upload_record_check", sql`confirmed_at IS NULL OR filename IS NOT NULL`),
+    index("storage_objects_unconfirmed_due_idx").on(t.createdAt).where(sql`confirmed_at IS NULL`),
+  ],
+);
 
 /** Enum mirror of INPUT_MODES. */
 export const inputMode = pgEnum("input_mode", INPUT_MODES);
@@ -343,6 +395,7 @@ export const threads = pgTable(
     ),
     index("threads_owner_user_id_idx").on(t.ownerUserId),
     index("threads_project_id_idx").on(t.projectId),
+    index("threads_owner_user_id_updated_at_id_idx").on(t.ownerUserId, t.updatedAt.desc().nullsFirst(), t.id.desc().nullsFirst()),
   ],
 );
 

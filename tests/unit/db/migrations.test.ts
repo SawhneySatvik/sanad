@@ -211,9 +211,17 @@ describe("(a) one valid row per table", () => {
       modelUsed: "gemini-test",
       expiresAt: new Date(Date.now() + 60_000),
     });
+    await t.db.insert(s.storageCleanupOutbox).values({ storageRef: "guest:guest-a/deleted.pdf" });
+    await t.db.insert(s.storageObjects).values({
+      storageRef: "guest:guest-a/0199/seed.pdf",
+      ownerPrincipalKey: "guest:guest-a",
+      filename: "seed.pdf",
+      mimeType: "application/pdf",
+      declaredSizeBytes: 10,
+    });
 
     const tables = await publicTables();
-    expect(tables).toHaveLength(18);
+    expect(tables).toHaveLength(20);
     for (const table of tables) {
       const count = await t.client.query<{ n: number }>(`SELECT count(*)::int AS n FROM ${table}`);
       expect(count.rows[0].n, `table ${table} has no seeded row`).toBeGreaterThanOrEqual(1);
@@ -619,6 +627,37 @@ describe("row-level CHECKs added beyond the owner/native rules (spec-implied)", 
         () => t.db.insert(s.drafts).values(guestDraft({ mode: "from_scratch", groundingDocumentId: doc.id })),
       ],
       ["analyses_document_prompt_model_key", () => insertAnalysis(doc.id)],
+      [
+        "storage_objects_declared_size_bytes_positive_check",
+        () => t.db.insert(s.storageObjects).values({ storageRef: "user:x/1/a.pdf", ownerPrincipalKey: "user:x", declaredSizeBytes: 0 }),
+      ],
+      [
+        "storage_objects_owner_principal_key_not_blank_check",
+        () => t.db.insert(s.storageObjects).values({ storageRef: "user:x/2/a.pdf", ownerPrincipalKey: "   ", declaredSizeBytes: 10 }),
+      ],
+      [
+        "storage_objects_filename_iff_mime_type_check",
+        () =>
+          t.db.insert(s.storageObjects).values({ storageRef: "user:x/3/a.pdf", ownerPrincipalKey: "user:x", declaredSizeBytes: 10, filename: "a.pdf" }),
+      ],
+      [
+        "storage_objects_confirmed_requires_bytes_check",
+        () =>
+          t.db
+            .insert(s.storageObjects)
+            .values({ storageRef: "user:x/4/a.pdf", ownerPrincipalKey: "user:x", declaredSizeBytes: 10, confirmedAt: new Date() }),
+      ],
+      [
+        "storage_objects_confirmed_requires_upload_record_check",
+        () =>
+          t.db.insert(s.storageObjects).values({
+            storageRef: "user:x/5/a.pdf",
+            ownerPrincipalKey: "user:x",
+            declaredSizeBytes: 10,
+            bytes: Buffer.from("x"),
+            confirmedAt: new Date(),
+          }),
+      ],
     ];
 
     for (const [constraint, run] of expectations) {
@@ -824,6 +863,8 @@ describe("catalog post-conditions (an index/trigger that exists under the right 
         "CREATE UNIQUE INDEX finding_lens_explanations_finding_lens_key ON public.finding_lens_explanations USING btree (finding_id, role_stage_lens)",
       threads_pkey: "CREATE UNIQUE INDEX threads_pkey ON public.threads USING btree (id)",
       threads_owner_user_id_idx: "CREATE INDEX threads_owner_user_id_idx ON public.threads USING btree (owner_user_id)",
+      threads_owner_user_id_updated_at_id_idx:
+        "CREATE INDEX threads_owner_user_id_updated_at_id_idx ON public.threads USING btree (owner_user_id, updated_at DESC, id DESC)",
       threads_project_id_idx: "CREATE INDEX threads_project_id_idx ON public.threads USING btree (project_id)",
       messages_pkey: "CREATE UNIQUE INDEX messages_pkey ON public.messages USING btree (id)",
       messages_thread_id_created_at_id_idx:
@@ -879,6 +920,15 @@ describe("catalog post-conditions (an index/trigger that exists under the right 
       analyzed_result_cache_expires_at_idx:
         "CREATE INDEX analyzed_result_cache_expires_at_idx ON public.analyzed_result_cache USING btree (expires_at)",
       schema_migrations_pkey: "CREATE UNIQUE INDEX schema_migrations_pkey ON public.schema_migrations USING btree (name)",
+      storage_cleanup_outbox_pkey:
+        "CREATE UNIQUE INDEX storage_cleanup_outbox_pkey ON public.storage_cleanup_outbox USING btree (storage_ref)",
+      storage_cleanup_outbox_due_idx:
+        "CREATE INDEX storage_cleanup_outbox_due_idx ON public.storage_cleanup_outbox USING btree (next_attempt_at, created_at, storage_ref) WHERE (purged_at IS NULL)",
+      storage_cleanup_outbox_storage_ref_lower_idx:
+        "CREATE INDEX storage_cleanup_outbox_storage_ref_lower_idx ON public.storage_cleanup_outbox USING btree (lower(storage_ref))",
+      storage_objects_pkey: "CREATE UNIQUE INDEX storage_objects_pkey ON public.storage_objects USING btree (storage_ref)",
+      storage_objects_unconfirmed_due_idx:
+        "CREATE INDEX storage_objects_unconfirmed_due_idx ON public.storage_objects USING btree (created_at) WHERE (confirmed_at IS NULL)",
     };
     const result = await t.client.query<{ indexname: string; indexdef: string }>(
       "SELECT indexname, indexdef FROM pg_indexes WHERE schemaname = 'public'",
@@ -886,7 +936,7 @@ describe("catalog post-conditions (an index/trigger that exists under the right 
     expect(Object.fromEntries(result.rows.map((r) => [r.indexname, r.indexdef]))).toEqual(expected);
   });
 
-  it("the five integrity triggers: enabled, row-level, BEFORE, on exactly the right tables, events and columns", async () => {
+  it("integrity triggers have the expected timing, table, event and columns", async () => {
     const enabled = await t.client.query<{ tgname: string; enabled: string }>(
       "SELECT tgname, tgenabled AS enabled FROM pg_trigger WHERE NOT tgisinternal ORDER BY tgname",
     );
@@ -894,6 +944,7 @@ describe("catalog post-conditions (an index/trigger that exists under the right 
       ["comparison_changes_native_document_verified_ceiling", "O"],
       ["comparisons_document_pair_immutable", "O"],
       ["documents_input_mode_immutable", "O"],
+      ["documents_storage_ref_tombstone_guard", "O"],
       ["findings_native_document_verified_ceiling", "O"],
       ["message_citations_native_document_verified_ceiling", "O"],
     ]);
@@ -910,6 +961,7 @@ describe("catalog post-conditions (an index/trigger that exists under the right 
       "comparison_changes_native_document_verified_ceiling BEFORE UPDATE ON comparison_changes FOR EACH ROW",
       "comparisons_document_pair_immutable BEFORE UPDATE ON comparisons FOR EACH ROW",
       "documents_input_mode_immutable BEFORE UPDATE ON documents FOR EACH ROW",
+      "documents_storage_ref_tombstone_guard AFTER INSERT ON documents FOR EACH ROW",
       "findings_native_document_verified_ceiling BEFORE INSERT ON findings FOR EACH ROW",
       "findings_native_document_verified_ceiling BEFORE UPDATE ON findings FOR EACH ROW",
       "message_citations_native_document_verified_ceiling BEFORE INSERT ON message_citations FOR EACH ROW",
@@ -935,6 +987,9 @@ describe("catalog post-conditions (an index/trigger that exists under the right 
       "0003_comparisons_drafts_model_used.sql",
       "0004_drafts_jurisdiction.sql",
       "0005_titles_samples_updated_at.sql",
+      "0006_storage_cleanup_outbox.sql",
+      "0007_storage_cleanup_retry_and_thread_index.sql",
+      "0008_storage_objects.sql",
     ]);
     const probes = await t.client.query<{ embeddings: string | null; app_private: number; vector: number }>(
       `SELECT to_regclass('public.document_embeddings')::text AS embeddings,

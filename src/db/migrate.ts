@@ -2,12 +2,21 @@ import { createHash } from "node:crypto";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { PGlite } from "@electric-sql/pglite";
 
 /** Only this directory's top level is applied; `pending/` and `prod-only/` (needs Supabase roles, pg_cron, pg_net) are never read by this runner. */
 export const MIGRATIONS_DIR = fileURLToPath(new URL("./migrations", import.meta.url));
 
 const MIGRATION_FILE = /^\d{4}_[a-z0-9_]+\.sql$/;
+
+/** The slice of a database client the runner needs, satisfied by PGlite locally and by a thin postgres.js wrapper remotely. */
+export interface MigrationExecutor {
+  query<T>(sql: string, params?: unknown[]): Promise<{ rows: T[] }>;
+  exec(sql: string): Promise<unknown>;
+}
+
+export interface MigrationClient extends MigrationExecutor {
+  transaction<T>(fn: (tx: MigrationExecutor) => Promise<T>): Promise<T>;
+}
 
 function sha256(text: string): string {
   return createHash("sha256").update(text).digest("hex");
@@ -17,7 +26,7 @@ function sha256(text: string): string {
  * Applies every not-yet-applied migration in order, each in its own transaction with its tracking
  * row. Throws if an applied file's contents changed — migrations are frozen; fixes go forward in a new file.
  */
-export async function applyMigrations(client: PGlite, dir: string = MIGRATIONS_DIR): Promise<string[]> {
+export async function applyMigrations(client: MigrationClient, dir: string = MIGRATIONS_DIR): Promise<string[]> {
   const entries = await readdir(dir, { withFileTypes: true });
   const sqlFiles = entries.filter((e) => e.isFile() && e.name.endsWith(".sql")).map((e) => e.name);
   const malformed = sqlFiles.filter((name) => !MIGRATION_FILE.test(name));

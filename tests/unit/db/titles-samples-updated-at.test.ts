@@ -99,9 +99,14 @@ describe("0005: backfill on a database that already holds rows", () => {
          VALUES ('guest-a', 'nda', 'from_scratch', 'c', 1, now() + interval '2 hours', 'gemini-test', '2022-11-20T09:30:00Z')`,
       );
 
-      // Pointed at the real directory, not the temp copies: it applies 0005 on top of the rows seeded
-      // under 0001-0004, and proves pending/0005_document_embeddings.sql is never picked up.
-      expect(await applyMigrations(client, MIGRATIONS_DIR)).toEqual(["0005_titles_samples_updated_at.sql"]);
+      // Pointed at the real directory, not the temp copies: it applies the remaining common
+      // migrations on top of the rows seeded under 0001-0004, and ignores pending/.
+      expect(await applyMigrations(client, MIGRATIONS_DIR)).toEqual([
+        "0005_titles_samples_updated_at.sql",
+        "0006_storage_cleanup_outbox.sql",
+        "0007_storage_cleanup_retry_and_thread_index.sql",
+        "0008_storage_objects.sql",
+      ]);
 
       const docs = await client.query<{ matches: boolean; year: number; title: string | null; sample_id: string | null }>(
         `SELECT (updated_at = uploaded_at) AS matches, extract(year FROM updated_at)::int AS year, title, sample_id
