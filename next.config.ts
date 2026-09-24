@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { SECURITY_HEADERS } from "./src/server/http/security-headers";
+import { securityHeaders } from "./src/server/http/security-headers";
 
 const nextConfig: NextConfig = {
   // PGlite ships a WASM binary that Next's server bundler must not trace or bundle.
@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/:path*",
-        headers: Object.entries(SECURITY_HEADERS).map(([key, value]) => ({ key, value })),
+        headers: Object.entries(securityHeaders()).map(([key, value]) => ({ key, value })),
       },
     ];
   },

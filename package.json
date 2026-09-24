@@ -23,10 +23,13 @@
     "test:coverage": "vitest run --coverage",
     "check-all": "npm run lint && npm run typecheck && npm run test && npm run build",
     "db:migrate": "tsx scripts/db-migrate.ts",
+    "db:migrate:remote": "tsx scripts/db-migrate-remote.ts",
     "validate:live": "tsx scripts/validate-live/index.ts",
     "e2e:server": "tsx scripts/e2e-server.ts",
     "test:e2e": "playwright test",
-    "test:a11y": "playwright test --grep @a11y"
+    "test:a11y": "playwright test --grep @a11y",
+    "capture:screens": "tsx scripts/capture-screens.ts",
+    "security:audit": "npm audit --audit-level=high"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.8",

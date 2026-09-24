@@ -1,0 +1,14 @@
+# Never upload secrets, local databases, stored files or tooling from a local deploy.
+.env
+.env.*
+!.env.example
+.planning
+.agents
+.impeccable
+skills-lock.json
+.pglite
+.pglite-*
+.local-storage
+test-results
+playwright-report
+coverage
