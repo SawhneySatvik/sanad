@@ -7,7 +7,24 @@ import { z } from "zod";
 import { beforeAll, describe, expect, it } from "vitest";
 import { VerificationOutput } from "@/shared/contracts/common";
 import { ComparisonWithChangesOutput } from "@/shared/contracts/comparisons";
+import { DocumentTextOutput } from "@/shared/contracts/document-text";
+import { AskTokenEventOutput } from "@/shared/contracts/threads";
+import { PrepareVerificationOutput } from "@/shared/contracts/prepare";
 import { classifyExport, lintResponseSchema, type ProseSite } from "./contract-lint";
+
+// AskTokenEventOutput: a streamed model-text fragment, legitimately nested inside AskEventOutput —
+// exempt wherever it's reached, not only as a root schema (its own pinned {type, text} shape test
+// covers it independently).
+const TRANSITIVE_TEXT_EXEMPTIONS = new Set<z.core.$ZodType>([AskTokenEventOutput]);
+// DocumentTextOutput: the one response allowed to carry canonical text — but ONLY as the response
+// itself, never embedded inside another schema (an `{ inner: DocumentTextOutput }` wrapper, or a
+// nested `pages[].text` under it, would smuggle canonical text onto a DIFFERENT response's wire
+// shape, which is exactly the leak this rule exists to catch).
+const ROOT_ONLY_TEXT_EXEMPTIONS = new Set<z.core.$ZodType>([DocumentTextOutput]);
+// PrepareVerificationOutput: Prepare's own verification shape mirrors VerificationOutput's
+// spanText field (the server-cut passage), but is never run through toVerificationOutput — it is
+// named here by reference, exactly like VerificationOutput itself, never by key name alone.
+const SPAN_TEXT_EXEMPTIONS = new Set<z.core.$ZodType>([PrepareVerificationOutput]);
 
 const CONTRACTS_DIR = path.join(process.cwd(), "src", "shared", "contracts");
 
@@ -21,6 +38,8 @@ const EXEMPT_PROSE: Record<string, string> = {
     "an SSE token fragment of the final message's content, which carries provenance; a sibling test pins a token frame to exactly {type, text}",
   "DraftOutput.content": "the flattened sections, shipped beside `sections`, each carrying its own provenance (drafts.test.ts pins both present)",
   "PrepareOutput.markdown": "renderer-owned Markdown; every model-written line carries a fixed \"AI-suggested\" prefix",
+  "DocumentTextOutput.text":
+    "canonical text, never model prose — a native_document's transcription is labelled through inputMode, not a provenance sibling it must never have",
 };
 
 // Routed known gaps: none. This list must match the tree exactly: a new unlabelled prose field
@@ -54,6 +73,7 @@ const KNOWN_RESPONSES = [
   "UploadTargetOutput",
   "HealthOutput",
   "ClaimResultOutput",
+  "DocumentTextOutput",
 ];
 
 type Schema = z.core.$ZodType;
@@ -88,7 +108,15 @@ const responses = () => discovered.filter((d) => classifyExport(d.exportName, NO
 function proseSites(): ProseSite[] {
   const merged = new Map<string, boolean>();
   for (const { exportName, schema } of responses()) {
-    for (const { site, labelled } of lintResponseSchema(exportName, schema, VerificationOutput, names).prose) {
+    for (const { site, labelled } of lintResponseSchema(
+      exportName,
+      schema,
+      VerificationOutput,
+      names,
+      TRANSITIVE_TEXT_EXEMPTIONS,
+      ROOT_ONLY_TEXT_EXEMPTIONS,
+      SPAN_TEXT_EXEMPTIONS,
+    ).prose) {
       merged.set(site, (merged.get(site) ?? true) && labelled);
     }
   }
@@ -107,11 +135,56 @@ describe("the real contracts", () => {
     expect(found.length).toBeGreaterThanOrEqual(KNOWN_RESPONSES.length);
   });
 
-  it("no response schema carries a quote (other than VerificationOutput.claimedQuote), canonical text, a storage ref or a pass-through", () => {
+  it("no response schema carries a quote (other than VerificationOutput.claimedQuote), canonical text, a storage ref, a bare document-content key (other than a pinned exemption) or a pass-through", () => {
     const violations = responses().flatMap(({ file, exportName, schema }) =>
-      lintResponseSchema(exportName, schema, VerificationOutput, names).violations.map((v) => `${file}: ${v}`),
+      lintResponseSchema(
+        exportName,
+        schema,
+        VerificationOutput,
+        names,
+        TRANSITIVE_TEXT_EXEMPTIONS,
+        ROOT_ONLY_TEXT_EXEMPTIONS,
+        SPAN_TEXT_EXEMPTIONS,
+      ).violations.map((v) => `${file}: ${v}`),
     );
     expect(violations).toEqual([]);
+  });
+
+  it("Prepare's own verification shape is recognized by reference for spanText (red-proof): dropping it from the allowance re-flags every real path to it", () => {
+    const violationsWithoutPrepare = responses().flatMap(({ file, exportName, schema }) =>
+      lintResponseSchema(exportName, schema, VerificationOutput, names, TRANSITIVE_TEXT_EXEMPTIONS, ROOT_ONLY_TEXT_EXEMPTIONS).violations.map(
+        (v) => `${file}: ${v}`,
+      ),
+    );
+    // Exporting PrepareVerificationOutput (so contract-lint can name it by reference) also makes
+    // discovery find and scan it as its own response, and reuses its registered name at every site
+    // it's reached through — six identical-looking lines: twice via PrepareOutput.lawyerQuestions[],
+    // twice via PrepareOutput.checklist[] (one per verified/approximate branch each), and twice more
+    // scanning PrepareVerificationOutput directly as its own discovered root.
+    const expectedGap = "prepare.ts: PrepareVerificationOutput.spanText: document text on the wire outside a pinned exemption";
+    expect(violationsWithoutPrepare).toEqual(Array(6).fill(expectedGap));
+  });
+
+  it("the widened text-key rule is live, not vacuous (red-proof, half 1): a key merely ending in \"text\" is caught, not only the bare word", () => {
+    const lintSynthetic = (schema: Schema) =>
+      lintResponseSchema("T", schema, VerificationOutput, new Map(), TRANSITIVE_TEXT_EXEMPTIONS, ROOT_ONLY_TEXT_EXEMPTIONS).violations;
+    for (const key of ["documentText", "fullText", "rawText", "sourceText", "extractedText"]) {
+      expect(lintSynthetic(z.object({ [key]: z.string() }))).toEqual([`T.${key}: document text on the wire outside a pinned exemption`]);
+    }
+  });
+
+  it("the widened text-key rule is live, not vacuous (red-proof, half 2): DocumentTextOutput is exempt only as the response itself, never embedded", () => {
+    const lintSynthetic = (schema: Schema) =>
+      lintResponseSchema("T", schema, VerificationOutput, new Map(), TRANSITIVE_TEXT_EXEMPTIONS, ROOT_ONLY_TEXT_EXEMPTIONS).violations;
+    // A wrapper embedding DocumentTextOutput as a nested field smuggles canonical text onto a
+    // different response's wire shape — the exemption must not follow it there.
+    expect(lintSynthetic(z.object({ inner: DocumentTextOutput }))).toEqual(["T.inner.text: document text on the wire outside a pinned exemption"]);
+    // A nested pages[].text under it — an array of DocumentTextOutput-shaped pages — is caught too.
+    expect(lintSynthetic(z.object({ pages: z.array(DocumentTextOutput) }))).toEqual([
+      "T.pages[].text: document text on the wire outside a pinned exemption",
+    ]);
+    // Positive control: DocumentTextOutput passed in AS the response itself is still exempt.
+    expect(lintSynthetic(DocumentTextOutput)).toEqual([]);
   });
 
   it("claimedQuote does reach the wire, and only inside VerificationOutput (the exemption is live, not vacuous)", () => {
@@ -140,7 +213,9 @@ describe("lintResponseSchema flags each rule's breach", () => {
     expect(lint(z.object({ items: z.array(z.object({ modelQuote: z.string().nullable() })) }))).toEqual([
       "T.items[].modelQuote: a quote-named key outside VerificationOutput.claimedQuote",
     ]);
-    expect(lint(z.object({ QUOTE_TEXT: z.string() }))).toHaveLength(1);
+    // QUOTE_TEXT also ends with "text" (case-insensitive), so the widened document-content-key rule
+    // fires alongside the quote rule — two independent, correct violations, not a double-count bug.
+    expect(lint(z.object({ QUOTE_TEXT: z.string() }))).toHaveLength(2);
   });
 
   it("flags quoteA re-added beside the real comparison change's verification", () => {
@@ -158,10 +233,42 @@ describe("lintResponseSchema flags each rule's breach", () => {
   });
 
   it("canonical text or a storage ref, in any spelling", () => {
-    expect(lint(z.object({ canonicalText: z.string() }))).toEqual(["T.canonicalText: canonical text on the wire"]);
+    // canonicalText also ends with "text", so it now trips both the flattened canonicaltext
+    // substring check and the widened document-content-key suffix check — both real, both kept.
+    expect(lint(z.object({ canonicalText: z.string() }))).toEqual([
+      "T.canonicalText: canonical text on the wire",
+      "T.canonicalText: document text on the wire outside a pinned exemption",
+    ]);
+    // canonical_text_hash ends in "hash", not "text" — the suffix rule doesn't reach it; only the
+    // flattened substring check does.
     expect(lint(z.object({ doc: z.object({ canonical_text_hash: z.string() }) }))).toEqual(["T.doc.canonical_text_hash: canonical text on the wire"]);
     expect(lint(z.object({ rows: z.array(z.object({ storage_ref: z.string() })) }))).toEqual(["T.rows[].storage_ref: a storage ref on the wire"]);
     expect(lint(z.object({ storageRef: z.string().optional() }))).toEqual(["T.storageRef: a storage ref on the wire"]);
+  });
+
+  it("a document-content key by suffix, case-insensitive, never a substring match anywhere in the word", () => {
+    expect(lint(z.object({ text: z.string() }))).toEqual(["T.text: document text on the wire outside a pinned exemption"]);
+    // Any key ending in "text" — not only the bare word.
+    expect(lint(z.object({ documentText: z.string() }))).toEqual(["T.documentText: document text on the wire outside a pinned exemption"]);
+    expect(lint(z.object({ bodyText: z.string() }))).toEqual(["T.bodyText: document text on the wire outside a pinned exemption"]);
+    // A suffix match, not a substring match: "text" at the START of a key (not the end) is untouched.
+    expect(lint(z.object({ textArea: z.string() }))).toEqual([]);
+  });
+
+  it("spanText is allowed only inside a named verification reference (VerificationOutput or Prepare's own), never a look-alike elsewhere", () => {
+    expect(lint(z.object({ verification: VerificationOutput.nullable() }))).toEqual([]);
+    // Prepare's own verification shape is a second, explicitly named reference — never by name alone.
+    const lintWithPrepare = (schema: Schema) =>
+      lintResponseSchema("T", schema, VerificationOutput, new Map(), new Set(), new Set(), SPAN_TEXT_EXEMPTIONS).violations;
+    expect(lintWithPrepare(z.object({ verification: PrepareVerificationOutput.nullable() }))).toEqual([]);
+    // A bare spanText, with no exempt reference at all, is caught.
+    expect(lint(z.object({ spanText: z.string() }))).toEqual(["T.spanText: document text on the wire outside a pinned exemption"]);
+    // A THIRD, unrelated look-alike verification shape (neither VerificationOutput nor Prepare's) is
+    // still caught even with the Prepare exemption active — the allowance never widens by shape.
+    const anotherLookAlike = z.discriminatedUnion("status", [z.object({ status: z.literal("verified"), spanText: z.string() })]);
+    expect(lintWithPrepare(z.object({ other: anotherLookAlike }))).toEqual([
+      "T.other.spanText: document text on the wire outside a pinned exemption",
+    ]);
   });
 
   it("a pass-through: loose object, catchall, record, unknown", () => {

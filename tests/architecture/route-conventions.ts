@@ -15,10 +15,11 @@ const HTTP_METHODS = new Set(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "
 const SEGMENT_CONFIG = new Set(["dynamic", "maxDuration", "runtime"]);
 const RUN_BINDINGS = new Set(["deps", "principal", "params", "query", "body", "claim", "signal"]);
 
-// The one route that sees both identities (the auth hook's user and the signed guest cookie) and
-// clears the guest cookie on success — POST /api/auth/claim (src/server/http/handler.ts).
+// Claim needs both the auth-hook user and signed guest identity; delete-all clears the guest cookie
+// after erasing its data. Pinning these routes keeps cookie side effects out of ordinary handlers.
 export const CLAIM_ROUTE = "src/app/api/auth/claim/route.ts";
 const CLAIM_OPT_INS = new Set(["claimSession", "clearsGuestSession"]);
+export const DELETE_ALL_ROUTE = "src/app/api/me/data/route.ts";
 
 // The two routes allowed to opt into route()'s userSession cookie mechanism (src/server/http/handler.ts):
 // dev-sign-in mints the cookie, sign-out clears it. Any other route naming `userSession` at all is a
@@ -41,6 +42,10 @@ const SERVICE_MODULE = /^@\/server\/(services|data)\/[\w.-]+$/;
 const CONTRACT_MODULE = /^@\/shared\/contracts\/[\w-]+$/;
 const VIEW_MODULE = /^@\/server\/http\/views\/[\w-]+$/;
 const VIEW_ALLOWED_VALUE_IMPORT = /^(zod|@\/shared\/contracts\/[\w-]+|@\/server\/core\/[\w-]+|@\/server\/http\/verification|@\/server\/http\/views\/[\w-]+)$/;
+const VIEW_PURE_DETERMINISTIC_IMPORTS = new Set([
+  "@/server/deterministic/sanitize/model-text",
+  "@/server/deterministic/draft-templates",
+]);
 
 // Repo-relative path → why the route calls no service function.
 export const ZERO_SERVICE_ROUTES: Record<string, string> = {
@@ -265,10 +270,15 @@ export function checkRouteSource(relativePath: string, source: string): string[]
     walk(sourceFile, (node) => {
       const named =
         (ts.isPropertyAssignment(node) || ts.isShorthandPropertyAssignment(node)) &&
-        (ts.isIdentifier(node.name) || ts.isStringLiteral(node.name)) &&
-        CLAIM_OPT_INS.has(node.name.text);
-      const literal = ts.isStringLiteralLike(node) && CLAIM_OPT_INS.has(node.text);
-      if (named || literal) violations.push(`only ${CLAIM_ROUTE} may opt into claimSession / clearsGuestSession`);
+        CLAIM_OPT_INS.has(propertyNameText(node.name) ?? "");
+      const key =
+        (ts.isPropertyAssignment(node) || ts.isShorthandPropertyAssignment(node)) &&
+        propertyNameText(node.name)
+          ? propertyNameText(node.name)!
+          : null;
+      if (named && !(relativePath === DELETE_ALL_ROUTE && key === "clearsGuestSession")) {
+        violations.push(`only ${CLAIM_ROUTE} may opt into claimSession / clearsGuestSession`);
+      }
     });
   }
   if (!USER_SESSION_OPT_IN_ROUTES.has(relativePath)) {
@@ -381,9 +391,9 @@ export function checkViewSource(relativePath: string, source: string): string[] 
     const moduleSpecifier = statement.moduleSpecifier;
     if (!moduleSpecifier || !ts.isStringLiteral(moduleSpecifier)) continue;
     const specifier = normalizeSpecifier(relativePath, moduleSpecifier.text);
-    if (bindsValues && !VIEW_ALLOWED_VALUE_IMPORT.test(specifier)) {
+    if (bindsValues && !VIEW_ALLOWED_VALUE_IMPORT.test(specifier) && !VIEW_PURE_DETERMINISTIC_IMPORTS.has(specifier)) {
       violations.push(
-        `imports "${moduleSpecifier.text}" by value — a view is a pure mapper (contracts, core, verification, views only)`,
+        `imports "${moduleSpecifier.text}" by value — a view is a pure mapper (contracts, core, verification, views and two pure deterministic helpers only)`,
       );
     }
   }

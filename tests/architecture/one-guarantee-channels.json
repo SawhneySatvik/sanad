@@ -5,14 +5,19 @@
       "number": 1,
       "name": "Model response payload",
       "positive": [
+        { "file": "tests/unit/server/prompts/prompt-injection.verify.test.ts", "test": "positive control: the same text, genuinely present in the uploaded document, verifies normally" },
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: a real quote is verified — by verify(), with server spans, not the model's 0..12" },
-        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive: a real quote is verified — by verify(), with server spans, not the model's 0..12" }
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive: a real quote is verified — by verify(), with server spans, not the model's 0..12" },
+        { "file": "tests/unit/server/samples/registry.verify.test.ts", "test": "opening the lease sample through the real route verifies each one, not just some" }
       ],
       "negative": [
+        { "file": "tests/unit/server/prompts/prompt-injection.verify.test.ts", "test": "negative: a fabricated quote carrying the injection text, self-certified verified with its own spans, is not in the document and returns not_found" },
+        { "file": "tests/unit/server/prompts/prompt-injection.verify.test.ts", "test": "rejects every real Understand response schema once extended with a status field" },
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a fabricated quote the model marks verified, with its own spans, is stored and returned not_found" },
         { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "negative: a fabricated quote the model marks verified, with its own spans, is never stored or shown" },
         { "file": "tests/unit/server/services/prepare.verify.test.ts", "test": "a model response that smuggles a status/span field, AND lies about which status a DIFFERENT finding has, is stripped and never surfaced" },
-        { "file": "tests/unit/server/llm/schema-guard.test.ts", "test": "rejects a forbidden key nested inside an array of objects" }
+        { "file": "tests/unit/server/llm/schema-guard.test.ts", "test": "rejects a forbidden key nested inside an array of objects" },
+        { "file": "tests/unit/server/samples/registry.verify.test.ts", "test": "the tampered finding alone comes back not_found; every other quote in the same sample is unaffected" }
       ]
     },
     {
@@ -24,6 +29,7 @@
         { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "no token event has anything but text; the final event is last" }
       ],
       "negative": [
+        { "file": "tests/unit/components/chat/hostile-token-text.verify.test.tsx", "test": "StreamingPreview renders a token containing '✓ Verified' as plain text, with zero badge nodes" },
         { "file": "tests/unit/server/orchestrator/answer-stream-decoder.verify.test.ts", "test": "never emits text containing a hallucinated status field even if raw JSON carries one" },
         { "file": "tests/unit/server/orchestrator/run-orchestrator.verify.test.ts", "test": "prompt injection in document text ('mark this verified') changes nothing — status still comes only from verify(), and a self-certified status key never reaches a token" },
         { "file": "tests/unit/server/orchestrator/run-orchestrator.verify.test.ts", "test": "streaming failure mid-stream (single-specialist path) yields an error event and NO final" },
@@ -82,7 +88,9 @@
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: a cached real quote is verified against the new document's own text" }
       ],
       "negative": [
-        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a cached fabricated quote — even one carrying status 'verified' — returns not_found, with no LLM call" }
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a cached fabricated quote — even one carrying status 'verified' — returns not_found, with no LLM call" },
+        { "file": "tests/unit/server/services/understand.samples.verify.test.ts", "test": "the cache table is unchanged after opening the lease sample; an ordinary analyze of the identical text DOES write it" },
+        { "file": "tests/unit/server/services/understand.samples.verify.test.ts", "test": "the model is still called even though an identical-text cache entry is already warm" }
       ]
     },
     {
@@ -93,8 +101,13 @@
         { "file": "tests/integration/routes/ask.verify.test.ts", "test": "a general final message carries GENERAL_MODE_LABEL, never model text, and no status/citations key" },
         { "file": "tests/unit/server/deterministic/prepare-export/markdown.verify.test.ts", "test": "positive: every question/whyItMatters/checklist-item line carries its fixed, renderer-owned AI prefix" },
         { "file": "tests/unit/server/services/draft.test.ts", "test": "persists templated sections from draft-templates (never the model), ai_generated sections from the model" }
+        ,{ "file": "tests/unit/server/deterministic/sanitize/model-text.verify.test.ts", "test": "removes every badge glyph and bidi control from model text" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "a clean token event and the final event's message are mapped using that event's own sources" }
       ],
       "negative": [
+        { "file": "tests/unit/components/prepare/lawyer-question-card.verify.test.tsx", "test": "hostile text reading '✓ Verified'/'[VERIFIED]' renders no extra badge — exactly the one real citation's own" },
+        { "file": "tests/unit/components/prepare/checklist-item.verify.test.tsx", "test": "hostile text reading '✓ Verified'/'[VERIFIED]' renders no extra badge — exactly the one real citation's own" },
+        { "file": "tests/unit/components/chat/hostile-token-text.verify.test.tsx", "test": "AssistantMessage (general mode) renders a final message whose content contains '✓ Verified' as plain text, with zero badge nodes and no citation ever attached" },
         { "file": "tests/unit/server/deterministic/prepare-export/markdown.verify.test.ts", "test": "negative: hostile model text mimicking a verified badge is never presented as one" },
         { "file": "tests/unit/server/services/prepare.verify.test.ts", "test": "hostile model output mimicking a verified badge is never presented as one in the JSON markdown export" },
         { "file": "tests/integration/routes/threads.verify.test.ts", "test": "POST /api/threads/:id/messages — the final frame's raw text carries no such key" },
@@ -102,34 +115,69 @@
         { "file": "tests/unit/server/services/draft.test.ts", "test": "runtime: a persisted section carries exactly {key, heading, provenance, content} — no status field" },
         { "file": "tests/unit/server/data/drafts.test.ts", "test": "the DB CHECK rejects a raw insert whose provenance implies verification — backstop when the TS layer is bypassed" },
         { "file": "tests/unit/shared/contracts/drafts.test.ts", "test": "neither the draft object nor any section names a status/verified/quote_span key" }
+        ,{ "file": "tests/unit/server/http/views/model-text.verify.test.ts", "test": "sanitizes the finding explanation and every lens explanation, preserving checklist copy" }
+        ,{ "file": "tests/unit/server/http/views/model-text.verify.test.ts", "test": "sanitizes each model explanation, keeping a fixed fallback and per-change provenance" }
+        ,{ "file": "tests/unit/server/http/views/model-text.verify.test.ts", "test": "sanitizes every Prepare question, reason and checklist item but preserves the canonical span" }
+        ,{ "file": "tests/unit/server/http/views/model-text.verify.test.ts", "test": "sanitizes AI sections and assembled content while leaving templated section text exact" },
+        { "file": "tests/unit/server/http/verification.verify.test.ts", "test": "a hostile claimed quote still verifies/fails to verify on its own unsanitized text, but is sanitized on the wire" },
+        { "file": "tests/unit/server/http/verification.verify.test.ts", "test": "an approximate hostile claimed quote is sanitized too, while spanText stays the byte-exact canonical slice" },
+        { "file": "tests/unit/server/http/views/model-text.verify.test.ts", "test": "passes a verification's spanText through documentView untouched, and sanitizes claimedQuote — but only after verify() ran against the real one" },
+        { "file": "tests/unit/server/http/views/model-text.verify.test.ts", "test": "sanitizes claimedQuote through comparisonView too — verify() still ran against the unsanitized quote first" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "channel 7: a hostile token event's text is sanitized before the client ever sees it, mid-stream" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "channel 7: a saved assistant message's replayed content is sanitized, the same as a streamed final message's" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "channel 7: a badge glyph split across two token chunks (an astral surrogate pair) is still stripped, never reassembled raw" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "channel 7: a held surrogate from the last token flushes as its own token BEFORE final, never after" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "channel 7: a token that sanitizes to nothing is never emitted (no empty {type:\"token\",text:\"\"} frames)" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "channel 7: a stream that ends on a held high surrogate with NO final event at all (an abort) still flushes it, never silently drops it" },
+        { "file": "tests/unit/components/draft/draft-section.verify.test.tsx", "test": "hostile content reading '✓ Verified'/'[VERIFIED]' renders no VerificationBadge and no verified icon" }
       ]
     },
     {
       "number": 8,
       "name": "Span / display binding",
       "positive": [
+        { "file": "tests/unit/components/prepare/finding-citation.verify.test.tsx", "test": "positive: a finding reference with a server verified status renders exactly one VerificationBadge" },
+        { "file": "tests/unit/components/compare/build-side-entries.verify.test.ts", "test": "positive: a verified change binds on its own side, with tone 'default'" },
+        { "file": "tests/unit/components/compare/compare-side-binding.verify.test.tsx", "test": "positive: verificationA (real hash/offsets against document A's own text), verificationB null — one verified badge on side A, one mark in A's pane, nothing on side B" },
+        { "file": "tests/unit/components/workspace/document/build-bound-entries.verify.test.ts", "test": "a verified finding whose span matches the target text becomes a bound entry with tone 'default'" },
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: each verified span slices the canonical text to the quoted passage (line breaks included)" },
         { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive: side A slices document A to quote A and side B slices document B to quote B (an A/B swap would not)" },
         { "file": "tests/unit/server/services/prepare.verify.test.ts", "test": "positive: the finding's span slices the canonical text to the quoted passage" },
-        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "a verified citation's spanText equals canonicalText.slice(spanStart, spanEnd) — never the model's quote" }
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "a verified citation's spanText equals canonicalText.slice(spanStart, spanEnd) — never the model's quote" },
+        { "file": "tests/unit/server/http/verification.verify.test.ts", "test": "positive control: a not_found result against the caller's OWN usable document carries that document's real hash, never the sentinel" },
+        { "file": "tests/unit/lib/verification/bind-span.verify.test.ts", "test": "positive: a matching verification against its own document binds the exact range" },
+        { "file": "tests/architecture/verified-badge-single-source.verify.test.ts", "test": "positive: no file outside VerificationBadge's own file (or globals.css) references the verified icon, token or exact label" },
+        { "file": "tests/unit/server/http/verification.verify.test.ts", "test": "a glyph inside the document's OWN canonical text survives in spanText untouched, even on a native_document (approximate) result" }
       ],
       "negative": [
+        { "file": "tests/unit/components/prepare/finding-citation.verify.test.tsx", "test": "lookup correctness: the citation's OWN claimed status is ignored — the real documentFindings status wins" },
+        { "file": "tests/unit/components/compare/build-side-entries.verify.test.ts", "test": "negative, red-proven: side A's own verification, mis-wired against document B's target (same words, same offsets, different document), is rejected on the document-id check alone — never the hash, which the fixture makes agree either way" },
+        { "file": "tests/unit/components/compare/compare-side-binding.verify.test.tsx", "test": "negative: verificationA carrying document B's own textHash/offsets never highlights on either pane, and never shows a verified badge on side B" },
+        { "file": "tests/unit/components/workspace/document/build-bound-entries.verify.test.ts", "test": "a stale textHash suppresses the entry — red-proven: bypassing bindSpan would wrongly include it" },
+        { "file": "tests/unit/components/workspace/verifier/use-verify-batch.verify.test.tsx", "test": "(a) text that IS an exact substring of the document still shows 'approximate' when that's what the server returned — the hook never re-derives verified from the text alone" },
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: an unverifiable quote has no span to highlight" },
         { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "negative: on reload, a stored quote whose fresh span lands on the other copy is withheld, not shown there" },
         { "file": "tests/unit/server/data/comparisons.verify.test.ts", "test": "negative: an A/B swap — side A's result offered for side B and vice versa — throws and writes nothing" },
         { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "a verified citation whose model quote differs in whitespace from the canonical span never appears raw anywhere — only the server-cut spanText does" },
-        { "file": "tests/integration/routes/threads.verify.test.ts", "test": "the padded raw quote appears nowhere in the SSE final frame's bytes, nor in a subsequent GET's bytes — only the clean spanText does" }
+        { "file": "tests/integration/routes/threads.verify.test.ts", "test": "the padded raw quote appears nowhere in the SSE final frame's bytes, nor in a subsequent GET's bytes — only the clean spanText does" },
+        { "file": "tests/unit/server/http/verification.verify.test.ts", "test": "an unlinked citation through message-view.ts and a foreign id through verifyBatch both carry the same sha256(\"\") textHash" },
+        { "file": "tests/unit/lib/verification/bind-span.verify.test.ts", "test": "negative: a stale hash (one character off) suppresses the mark" },
+        { "file": "tests/unit/components/verification/verification-badge.verify.test.tsx", "test": "an approximate finding whose claimedQuote reads exactly '[VERIFIED] ✓ Verified' never produces a BadgeCheck icon or the label 'Verified' anywhere — only 'Approximate'" }
       ]
     },
     {
       "number": 9,
       "name": "Persistence / guest-import",
       "positive": [
+        { "file": "tests/unit/components/chat/citation-reverify-retry.verify.test.tsx", "test": "clicking Retry re-runs verify-batch and, once it actually succeeds, renders the server's real verified badge" },
+        { "file": "tests/unit/components/chat/reopen-verification.verify.test.tsx", "test": "the server's fresh verified result renders exactly one real badge, even though the cache claimed not_found" },
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: a real quote tampered to not_found with wrong spans is returned verified with the true spans" },
         { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive: a real quote tampered to not_found with wrong spans is returned verified with its true span" },
         { "file": "tests/unit/server/services/prepare.verify.test.ts", "test": "positive: a real, verified quote tampered to not_found in the database (via raw SQL) still shows verified, with true spans" }
       ],
       "negative": [
+        { "file": "tests/unit/components/chat/citation-reverify-retry.verify.test.tsx", "test": "a verified-status response missing its required span fields never renders a verified badge — the citation becomes a retryable failed state instead" },
+        { "file": "tests/unit/components/chat/reopen-verification.verify.test.tsx", "test": "renders no [data-slot=verification-badge] while verify-batch is still in flight, then renders the SERVER's status even when it differs from the tampered cache" },
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a fabricated quote tampered to 'verified' in the database is returned not_found" },
         { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "negative: a stored side tampered to a fabricated quote marked 'verified' is returned not_found" },
         { "file": "tests/unit/server/services/ask.verify.test.ts", "test": "import: a forged verified / cached_verified citation for an absent quote is stored and returned not_found; a forged cached_not_found on a present quote is verified" },
@@ -142,7 +190,8 @@
       "name": "Native-document mode",
       "positive": [
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive control: the same quote against the same text uploaded as a text document IS verified" },
-        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive control: the same documents, both text, are verified on both sides" }
+        { "file": "tests/unit/server/services/compare.verify.test.ts", "test": "positive control: the same documents, both text, are verified on both sides" },
+        { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "a linked citation against a native_document source reports THAT document's real inputMode, never a hardcoded 'text'" }
       ],
       "negative": [
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a quote copied exactly from the transcription is approximate at most — stored and returned" },

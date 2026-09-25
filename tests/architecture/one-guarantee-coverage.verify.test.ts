@@ -162,10 +162,9 @@ describe("checkCoverage flags every kind of registry drift", () => {
     const source = real.readTestFile(file)!;
     expect(source).toContain(title);
     const tampered: CheckInput = { ...real, readTestFile: (f) => (f === file ? source.replace(title, "renamed") : real.readTestFile(f)) };
-    expect(checkCoverage(tampered)).toEqual([
-      `channel 6 (Cache) negative: ${file} › "${title}" — no it/test with exactly this title`,
-      'channel 6 (Cache) has NO NEGATIVE test in the release-blocker suite (`npm test -- verify`) — 1 listed, none valid in a "verify" file',
-    ]);
+    // Channel 6 has other valid negatives, so the only drift reported is the renamed title itself; the
+    // empty-channel message is pinned by "a channel with no entries at all".
+    expect(checkCoverage(tampered)).toEqual([`channel 6 (Cache) negative: ${file} › "${title}" — no it/test with exactly this title`]);
   });
 
   it("the REAL tree with the same test skipped", () => {

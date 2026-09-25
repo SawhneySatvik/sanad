@@ -7,6 +7,7 @@ import { describe, expect, it } from "vitest";
 import {
   ANONYMOUS_ROUTE,
   CLAIM_ROUTE,
+  DELETE_ALL_ROUTE,
   checkRouteSource,
   checkSpanTextWrites,
   checkViewSource,
@@ -329,6 +330,22 @@ export const POST = route({
   });
 });
 
+describe("delete-all guest-cookie opt-in", () => {
+  const deleteAllRoute = (flags: string) => `import { route } from "@/server/http/handler";
+import * as library from "@/server/services/library";
+import { DeleteAllOutput } from "@/shared/contracts/library";
+export const DELETE = route({ ${flags} usesLlm: false, response: DeleteAllOutput, run: ({ deps, principal }) => library.deleteAll(deps, principal) });
+`;
+  const violation = `only ${CLAIM_ROUTE} may opt into claimSession / clearsGuestSession`;
+
+  it("permits clearsGuestSession only on delete-all", () => {
+    expect(checkRouteSource(DELETE_ALL_ROUTE, deleteAllRoute("clearsGuestSession: true,"))).toEqual([]);
+    expect(checkRouteSource(DELETE_ALL_ROUTE, deleteAllRoute("claimSession: true,"))).toContain(violation);
+    expect(checkRouteSource("src/app/api/projects/route.ts", deleteAllRoute("clearsGuestSession: true,"))).toContain(violation);
+    expect(checkRouteSource("src/app/api/projects/route.ts", deleteAllRoute('["clearsGuestSession"]: true,'))).toContain(violation);
+  });
+});
+
 describe("userSession opt-ins are confined to dev-sign-in (set) and sign-out (clear)", () => {
   const sessionRoute = (userSession: string) => `import { route } from "@/server/http/handler";
 import * as session from "@/server/services/session";
@@ -403,14 +420,16 @@ export const GET = route({ ...{ principal: "none" }, usesLlm: false, response: P
 describe("checkViewSource: a view is a pure mapper", () => {
   const VIEW = "src/server/http/views/example-view.ts";
 
-  it("passes type-only service imports and value imports of contracts, core, verification and views", () => {
+  it("passes type-only service imports and value imports of contracts, core, verification, views and the two pure deterministic helpers", () => {
     const source = `import type { UnderstandResult } from "@/server/services/understand";
 import type { Document } from "@/server/data/documents";
 import { toVerificationOutput } from "../verification";
 import { IdParams } from "@/shared/contracts/common";
 import { notFound } from "@/server/core/errors";
 import { documentView } from "./document-view";
-export function exampleView(r: UnderstandResult, d: Document) { return { r, d, toVerificationOutput, IdParams, notFound, documentView }; }
+import { sanitizeModelText } from "@/server/deterministic/sanitize/model-text";
+import { renderDraftContent } from "@/server/deterministic/draft-templates";
+export function exampleView(r: UnderstandResult, d: Document) { return { r, d, toVerificationOutput, IdParams, notFound, documentView, sanitizeModelText, renderDraftContent }; }
 `;
     expect(checkViewSource(VIEW, source)).toEqual([]);
   });
@@ -422,11 +441,13 @@ export function exampleView(r: UnderstandResult, d: Document) { return { r, d, t
     ['import { route } from "../handler";', '"../handler"'],
     ['import { getDb } from "@/db/client";', '"@/db/client"'],
     ['import { createGeminiClient } from "@/server/llm/providers";', '"@/server/llm/providers"'],
+    ['import { verify } from "@/server/deterministic/verify";', '"@/server/deterministic/verify"'],
+    ['import { renderDraftContent } from "@/server/deterministic/draft-templates/registry";', '"@/server/deterministic/draft-templates/registry"'],
     ['export { get } from "@/server/services/understand";', '"@/server/services/understand"'],
     ['import "@/server/services/ask";', '"@/server/services/ask"'],
   ])("rejects %s", (statement, specifier) => {
     expect(checkViewSource(VIEW, `${statement}\n`)).toEqual([
-      `imports ${specifier} by value — a view is a pure mapper (contracts, core, verification, views only)`,
+      `imports ${specifier} by value — a view is a pure mapper (contracts, core, verification, views and two pure deterministic helpers only)`,
     ]);
   });
 
