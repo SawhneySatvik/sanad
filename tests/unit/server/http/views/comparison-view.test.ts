@@ -57,6 +57,7 @@ function twoSidedResult(): ComparisonResult {
         id: "c1",
         changeType: "changed",
         explanation: "The fee changed.",
+        explanationProvenance: "ai_generated",
         quoteA: LEASE.licenseFee,
         quoteB: NDA_PARTY,
         verificationA: verify({ quote: LEASE.licenseFee, canonicalText: lease.canonicalText, inputMode: "text" }),
@@ -66,6 +67,7 @@ function twoSidedResult(): ComparisonResult {
         id: "c2",
         changeType: "added",
         explanation: "A new clause.",
+        explanationProvenance: "ai_generated",
         quoteA: null,
         quoteB: null,
         verificationA: null,
@@ -110,11 +112,11 @@ describe("comparisonView", () => {
     ]);
   });
 
-  it("explanationProvenance is templated only when no model call was made for the whole comparison", () => {
+  it("explanationProvenance follows each change even when a model was used", () => {
     const result = twoSidedResult();
-    result.comparison = { ...result.comparison, modelUsed: "none" };
+    result.changes[1].explanationProvenance = "templated";
     const view = comparisonView(result);
-    expect(view.changes[0].explanationProvenance).toBe("templated");
+    expect(view.changes[0].explanationProvenance).toBe("ai_generated");
     expect(view.changes[1].explanationProvenance).toBe("templated");
   });
 

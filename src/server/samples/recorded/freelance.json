@@ -1,0 +1,212 @@
+{
+  "modelUsed": "gemini-2.5-flash",
+  "findings": [
+    {
+      "category": "obligation",
+      "quote": "The Freelancer shall make such revisions to the Deliverables as the Client may request from time to time until the Client is satisfied with them, at no additional cost.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "This clause means you must make unlimited revisions until the client is fully satisfied, without any extra payment. You should try to negotiate a limit on the number of revisions or specify what constitutes a 'satisfactory' deliverable to avoid endless unpaid work.",
+        "freelancer_already_signed": "You are obligated to make revisions to your deliverables as many times as the client requests until they are completely satisfied, and you will not receive additional payment for these revisions. Be prepared for potentially extensive revision cycles.",
+        "client_about_to_sign": "This clause gives you the right to request unlimited revisions to the deliverables until you are completely satisfied, and the freelancer cannot charge you extra for these revisions. This ensures you get the exact outcome you want."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "The Freelancer shall deliver each Deliverable by the Milestone Date specified for it in Schedule A.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "You are required to deliver each part of the work by the specific Milestone Dates listed in Schedule A. Review these dates carefully to ensure they are realistic and achievable.",
+        "freelancer_already_signed": "You must deliver each specified deliverable by its corresponding Milestone Date. Failing to do so could result in penalties.",
+        "client_about_to_sign": "This clause confirms that the freelancer must meet the delivery dates for each milestone as specified in Schedule A. This helps you track progress and ensures timely completion of the project."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "If the Freelancer fails to deliver any Deliverable by its Milestone Date, the Client may deduct from the Fees an amount equal to two percent (2%) of the total Fees for each day of delay, without any upper limit, irrespective of the cause of the delay.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "This is a severe penalty clause. For every day a deliverable is late, you can lose 2% of the *total* project fees (Rs. 4,80,000), with no maximum limit, even if the delay is due to reasons outside your control. You should strongly negotiate for a reasonable cap on these deductions and include a force majeure clause.",
+        "freelancer_already_signed": "Be extremely careful about meeting all Milestone Dates. If you are late with any deliverable, the client can deduct 2% of the *total* project fees (Rs. 4,80,000) for each day of delay, without any limit, regardless of why the delay occurred. This could quickly result in you owing the client money.",
+        "client_about_to_sign": "This clause allows you to deduct a significant penalty of 2% of the total fees (Rs. 4,80,000) for each day any deliverable is late, without any maximum limit, even if the delay is not the freelancer's fault. This provides strong motivation for timely delivery."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Client shall deduct tax at source from the Fees at the rate applicable under the income-tax law in force and shall issue the corresponding TDS certificate to the Freelancer.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "The client is obligated to deduct Tax Deducted at Source (TDS) from your payments as per Indian income tax laws and provide you with a TDS certificate. This means you will receive your payments after TDS deduction, and you can claim credit for this TDS when filing your income tax returns.",
+        "freelancer_already_signed": "The client will deduct TDS from your payments. Ensure you receive the TDS certificates from the client as these are crucial for you to claim credit for the tax deducted when you file your income tax returns.",
+        "client_about_to_sign": "You are required to deduct TDS from the freelancer's fees according to Indian tax laws and issue a TDS certificate. This is a compliance requirement that you must fulfill."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "If the Freelancer is registered under the Goods and Services Tax laws, she shall issue a tax invoice charging GST at the applicable rate, and the Client shall pay such GST in addition to the Fees.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "If you are registered under GST, you must issue a tax invoice that includes GST, and the client will pay this GST in addition to your fees. If you are not GST registered, this clause won't apply, but you should clarify your GST status.",
+        "freelancer_already_signed": "If you are GST registered, remember to charge GST on your invoices at the applicable rate. The client is obligated to pay this GST on top of your agreed fees.",
+        "client_about_to_sign": "If the freelancer is GST registered, you will need to pay GST in addition to the agreed fees, as reflected in their tax invoice. Budget for this additional cost."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Fees are inclusive of all costs and expenses of the Freelancer, including the cost of stock images, fonts, plugins and software subscriptions, and the Client shall not reimburse any expense unless it has approved the expense in writing in advance.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "Your fees cover all your expenses, including costs for stock images, fonts, plugins, and software subscriptions. The client will only reimburse pre-approved expenses in writing. Make sure to factor all potential costs into your fees or negotiate which expenses the client will cover and get them approved in advance.",
+        "freelancer_already_signed": "All your operational costs, such as for software and stock assets, are covered by your fees. If you incur any additional expenses, you will only be reimbursed if the client explicitly approved them in writing beforehand.",
+        "client_about_to_sign": "This clause confirms that the agreed fees cover all the freelancer's operating expenses. You are not responsible for any additional costs unless you specifically approve them in writing beforehand, which helps control project costs."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "All intellectual property rights in the Deliverables, including all drafts, concepts, sketches and work in progress, shall vest in the Client absolutely upon their creation, whether or not the Fees for them have been paid, and the Freelancer hereby assigns all such rights to the Client.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "All intellectual property rights (IPR) for your work, including unfinished drafts, transfer to the client immediately upon creation, even if you haven't been paid for them yet. This means you won't own the IPR for your work on this project at any point. You might want to negotiate that IPR transfers only upon full payment.",
+        "freelancer_already_signed": "The client owns all intellectual property rights for your work, including all drafts and concepts, from the moment you create them, regardless of whether you have been paid. You no longer have any rights over this work.",
+        "client_about_to_sign": "This is a strong clause ensuring that you own all intellectual property rights for the deliverables and even preliminary work, immediately upon their creation, and regardless of payment status. This secures your ownership from the outset."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "The Freelancer may display the final designs in her personal portfolio and on her website after the Client has publicly launched the redesigned website.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "You are allowed to use the final designs in your portfolio and on your website only after the client has publicly launched their redesigned website. The term 'publicly launched' is not defined and could lead to disputes if the client delays the launch or does a soft launch. You should clarify what constitutes a 'public launch' or negotiate a specific timeframe after project completion when you can use the designs.",
+        "freelancer_already_signed": "You can display the final designs in your portfolio and on your website, but only once the client has publicly launched their redesigned website. The exact timing of this 'public launch' is undefined, so you'll need to monitor the client's actions or confirm with them when you can use the designs.",
+        "client_about_to_sign": "The freelancer is allowed to showcase the final designs in her portfolio and on her website only after you have publicly launched the redesigned website. This protects your confidentiality and allows you to control the timing of the public reveal of your new designs."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Freelancer shall keep confidential all non-public information of the Client, including product recipes, supplier details, sales data and customer information, and shall use it only for performing the Services.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "You are obligated to keep all client non-public information confidential and use it only for the purpose of performing the services. This is a standard confidentiality clause.",
+        "freelancer_already_signed": "You must maintain the confidentiality of all client non-public information and only use it for the project. Be mindful of this obligation even after the project is complete.",
+        "client_about_to_sign": "This clause obligates the freelancer to keep your confidential information secret and use it solely for the project, protecting your business-sensitive data."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "The obligations in this Clause 8 shall survive for three (3) years after the termination or completion of this Agreement.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "Your confidentiality obligations will continue for three years even after the project ends or the agreement is terminated. Ensure you understand and are prepared for this extended commitment.",
+        "freelancer_already_signed": "Your duty to keep the client's information confidential extends for three years after this agreement finishes. You must continue to protect this information during this period.",
+        "client_about_to_sign": "This clause ensures that the freelancer's confidentiality obligations to you will remain in effect for three years after the agreement ends, providing extended protection for your sensitive information."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "On the completion or termination of this Agreement, the Freelancer shall delete all data of the Client and all access credentials in her possession, and shall confirm the deletion by email.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "Upon completion or termination of the project, you must delete all client data and access credentials and send an email confirmation. This is an important procedural step.",
+        "freelancer_already_signed": "Once the agreement ends, you are required to delete all client data and access credentials you possess and then send an email confirming this deletion. Make sure to perform this step to comply with the agreement.",
+        "client_about_to_sign": "This clause requires the freelancer to delete all your data and access credentials upon completion or termination of the agreement and provide email confirmation, which helps safeguard your information."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "During the term of this Agreement and for a period of twelve (12) months after its termination or completion, the Freelancer shall not provide design or development services to any business engaged in the manufacture or sale of packaged foods, snacks or beverages in India.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "This is a non-compete clause that restricts you from working for any competing business in the packaged foods, snacks, or beverages sector in India for 12 months after this project ends. This could significantly impact your future work opportunities in a specific industry. Consider how this restriction affects your career and if you need to negotiate its scope (e.g., industry, geography, duration) or compensation for it.",
+        "freelancer_already_signed": "For the duration of this agreement and for one year after it ends, you are prohibited from providing design or development services to any business in India that manufactures or sells packaged foods, snacks, or beverages. Be aware of this restriction when seeking new clients.",
+        "client_about_to_sign": "This non-compete clause prevents the freelancer from working for your direct competitors in the packaged food, snacks, or beverages industry in India for 12 months after the agreement ends. This protects your business interests and competitive edge."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "During the term of this Agreement and for twelve (12) months thereafter, the Freelancer shall not solicit any employee of the Client for employment or engagement.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "You cannot try to hire or engage any of the client's employees for the duration of this agreement and for 12 months after it ends. This is a standard non-solicitation clause.",
+        "freelancer_already_signed": "You are prohibited from approaching any of the client's employees for employment or engagement for one year after the agreement concludes. Keep this in mind if you interact with their staff.",
+        "client_about_to_sign": "This clause prevents the freelancer from poaching your employees for a year after the agreement ends, helping you retain your staff."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "This Agreement commences on the Effective Date and continues until the Client accepts the final Deliverables, unless it is terminated earlier.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "The agreement's term is open-ended, lasting until the client accepts the final deliverables. This means the project duration is somewhat dependent on the client's approval process.",
+        "freelancer_already_signed": "The agreement remains in effect until the client formally accepts all final deliverables. Your obligations and rights under this contract continue until that point.",
+        "client_about_to_sign": "The agreement continues until you formally accept the final deliverables. This gives you control over the project's official end date based on your satisfaction."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Client may terminate this Agreement at any time, for any reason, by giving the Freelancer seven (7) days' written notice.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "The client can terminate this agreement at any time, for any reason, by giving you only seven days' notice. This means your project could end abruptly, so you should consider the financial implications of such a short notice period and if you can negotiate a longer notice period or a termination fee for work in progress.",
+        "freelancer_already_signed": "The client has the right to terminate your services with just seven days' written notice, for any reason. Be aware that the project could end suddenly, impacting your income.",
+        "client_about_to_sign": "This clause gives you a flexible right to terminate the agreement at any time and for any reason, with just seven days' written notice to the freelancer. This provides you with significant control and flexibility."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "Upon any termination by the Client, the Client shall pay only for Deliverables accepted in writing before the date of termination, and no payment shall be due for work in progress or for Deliverables not yet accepted.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "If the client terminates the agreement, you will only be paid for deliverables that they have *already accepted in writing*. You will receive no payment for any work in progress or deliverables submitted but not yet formally accepted. This creates a significant risk, as you could do substantial work and not get paid if the project is terminated before acceptance. You should negotiate for payment for work in progress or for all submitted deliverables upon termination.",
+        "freelancer_already_signed": "If the client terminates the agreement, you will only be paid for deliverables that have been formally accepted in writing before the termination date. Any work you've done that hasn't been accepted yet, or work in progress, will not be paid for. Ensure you get written acceptance for deliverables as soon as possible.",
+        "client_about_to_sign": "If you terminate the agreement, you are only obligated to pay for deliverables you have formally accepted in writing prior to the termination. You will not have to pay for any work in progress or deliverables not yet accepted, which limits your financial exposure upon termination."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Freelancer may terminate this Agreement only if the Client fails to pay an undisputed invoice for sixty (60) days after receiving a written reminder from the Freelancer.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "You have very limited termination rights; you can only terminate if the client fails to pay an undisputed invoice for 60 days *after* you've sent a written reminder. This means you must wait a long time for payment and follow a specific process before you can end the agreement due to non-payment. Consider if this timeframe is acceptable, given your cash flow needs.",
+        "freelancer_already_signed": "You can only terminate this agreement if the client delays payment on an undisputed invoice for 60 days, and only after you've sent them a written reminder. This gives the client a significant grace period for late payments before you can act.",
+        "client_about_to_sign": "The freelancer's ability to terminate the agreement is restricted; they can only do so if you fail to pay an undisputed invoice for 60 days after they send a written reminder. This provides you with considerable flexibility regarding payment timing before facing termination."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "On termination for any reason, the Freelancer shall immediately deliver to the Client all Deliverables and work in progress in their then-current form.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "If the agreement is terminated for any reason, you must immediately hand over all deliverables and work in progress, even if you haven't been fully paid for them. This combines with the payment-on-termination clause to potentially mean you deliver work without full compensation.",
+        "freelancer_already_signed": "Regardless of why the agreement ends, you are required to immediately deliver all completed deliverables and any work in progress to the client in their current state. This applies even if you haven't been paid for all of it.",
+        "client_about_to_sign": "This clause ensures that upon termination, regardless of the reason, you will immediately receive all deliverables and work in progress from the freelancer, allowing you to take over the project smoothly."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Freelancer shall indemnify and hold harmless the Client, its directors, employees and affiliates from and against all losses, damages, claims, costs and expenses, including indirect and consequential losses, loss of profit and legal fees, arising out of or in connection with the Services or any breach of this Agreement by the Freelancer, without any limit.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "This is an extremely broad and unlimited indemnity clause. You are fully responsible for covering all losses, damages, claims, costs, and expenses (including legal fees and loss of profit) that the client, its directors, employees, and affiliates might incur due to your services or any breach of the agreement, with no financial cap. This could expose you to significant financial risk. You should strongly negotiate to cap your liability and exclude indirect/consequential losses.",
+        "freelancer_already_signed": "You are fully liable to indemnify the client for all losses, including indirect and consequential losses, and loss of profit, without any financial limit, if these arise from your services or any breach of the agreement. This means you could be responsible for very large amounts if something goes wrong, impacting your personal assets.",
+        "client_about_to_sign": "This is a very strong indemnity clause that provides you with broad protection. The freelancer is fully responsible, without any financial limit, for all losses, damages, claims, costs, and expenses, including indirect losses and loss of profit, that you or your affiliates might suffer due to their services or any breach of the agreement. This significantly reduces your risk."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "The total aggregate liability of the Client under or in connection with this Agreement shall not exceed the Fees paid to the Freelancer in the one (1) month immediately preceding the claim.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "The client's total liability to you is capped at the amount of fees paid in the single month before any claim. Given that payments are milestone-based, this cap could be very low or even zero if no payment was made in that specific month. This significantly limits your ability to recover damages from the client. You should negotiate for a higher, more reasonable liability cap for the client, such as the total fees paid under the agreement or a fixed amount.",
+        "freelancer_already_signed": "The maximum amount the client could be liable to pay you for any claims is limited to the fees they paid you in the one month immediately before your claim. This means that if you've been paid little or nothing in that month, your potential recovery from the client is severely restricted, even if they cause you significant loss.",
+        "client_about_to_sign": "This clause is highly favorable to you as it significantly limits your total financial liability to the freelancer. Your maximum liability is capped at the amount of fees you paid the freelancer in the single month immediately preceding any claim, protecting you from large claims."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "The Parties shall first attempt to resolve any dispute arising under this Agreement amicably through discussion within thirty (30) days, failing which the courts at Mumbai shall have exclusive jurisdiction.",
+      "lensExplanations": {
+        "freelancer_about_to_sign": "Any disputes must first be attempted to be resolved through discussion within 30 days. If discussions fail, only the courts in Mumbai will have the power to hear the case. If you are not based in Mumbai, this could involve significant travel and legal costs for you.",
+        "freelancer_already_signed": "If a dispute arises, you must first try to resolve it through discussion within 30 days. If that fails, any legal action must be pursued in the courts of Mumbai, which could be inconvenient and costly if you are based elsewhere.",
+        "client_about_to_sign": "Disputes must first be discussed for 30 days. If not resolved, the courts in Mumbai will have exclusive jurisdiction. This is advantageous for you, as your company is based in Mumbai, making legal proceedings more convenient."
+      }
+    },
+    {
+      "category": "missing_clause",
+      "quote": null,
+      "lensExplanations": {
+        "freelancer_about_to_sign": "The agreement does not explicitly state a limit on the number of revisions or a clear process for accepting deliverables, which could lead to endless revision requests without additional pay. You should negotiate a specific number of revisions included in the fees and a clear acceptance procedure.",
+        "freelancer_already_signed": "The contract doesn't specify a limit on revisions, meaning you may be asked to make changes indefinitely without extra pay. Also, there's no defined process for the client to accept deliverables beyond 'confirms in writing,' which might lead to delays in payment.",
+        "client_about_to_sign": "While you have the right to unlimited revisions, the agreement doesn't set a formal limit, which could lead to a longer project timeline if you frequently request changes. Consider adding a clear acceptance procedure to streamline the process."
+      }
+    },
+    {
+      "category": "missing_clause",
+      "quote": null,
+      "lensExplanations": {
+        "freelancer_about_to_sign": "The contract does not include a 'force majeure' clause, which typically excuses parties from fulfilling obligations due to unforeseen events like natural disasters or pandemics. Without it, you could be penalized (e.g., through late delivery deductions) even if delays are beyond your control. You should negotiate to include a force majeure clause.",
+        "freelancer_already_signed": "There is no 'force majeure' clause in this agreement. This means you might still be held responsible for delays or non-performance due to unforeseen circumstances like natural disasters, which are outside your control, potentially incurring penalties.",
+        "client_about_to_sign": "The agreement lacks a 'force majeure' clause. While this means the freelancer is strictly bound by deadlines regardless of unforeseen events, it could also mean that if an major unforeseen event impacts your ability to provide inputs or respond, you might still be expected to meet your own obligations, potentially without recourse."
+      }
+    }
+  ]
+}

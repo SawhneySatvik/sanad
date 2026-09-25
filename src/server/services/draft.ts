@@ -71,6 +71,7 @@ export interface DraftSectionOutput {
 /** The shape create(), revise() and get() all return. */
 export interface DraftResult {
   id: string;
+  title: string;
   documentType: DraftableDocumentTypeId;
   mode: DraftMode;
   groundingDocumentId: string | null;
@@ -167,6 +168,7 @@ function toDraftResult(draft: DraftWithSections, options: ToDraftResultOptions):
   const documentType = draft.documentType as DraftableDocumentTypeId;
   return {
     id: draft.id,
+    title: draft.title ?? `${DOCUMENT_TYPE_REGISTRY.find((entry) => entry.id === documentType)?.label ?? documentType} draft`,
     documentType,
     mode: draft.mode,
     groundingDocumentId: draft.groundingDocumentId,
@@ -231,6 +233,8 @@ export async function create(deps: DraftDeps, principal: Principal, input: Creat
 
   const draft = await createDraft(deps.db, principal, {
     documentType: input.documentType,
+    title: `${DOCUMENT_TYPE_REGISTRY.find((entry) => entry.id === input.documentType)?.label ?? input.documentType} draft`,
+    userInstructions: input.userInstructions,
     mode: input.mode,
     groundingDocument,
     sections,
@@ -300,7 +304,7 @@ export async function revise(deps: DraftDeps, principal: Principal, parentDraftI
   const sections = buildSectionInputs(template, data.sections);
   const content = renderDraftContent(documentType, sections);
 
-  const draft = await reviseDraft(deps.db, principal, parentDraftId, { sections, content, modelUsed });
+  const draft = await reviseDraft(deps.db, principal, parentDraftId, { sections, content, modelUsed, userInstructions: input.userInstructions });
   return toDraftResult(draft, {
     promptVersion: PROMPT_VERSION,
     groundingDocumentAvailable: parent.mode === "document_grounded" ? groundingDocument !== undefined : null,

@@ -1,7 +1,7 @@
-// Two contexts, two distinct x-forwarded-for values: RATE_LIMIT_IP_PER_MINUTE is set low by
-// scripts/e2e-server.ts specifically so this spec can exhaust one bucket in a handful of requests
-// without waiting a real minute, and without starving any other spec (which uses its own distinct
-// random IP via tests/e2e/support/fixtures.ts).
+// Two contexts, two distinct x-forwarded-for values: RATE_LIMIT_IP_PER_MINUTE is set by
+// scripts/e2e-server.ts to a value this spec can exhaust in one quick burst without waiting a real
+// minute, yet high enough that a screen spec's real backend calls never trip it. Every other spec
+// uses its own distinct random IP via tests/e2e/support/fixtures.ts.
 
 import { test, expect, newIsolatedContext } from "./fixtures";
 
@@ -10,15 +10,15 @@ test("one context's usage never counts against a different context's per-IP buck
   const fresh = await newIsolatedContext(browser);
 
   try {
-    // RATE_LIMIT_IP_PER_MINUTE=8 (scripts/e2e-server.ts): the 9th request from the same IP in the
+    // RATE_LIMIT_IP_PER_MINUTE=60 (scripts/e2e-server.ts): the 61st request from the same IP in the
     // same minute is the first to see 429 — GET /api/projects works for both guest and signed-in,
     // needs no body, and never touches the LLM.
     let lastStatus = 0;
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 61; i++) {
       const response = await exhausted.context.request.get("/api/projects");
       lastStatus = response.status();
     }
-    expect(lastStatus, "the 9th request from the same IP within a minute must be rate-limited").toBe(429);
+    expect(lastStatus, "the 61st request from the same IP within a minute must be rate-limited").toBe(429);
 
     const freshResponse = await fresh.context.request.get("/api/projects");
     expect(freshResponse.status(), "a different IP's own bucket must be unaffected").toBe(200);

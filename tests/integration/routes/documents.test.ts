@@ -80,9 +80,9 @@ describe("POST /api/documents", () => {
 
     // No raw VerifyResult on the wire: exactly the contract's keys, and no model text on a verified one.
     const keysByStatus: Record<string, string[]> = {
-      verified: ["spanEnd", "spanStart", "spanText", "status", "verifierVersion"],
-      approximate: ["claimedQuote", "spanEnd", "spanStart", "spanText", "status", "verifierVersion"],
-      not_found: ["claimedQuote", "spanEnd", "spanStart", "spanText", "status", "verifierVersion"],
+      verified: ["spanEnd", "spanStart", "spanText", "status", "textHash", "verifierVersion"],
+      approximate: ["claimedQuote", "spanEnd", "spanStart", "spanText", "status", "textHash", "verifierVersion"],
+      not_found: ["claimedQuote", "spanEnd", "spanStart", "spanText", "status", "textHash", "verifierVersion"],
     };
     for (const finding of raw.findings) {
       if (finding.verification === null) continue;

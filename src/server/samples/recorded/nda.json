@@ -1,0 +1,230 @@
+{
+  "modelUsed": "gemini-2.5-flash",
+  "findings": [
+    {
+      "category": "obligation",
+      "quote": "This Mutual Non-Disclosure Agreement (this \"Agreement\" or this \"NDA\") is entered into at Mumbai on 14th September, 2026 (the \"Effective Date\")",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This clause establishes the official start date of the agreement as September 14, 2026. Be aware that any information shared before this date might also be covered if the definition of \"Confidential Information\" includes pre-Effective Date disclosures.",
+        "receiving_party_already_signed": "This clause confirms that your obligations under this agreement began on September 14, 2026. Ensure you adhere to all terms from that date onwards.",
+        "disclosing_party_about_to_sign": "This clause sets the official start date of the agreement as September 14, 2026. This is when the confidentiality obligations for both parties officially begin, though the definition of 'Confidential Information' might extend to information shared earlier."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "in connection with the Purpose each Party may disclose to the other certain confidential and proprietary information.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This general statement indicates that information exchange might happen. However, it's vague about what 'certain confidential and proprietary information' specifically entails. Review the definition of 'Confidential Information' to understand the full scope of what you will be bound to protect.",
+        "receiving_party_already_signed": "This general statement indicates that information exchange might happen. However, it's vague about what 'certain confidential and proprietary information' specifically entails. Refer to Clause 1.1 for the comprehensive definition of 'Confidential Information' to understand what you are bound to protect.",
+        "disclosing_party_about_to_sign": "This general statement indicates that information exchange might happen. It's important to ensure that the definition of 'Confidential Information' in Clause 1.1 is broad enough to cover all the proprietary information you intend to disclose."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "\"Confidential Information\" means any and all information, in whatever form or medium, disclosed or made available by or on behalf of the Disclosing Party to the Receiving Party, whether before, on or after the Effective Date, and whether or not marked, designated or otherwise identified as confidential, including without limitation business plans, customer data, pricing, product roadmaps, source code, designs, wireframes, prototypes, know-how, and any information that the Receiving Party may learn or observe during visits to the premises of the Disclosing Party.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This definition of \"Confidential Information\" is very broad, covering almost any information shared, regardless of how it's shared, when it's shared (even before the agreement), or if it's marked as confidential. You will be responsible for protecting a wide range of information, including things you observe. Negotiate for a narrower definition, clearer marking requirements, or a time limit for information disclosed before the Effective Date if possible.",
+        "receiving_party_already_signed": "This broad definition means you are obligated to protect a wide array of information, including anything disclosed before the Effective Date, and information you observe on the Disclosing Party's premises. Assume all information received or observed in connection with the Purpose is confidential unless it clearly falls under the exclusions in Clause 2.1.",
+        "disclosing_party_about_to_sign": "This is a very broad definition of \"Confidential Information,\" which is highly favorable to you as the Disclosing Party. It covers almost any information you share, regardless of format, date (even before signing), or whether it's explicitly marked. This maximizes the protection for your disclosures."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "\"Representatives\" means, in relation to a Party, its directors, partners, employees and professional advisers and, in the case of Brightwater only, also its Affiliates, vendors and consultants.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This clause defines \"Representatives\" differently for each party. For Pixelkraft (the receiving party), it's limited to directors, partners, employees, and professional advisers. If you need to share confidential information with your Affiliates, vendors, or consultants, you will need Brightwater's explicit permission or an amendment to this definition, as they are not automatically covered for you.",
+        "receiving_party_already_signed": "This clause means that only your directors, partners, employees, and professional advisers are considered your \"Representatives\" for the purpose of sharing Confidential Information. You cannot share it with your Affiliates, vendors, or consultants without Brightwater's explicit consent, as that would be a breach.",
+        "disclosing_party_about_to_sign": "This clause is favorable to Brightwater as it broadens the scope of its 'Representatives' to include Affiliates, vendors, and consultants, allowing Brightwater more flexibility in sharing your confidential information while still holding them responsible. However, for Pixelkraft, the definition is narrower, which means Pixelkraft needs to be more careful about who they share your information with."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The burden of proving that any information falls within an exclusion in Clause 2.1 shall be on the Receiving Party.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This clause places the responsibility on you to prove that any information you claim is not confidential falls under the specified exclusions. This means you must keep meticulous records of when and how you received information or when it became publicly available.",
+        "receiving_party_already_signed": "You bear the burden of proof if you claim certain information is not confidential. Ensure you have clear, written evidence (as required by Clause 2.1) to demonstrate that the information was already public or in your lawful possession before disclosure by the Disclosing Party.",
+        "disclosing_party_about_to_sign": "This clause places the burden of proof squarely on the Receiving Party to demonstrate that information is not confidential. This is highly advantageous for you, as it makes it more difficult for them to claim an exclusion and ensures your information receives maximum protection."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Receiving Party shall use the Confidential Information solely for the Purpose and for no other purpose whatsoever.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This clause strictly limits your use of the confidential information to the defined 'Purpose' (redesigning Brightwater's e-commerce website and mobile apps). Ensure that all your intended uses of the information fall within this narrow definition, and clarify if any other uses might be necessary before signing.",
+        "receiving_party_already_signed": "You must only use the confidential information for redesigning Brightwater's e-commerce website and mobile applications. Using it for any other project, internal research not directly related to the Purpose, or any other business activity would be a breach of this agreement.",
+        "disclosing_party_about_to_sign": "This clause is very protective as it ensures the Receiving Party can only use your confidential information for the specific, defined 'Purpose.' This prevents them from using your valuable data for their own general business activities or for other clients."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Receiving Party shall hold the Confidential Information in strict confidence and shall protect it using at least the same degree of care that it uses to protect its own confidential information of a similar nature, and in no event less than a reasonable degree of care.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "You are required to protect the confidential information with a high standard of care. This means you must have robust security measures in place, similar to those you use for your own most sensitive data, and these measures must meet or exceed what is considered 'reasonable' in the industry.",
+        "receiving_party_already_signed": "You must maintain strict confidentiality and protect the information with at least the same level of care you apply to your own confidential data, and at a minimum, a reasonable degree of care. Review your internal security protocols to ensure they meet this standard for the Disclosing Party's information.",
+        "disclosing_party_about_to_sign": "This clause provides strong protection for your information by requiring the Receiving Party to use 'strict confidence' and 'at least the same degree of care' they use for their own confidential information, along with a 'reasonable degree of care.' This sets a high bar for their security obligations."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Receiving Party may disclose Confidential Information only to those of its Representatives who need to know it for the Purpose and who are bound by obligations of confidentiality no less protective than those contained in this Agreement. The Receiving Party shall be responsible for any breach of this Agreement by its Representatives.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "You can only share confidential information with your representatives who genuinely 'need to know' it for the specific Purpose. Crucially, these representatives must also be under confidentiality obligations that are as strict as, or stricter than, those in this agreement. You will be fully liable for any breaches caused by your representatives, so ensure they understand and comply with these terms.",
+        "receiving_party_already_signed": "You are responsible for ensuring that any of your directors, partners, employees, or professional advisers who access the confidential information have a legitimate 'need to know' for the Purpose and are legally bound by confidentiality terms as strong as this NDA. You are directly responsible for any breach committed by them.",
+        "disclosing_party_about_to_sign": "This clause is very important as it limits who the Receiving Party can share your confidential information with (only those who 'need to know' for the Purpose) and requires those individuals to be bound by similar confidentiality obligations. Crucially, it makes the Receiving Party fully responsible for any breach committed by their Representatives, which provides strong accountability."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Receiving Party shall not copy, reverse engineer, decompile or disassemble any Confidential Information, software, prototype or other tangible item provided by the Disclosing Party, except to the extent strictly necessary for the Purpose.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This clause prohibits copying, reverse engineering, decompiling, or disassembling confidential information unless it is absolutely essential for achieving the specific Purpose. Carefully assess if any of these activities are strictly necessary for the redesign project and ensure all such activities are documented and justified.",
+        "receiving_party_already_signed": "You are prohibited from copying, reverse engineering, decompiling, or disassembling any confidential information, software, or prototypes, unless it is strictly and demonstrably necessary for the Purpose of redesigning Brightwater's platforms. Any action beyond this strict necessity is a breach.",
+        "disclosing_party_about_to_sign": "This clause is highly beneficial for protecting your intellectual property as it explicitly prohibits the Receiving Party from copying, reverse engineering, decompiling, or disassembling your confidential information, software, or prototypes, except when absolutely essential for the stated Purpose."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Receiving Party shall promptly notify the Disclosing Party in writing upon becoming aware of any unauthorised use or disclosure of the Confidential Information, and shall take all reasonable steps to limit its consequences.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "You have an obligation to immediately inform the Disclosing Party in writing if you discover any unauthorized use or disclosure of their confidential information. You must also take all practical steps to reduce any negative impact of such a breach. Establish internal protocols for incident response and notification.",
+        "receiving_party_already_signed": "If you become aware of any unauthorized use or disclosure of Brightwater's confidential information, you must notify Brightwater in writing without delay. You also have an ongoing obligation to take all reasonable measures to mitigate the consequences of such an incident.",
+        "disclosing_party_about_to_sign": "This clause is crucial as it obligates the Receiving Party to notify you promptly in writing of any unauthorized use or disclosure of your confidential information. It also requires them to take reasonable steps to limit the consequences, which helps in damage control and remediation."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Where the Confidential Information disclosed by Brightwater includes personal data of its customers, Pixelkraft shall process such personal data only for the Purpose, on the documented instructions of Brightwater, and in accordance with the Digital Personal Data Protection Act, 2023.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "If you receive customer personal data from Brightwater, you must strictly process it only for the redesign Purpose, strictly following Brightwater's written instructions, and in full compliance with the Digital Personal Data Protection Act, 2023. Ensure your data handling practices and systems are compliant with this Act before you receive any personal data.",
+        "receiving_party_already_signed": "If you have received personal data from Brightwater's customers, you are legally bound to process it only for the agreed Purpose, based on Brightwater's documented instructions, and in strict adherence to the Digital Personal Data Protection Act, 2023. Any deviation could lead to serious legal consequences under Indian law.",
+        "disclosing_party_about_to_sign": "This clause is highly important for you, as it ensures that if you share customer personal data, the Receiving Party is explicitly obligated to process it only for the stated Purpose, according to your instructions, and in full compliance with the Digital Personal Data Protection Act, 2023. This offers significant data protection assurances for your customers' personal data."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Notwithstanding anything contained in this Agreement, nothing shall restrict Brightwater or its Representatives from using, for any purpose, any Residuals. \"Residuals\" means ideas, concepts, know-how and techniques contained in the Confidential Information of Pixelkraft that are retained in the unaided memory of the personnel of Brightwater who had access to such Confidential Information.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This is a 'Residuals' clause that allows Brightwater and its representatives to use any ideas, concepts, know-how, and techniques from your confidential information that are remembered by their personnel without aid. This means they can potentially use aspects of your intellectual contributions in their future work. Consider if this level of access to 'Residuals' is acceptable, especially given the broad definition, and if you need to negotiate safeguards or a narrower scope.",
+        "receiving_party_already_signed": "This 'Residuals' clause means that Brightwater or its representatives can use any ideas, concepts, know-how, or techniques from your confidential information if they are retained in the unaided memory of their personnel, for any purpose. You cannot prevent them from using such remembered information.",
+        "disclosing_party_about_to_sign": "This 'Residuals' clause is very beneficial for Brightwater. It explicitly allows Brightwater and its representatives to use ideas, concepts, know-how, and techniques from Pixelkraft's confidential information that are retained in the 'unaided memory' of Brightwater's personnel, for any purpose. This provides Brightwater with significant flexibility to use general learnings from the engagement without being bound by confidentiality for those 'Residuals'."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "Within five (5) days of a written request from the Disclosing Party, and in any event upon the expiry or termination of this Agreement, the Receiving Party shall return or destroy all Confidential Information of the Disclosing Party in its possession or control, including all copies, notes and extracts, and an authorised officer of the Receiving Party shall certify such return or destruction in writing.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "You are obligated to return or destroy all confidential information, including any copies or notes, within five days of a written request from the Disclosing Party, or automatically upon the agreement's end. An authorized officer must also provide written certification of this. Ensure your internal processes can meet this strict deadline and certification requirement.",
+        "receiving_party_already_signed": "You must either return or destroy all of Brightwater's confidential information, including all copies and notes, within five days if Brightwater sends a written request. You must also do this automatically when the agreement ends. An authorized officer needs to certify this in writing, so ensure you have a clear process for compliance.",
+        "disclosing_party_about_to_sign": "This clause is strong as it gives you the right to demand the return or destruction of all your confidential information at any time, with a tight 5-day deadline. It also ensures automatic return/destruction upon agreement expiry/termination, and requires written certification from an authorized officer, providing strong assurance of compliance."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "This Agreement shall remain in force for a period of two (2) years from the Effective Date, unless terminated earlier by either Party by giving thirty (30) days' written notice to the other Party.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This agreement will last for two years from September 14, 2026, but either party can terminate it earlier with 30 days' written notice. Note that even if the agreement terminates, the confidentiality obligations continue in perpetuity (as per Clause 6.2).",
+        "receiving_party_already_signed": "The primary term of this agreement is two years from September 14, 2026, or until terminated with 30 days' written notice by either party. However, be aware that your confidentiality obligations continue indefinitely even after the agreement's term ends or it is terminated.",
+        "disclosing_party_about_to_sign": "This clause establishes a two-year term for the agreement but allows either party to terminate it with 30 days' written notice. This gives you flexibility if the business discussions do not progress as expected. Importantly, Clause 6.2 ensures confidentiality obligations continue indefinitely regardless of termination."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The confidentiality obligations of the Parties under this Agreement shall survive the expiry or termination of this Agreement and shall continue in perpetuity.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This is a very significant clause: your obligation to keep confidential information secret will never expire. Even if the agreement ends or is terminated, you are bound to protect the information forever. This is a perpetual obligation and very broad.",
+        "receiving_party_already_signed": "Be aware that your confidentiality obligations under this agreement are perpetual. This means they do not end when the agreement expires or is terminated, and you are bound to keep the information confidential indefinitely. This is a very stringent and long-lasting commitment.",
+        "disclosing_party_about_to_sign": "This is a highly favorable clause for you, as it stipulates that the confidentiality obligations of both parties will continue 'in perpetuity,' meaning forever, even after the agreement's expiry or termination. This provides maximum long-term protection for your confidential information."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "During the term of this Agreement and for a period of twelve (12) months after its expiry or termination, Pixelkraft shall not, directly or indirectly, provide design, user experience or technology services to any person engaged in the business of online retail of apparel, footwear or home furnishings in India that competes with Brightwater.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This is a non-compete clause that specifically restricts Pixelkraft from providing design, UX, or technology services to Brightwater's direct competitors in online retail of apparel, footwear, or home furnishings in India. This restriction applies during the agreement's term and for an additional 12 months after it ends. This could significantly limit your ability to work with other clients in a key sector; consider the impact on your business before signing.",
+        "receiving_party_already_signed": "As Pixelkraft, you are prohibited from working for Brightwater's competitors in the online retail of apparel, footwear, or home furnishings in India. This restriction applies now and for 12 months after this agreement ends. You must ensure you do not take on any projects that fall under this non-compete clause, as it could lead to severe penalties.",
+        "disclosing_party_about_to_sign": "This is a beneficial non-compete clause that protects Brightwater from Pixelkraft working with your direct competitors in the online retail sector for a reasonable period (12 months) after the agreement ends. This helps prevent Pixelkraft from using knowledge gained from you to benefit a rival."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "During the term of this Agreement and for a period of twenty-four (24) months after its expiry or termination, neither Party shall solicit for employment or hire any employee of the other Party with whom it had contact in connection with the Purpose.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This is a mutual non-solicitation clause, meaning neither party can solicit or hire employees of the other party with whom they had contact for the Purpose. This restriction lasts during the agreement and for 24 months after it ends. This could limit your ability to hire talented individuals you meet through this engagement.",
+        "receiving_party_already_signed": "You are prohibited from soliciting or hiring any Brightwater employee with whom you had contact during this engagement, both now and for 24 months after the agreement ends. Ensure your recruitment team is aware of this restriction to avoid a breach.",
+        "disclosing_party_about_to_sign": "This is a mutual non-solicitation clause, which protects your employees from being poached by the Receiving Party for two years after the agreement ends. This helps you retain your talent, especially those who worked directly on the Purpose."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "The Receiving Party acknowledges that a breach of this Agreement may cause irreparable harm to the Disclosing Party for which damages may not be an adequate remedy, and that the Disclosing Party shall be entitled to seek injunctive relief under the Specific Relief Act, 1963, in addition to any other remedy available to it.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This clause acknowledges that money alone might not be enough to compensate the Disclosing Party for a breach. This means Brightwater can seek an injunction (a court order to stop certain actions) under Indian law, which could force you to immediately cease any activity deemed a breach, alongside other legal remedies. This gives them a powerful tool to enforce compliance.",
+        "receiving_party_already_signed": "If you breach this agreement, Brightwater can seek an injunction under the Specific Relief Act, 1963, meaning a court could order you to stop the breaching activity immediately. This is in addition to financial damages and other legal actions they might pursue. Compliance is crucial to avoid such a drastic measure.",
+        "disclosing_party_about_to_sign": "This clause is highly advantageous as it explicitly states that money damages may not be sufficient for a breach and that you are entitled to seek injunctive relief under the Specific Relief Act, 1963. This provides a strong legal mechanism to immediately stop any unauthorized use or disclosure of your confidential information."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "In the event of any breach of this Agreement by Pixelkraft or its Representatives, Pixelkraft shall pay to Brightwater liquidated damages of Rs. 50,00,000/- (Rupees Fifty Lakh only) for each instance of breach, which the Parties agree is a genuine pre-estimate of the loss likely to be suffered by Brightwater and not a penalty.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "As Pixelkraft, you will be liable to pay Brightwater Rs. 50,00,000 for each instance of breach by you or your representatives. This is a substantial fixed amount that applies per breach, and it is explicitly stated not to be a penalty but a genuine pre-estimate of loss. This clause carries significant financial risk for you.",
+        "receiving_party_already_signed": "As Pixelkraft, if you or your representatives breach this agreement, you are liable to pay Brightwater Rs. 50,00,000 for each individual breach. This is a significant fixed amount, so even minor breaches can result in substantial financial liability. Ensure strict compliance from yourself and your representatives.",
+        "disclosing_party_about_to_sign": "This clause is very strong for Brightwater. It sets a clear liquidated damages amount of Rs. 50,00,000 for each instance of breach by Pixelkraft, which both parties agree is a genuine pre-estimate of loss. This provides a clear and substantial financial remedy for you without having to prove actual damages in court."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "Pixelkraft shall indemnify and keep indemnified Brightwater, its Affiliates and their respective directors and employees against all losses, damages, costs (including legal fees), claims and liabilities, including indirect and consequential losses and loss of profit, arising out of or in connection with any breach of this Agreement by Pixelkraft or its Representatives.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "As Pixelkraft, you are required to fully indemnify (compensate) Brightwater, its affiliates, directors, and employees for all losses, damages, costs (including legal fees), claims, and liabilities they incur due to any breach by you or your representatives. This includes indirect and consequential losses and loss of profit, which means your financial exposure could be very high and extensive.",
+        "receiving_party_already_signed": "As Pixelkraft, if you or your representatives breach this agreement, you must compensate Brightwater, its affiliates, directors, and employees for all their losses, including legal fees, and even indirect or consequential losses and lost profits. This is a very broad indemnity clause, meaning your financial liability could be extensive and cover many types of damages incurred by Brightwater due to your breach.",
+        "disclosing_party_about_to_sign": "This is a very strong indemnity clause for Brightwater. Pixelkraft is obligated to cover all your losses, damages, costs (including legal fees), claims, and liabilities, including indirect and consequential losses and loss of profit, resulting from any breach by Pixelkraft or its representatives. This offers comprehensive financial protection for Brightwater and its related entities."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Any dispute arising out of or in connection with this Agreement shall be referred to arbitration by a sole arbitrator to be appointed by Brightwater, in accordance with the Arbitration and Conciliation Act, 1996. The seat and venue of arbitration shall be Mumbai, and the language of the arbitration shall be English.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This clause states that any disputes will be resolved through arbitration, and Brightwater alone will appoint the sole arbitrator. This means you have no say in selecting the arbitrator, which could be seen as less impartial. The arbitration will take place in Mumbai. Consider negotiating for a mutually appointed arbitrator or a panel of arbitrators.",
+        "receiving_party_already_signed": "If a dispute arises, it will be resolved by a sole arbitrator chosen solely by Brightwater, and the proceedings will be in Mumbai. This means you do not have a say in the arbitrator's selection. Ensure you are prepared for arbitration in Mumbai should a dispute occur.",
+        "disclosing_party_about_to_sign": "This clause is highly favorable to Brightwater. In case of a dispute, you get to unilaterally appoint the sole arbitrator, giving you significant control over the dispute resolution process. The arbitration will also be conducted in Mumbai, which is likely convenient for you."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Subject to Clause 10.2, the courts at Mumbai shall have exclusive jurisdiction in relation to this Agreement.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This clause means that, if any dispute needs to go to court (after arbitration, as per Clause 10.2), only the courts in Mumbai will have the authority to hear the case. This could be an inconvenience if you are not based in Mumbai.",
+        "receiving_party_already_signed": "While arbitration is the primary dispute resolution method, if a court process becomes necessary (e.g., to enforce an arbitration award), only courts in Mumbai have jurisdiction. This means you would need to address any court proceedings in Mumbai.",
+        "disclosing_party_about_to_sign": "This clause confirms that, subject to arbitration, the courts in Mumbai will have exclusive jurisdiction over any legal matters related to this agreement. This is beneficial for you if Mumbai is your primary location, as it centralizes legal proceedings to a convenient location."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "Neither Party shall assign this Agreement without the prior written consent of the other Party, except that Brightwater may assign this Agreement to any of its Affiliates without such consent.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "This clause means you cannot transfer your rights or obligations under this agreement to another party without Brightwater's written permission. However, Brightwater can transfer the agreement to its Affiliates without needing your consent. This creates an imbalance in assignment rights, allowing Brightwater more flexibility than you.",
+        "receiving_party_already_signed": "You cannot assign this agreement to another entity without Brightwater's explicit written consent. However, Brightwater has the unilateral right to assign this agreement to any of its Affiliates. Be aware of this difference in flexibility regarding assignment.",
+        "disclosing_party_about_to_sign": "This clause gives Brightwater the flexibility to assign the agreement to any of its Affiliates without needing Pixelkraft's consent, which is a significant advantage for you. Pixelkraft, however, requires your written consent to assign the agreement, providing you with control over who they can transfer their obligations to."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Neither Party shall use the name, logo or trade marks of the other Party in any publicity material, client list or announcement without the prior written consent of the other Party.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "You are prohibited from using Brightwater's name, logo, or trademarks in any promotional materials, client lists, or announcements without their express prior written consent. Ensure you get written permission for any such use, even if it's for showcasing your portfolio.",
+        "receiving_party_already_signed": "You must obtain prior written consent from Brightwater before using their name, logo, or trademarks in any publicity materials, client lists, or announcements. Any unauthorized use would be a breach of this agreement.",
+        "disclosing_party_about_to_sign": "This clause protects your brand by ensuring that Pixelkraft cannot use your name, logo, or trademarks in any publicity material, client lists, or announcements without your prior written consent. This gives you control over how your brand is represented externally."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The stamp duty payable on this Agreement under the Maharashtra Stamp Act, 1958 shall be borne by Pixelkraft.",
+      "lensExplanations": {
+        "receiving_party_about_to_sign": "As Pixelkraft, you will be solely responsible for paying the stamp duty for this agreement as required by the Maharashtra Stamp Act, 1958. This is an additional cost you need to factor in.",
+        "receiving_party_already_signed": "You, as Pixelkraft, are responsible for paying the stamp duty on this agreement under the Maharashtra Stamp Act, 1958. Ensure this payment has been made correctly to avoid legal issues.",
+        "disclosing_party_about_to_sign": "This clause clarifies that Pixelkraft will bear the cost of stamp duty for this agreement under the Maharashtra Stamp Act, 1958. This ensures that you, as Brightwater, are not responsible for this expense."
+      }
+    }
+  ]
+}

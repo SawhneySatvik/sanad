@@ -1,6 +1,7 @@
-// A minimal proof that npm run test:a11y's axe wiring (@axe-core/playwright) actually runs, ahead
-// of the real per-screen sweep (tests/e2e/a11y/**, a later ticket's territory once the app has
-// pages to sweep). Tagged @a11y so `playwright test --grep @a11y` picks it up on its own.
+// A minimal proof that npm run test:a11y's axe wiring (@axe-core/playwright) actually runs, on its
+// own and fast — separately from the real per-screen axe checks, which already run inline inside
+// each spec under tests/e2e/screens/**. Tagged @a11y so `playwright test --grep @a11y` picks it up
+// on its own.
 
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect } from "./fixtures";

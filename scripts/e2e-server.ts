@@ -37,9 +37,10 @@ function buildChildEnv(): NodeJS.ProcessEnv {
     TRUSTED_PROXY_HOPS: "1",
     VERCEL: "",
     DATABASE_URL: DATA_DIR,
-    // A low per-IP route limit so the IP-isolation spec can exhaust one bucket in a handful of
-    // requests; every other spec uses its own distinct x-forwarded-for, so this never starves them.
-    RATE_LIMIT_IP_PER_MINUTE: process.env.RATE_LIMIT_IP_PER_MINUTE ?? "8",
+    // Low enough that the IP-isolation spec exhausts one bucket in a quick burst, high enough that a
+    // screen spec's real backend calls at several workers never do; every spec also uses its own
+    // distinct x-forwarded-for.
+    RATE_LIMIT_IP_PER_MINUTE: process.env.RATE_LIMIT_IP_PER_MINUTE ?? "60",
     // Every LLM-side limit knob wide open — this harness is never really calling a provider (every
     // request is redirected to the fake), so nothing here should ever throttle a spec; only the
     // per-IP route limit above stays tight, for the isolation spec.

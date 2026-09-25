@@ -1,0 +1,293 @@
+{
+  "modelUsed": "gemini-2.5-flash",
+  "findings": [
+    {
+      "category": "obligation",
+      "quote": "If you do not agree with it, please do not use the Platform.",
+      "lensExplanations": {
+        "user_about_to_sign": "This means you must agree to the entire Privacy Policy to use the NestNagar Platform. If any part of it is unacceptable to you, you should not proceed.",
+        "user_already_signed": "You have already agreed to this policy by using the Platform. If you no longer agree with any part, you must stop using the Platform."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Identity and contact data: your name, mobile number, email address, date of birth, gender, photograph, and the city in which you are searching for a home.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar will collect this basic personal information from you when you use the platform. Be aware that providing this data is necessary to use the service.",
+        "user_already_signed": "NestNagar has collected or will collect this information from you as you use the platform. This data is used to identify you and facilitate your use of the service."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Verification data: your PAN, masked Aadhaar number, a live selfie for face-match verification, the name of your employer, and your employee identity card or latest salary slip, where you choose to complete tenant verification.",
+      "lensExplanations": {
+        "user_about_to_sign": "If you opt for tenant verification, you must provide your PAN, masked Aadhaar, a live selfie, employer details, and proof of employment. Consider if you are comfortable sharing these sensitive documents.",
+        "user_already_signed": "If you chose tenant verification, you have already provided these documents. NestNagar uses this data to verify your identity and employment for rental purposes."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Rental data: details of the property you rent or list, your rent agreement and its annexures, the names and contact details of property owners, co-tenants and flatmates, rent and security deposit amounts, and your payment history on the Platform.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar will collect detailed information about your rental activities, including specifics of your rent agreement and the contact details of other individuals involved. Be aware this data is essential for the platform's functionality.",
+        "user_already_signed": "NestNagar collects this data to manage your rental agreements and transactions. This includes information about the property, your rent, and contact details of other parties involved in your rental."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Financial data: your UPI ID, bank account details, and the last four digits of any card used for payments. We do not store your full card number or CVV.",
+      "lensExplanations": {
+        "user_about_to_sign": "You will need to provide your UPI ID or bank account details for transactions. While NestNagar states they don't store full card numbers or CVV, you are still sharing significant financial identifiers.",
+        "user_already_signed": "NestNagar collects your UPI ID, bank account details, and partial card information to process payments. They have stated they do not store your full card number or CVV."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Device and location data: your device identifiers, IP address, operating system, and your precise location, including in the background when the App is not in use, to show you homes near you and to verify property visits.",
+      "lensExplanations": {
+        "user_about_to_sign": "The app will collect your precise location data, even when you're not actively using it, to suggest nearby homes and verify property visits. You should consider if you are comfortable with this continuous location tracking.",
+        "user_already_signed": "NestNagar collects your device and precise location data, including in the background, to offer location-based services and verify property visits. Be aware that your location is continuously tracked by the app."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Contacts and messages: if you apply for the Rent Now Pay Later facility, the App will access your contact list, SMS inbox and call logs in order to assess your creditworthiness and to share such data with our lending partners.",
+      "lensExplanations": {
+        "user_about_to_sign": "If you apply for the 'Rent Now Pay Later' facility, the app will access highly sensitive personal data from your phone, including your contact list, SMS, and call logs. This data will be shared with lending partners, which is a significant privacy concern for assessing creditworthiness.",
+        "user_already_signed": "If you applied for the 'Rent Now Pay Later' facility, NestNagar has accessed your contact list, SMS inbox, and call logs and shared this information with their lending partners to assess your creditworthiness. This is a significant sharing of sensitive data."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Property owner data: if you list a property, we also collect the property address, ownership documents such as the electricity bill or property tax receipt, photographs of the property, and your bank account details for receiving rent.",
+      "lensExplanations": {
+        "user_about_to_sign": "If you are a property owner listing a property, you will need to provide the property address, ownership documents (like electricity bills), property photos, and your bank account details. This is necessary for verifying your ownership and facilitating rent payments.",
+        "user_already_signed": "If you have listed a property, NestNagar collects your property address, ownership documents, photos, and bank details to manage your listings and facilitate rent collection."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "We collect Personal Data directly from you when you register, complete verification, list a property, execute a rent agreement or make a payment.",
+      "lensExplanations": {
+        "user_about_to_sign": "This means that a significant portion of your personal data will be collected directly from you when you perform key actions on the platform. You are actively providing this information.",
+        "user_already_signed": "NestNagar collects your personal data directly from you as you interact with the platform, such as when you register, get verified, list a property, sign agreements, or make payments."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "We collect Personal Data automatically from your device when you use the Platform.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar will automatically gather data from your device as you use the platform. This happens without your direct input, so be aware that your device's data will be continuously collected.",
+        "user_already_signed": "As you use the platform, NestNagar automatically collects personal data from your device. This is part of your ongoing usage and is done without specific action from your side."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "We also receive Personal Data about you from third parties, such as property owners, co-tenants, our Partners, credit information companies and publicly available sources.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar will obtain your personal data from various third parties, not just from you directly or your device. This means data about you can come from other users, business partners, or publicly available sources, which is a broad collection scope.",
+        "user_already_signed": "NestNagar receives some of your personal data from third parties like other users, partners, and credit bureaus. This means your data is not only collected from your direct interactions but also from other sources that may have information about you."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "We may also process your Personal Data for such other purposes as we may consider necessary or appropriate in connection with our business.",
+      "lensExplanations": {
+        "user_about_to_sign": "This clause is very broad and allows NestNagar to process your data for any future business purpose they deem 'necessary or appropriate,' which could include uses not explicitly mentioned. This gives them significant leeway without further consent.",
+        "user_already_signed": "NestNagar can use your personal data for any business purpose they decide is 'necessary or appropriate,' even if it's not listed elsewhere in the policy. This means your data could be used in ways you might not anticipate."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "We may use your Personal Data to send you promotional offers from NestNagar and our Partners by SMS, WhatsApp, email and push notifications. You may unsubscribe from promotional emails using the link provided in them.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar will use your personal data to send you promotional messages from both NestNagar and its partners across multiple channels. While you can unsubscribe from emails, other communication methods may still be used for promotions.",
+        "user_already_signed": "NestNagar uses your data to send you promotional content from both themselves and their partners via various channels. While you can opt out of promotional emails, be aware that other forms of communication for marketing may continue."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "By downloading, installing, accessing or using the Platform, you are deemed to have given your consent to the collection and processing of your Personal Data in the manner and for the purposes described in this Privacy Policy.",
+      "lensExplanations": {
+        "user_about_to_sign": "By simply using the platform, you automatically provide your consent to all the data collection and processing activities outlined in this policy. There is no separate opt-in for consent; usage implies agreement.",
+        "user_already_signed": "Your continued use of the Platform means you have already given your consent for NestNagar to collect and process your personal data as described. This consent is deemed to be ongoing as long as you use the service."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "You may withdraw your consent at any time by writing to our Grievance Officer. Withdrawal of consent will not affect the lawfulness of any processing carried out before the withdrawal.",
+      "lensExplanations": {
+        "user_about_to_sign": "You have the right to withdraw your consent by contacting the Grievance Officer. However, be aware that any data processing already done before your withdrawal will remain lawful.",
+        "user_already_signed": "You can withdraw your consent for future data processing by contacting the Grievance Officer. However, any processing that happened before your withdrawal is still considered lawful."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "If you withdraw your consent, we may suspend or terminate your account, and any cashback, reward points or NestNagar Wallet balance credited to your account shall stand forfeited.",
+      "lensExplanations": {
+        "user_about_to_sign": "Withdrawing your consent may lead to your account being suspended or terminated, and you will lose any cashback, reward points, or wallet balance. This is a significant consequence to consider before withdrawing consent.",
+        "user_already_signed": "If you withdraw your consent, NestNagar may close your account, and you will lose any accumulated cashback, reward points, or money in your NestNagar Wallet. This is a direct financial penalty for withdrawing consent."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Where you upload a rent agreement, identity document or any other document containing the Personal Data of another individual, such as a property owner, co-tenant or family member, you confirm that you have obtained that individual's consent for such upload, and you shall be solely responsible for any claim arising out of it.",
+      "lensExplanations": {
+        "user_about_to_sign": "If you upload documents with other people's personal data, you are solely responsible for getting their consent first. Failing to do so could make you liable for any claims that arise.",
+        "user_already_signed": "If you have uploaded documents containing personal data of others, you are responsible for having obtained their consent. If any issues arise from this, you, not NestNagar, will be held accountable."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "We share your Personal Data with Data Processors who provide cloud hosting, customer support, analytics and messaging services to us, under contracts that require them to protect it.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar shares your data with various service providers for essential platform functions. While they state these providers are contractually obligated to protect your data, it's still an expansion of who has access to your information.",
+        "user_already_signed": "NestNagar shares your personal data with third-party service providers for things like hosting and support. These providers are supposed to protect your data, but it means your information is handled by more entities."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "We share your Personal Data with the property owners or tenants with whom you interact on the Platform, to the extent necessary to facilitate the rental.",
+      "lensExplanations": {
+        "user_about_to_sign": "Your personal data will be shared with other users (property owners or tenants) you interact with to facilitate rentals. Be aware that your information will be accessible to individuals outside of NestNagar.",
+        "user_already_signed": "NestNagar shares your personal data directly with other users you interact with on the platform, such as property owners or tenants, to help with the rental process. This means others on the platform have access to some of your information."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "We may share your Personal Data with our Partners, group companies and other third parties for the purposes described in this Privacy Policy, including for their own marketing and analytics purposes.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar may share your personal data with its partners and other third parties for their own marketing and analytics. This means your data could be used by many different companies for their promotional activities, which is a broad sharing policy.",
+        "user_already_signed": "NestNagar can share your personal data with its partners and other third parties, who can then use it for their own marketing and data analysis. This means your information is being used by multiple entities beyond NestNagar for their business interests."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "We may disclose your Personal Data to government authorities, courts and law enforcement agencies where we are required to do so by law.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar will share your personal data with government, courts, and law enforcement if legally required. This is a standard legal obligation for data fiduciaries in India.",
+        "user_already_signed": "NestNagar will disclose your personal data to government or law enforcement if legally compelled. This is a mandatory requirement for them, meaning your data can be shared in legal contexts."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "In the event of a merger, acquisition, restructuring or sale of all or part of our assets, your Personal Data may be transferred to the acquirer or successor entity.",
+      "lensExplanations": {
+        "user_about_to_sign": "If NestNagar undergoes a merger, acquisition, or sale, your personal data may be transferred to the new company. This means your data could end up with a different entity with potentially different policies.",
+        "user_already_signed": "If NestNagar is bought out or merges with another company, your personal data will likely be transferred to the new owner. This means your data will then be controlled by a different entity."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Your Personal Data may be transferred to, stored and processed in any country in which we or our service providers operate, and by using the Platform you agree to such transfer.",
+      "lensExplanations": {
+        "user_about_to_sign": "Your personal data might be transferred, stored, and processed outside of India. By using the platform, you explicitly consent to these international data transfers, which could expose your data to different data protection laws.",
+        "user_already_signed": "NestNagar may transfer, store, and process your personal data in countries outside India. Your use of the platform indicates your agreement to this, meaning your data is not necessarily confined to India's jurisdiction."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "We retain your Personal Data for as long as your account is active and for a period of ten (10) years after your account is closed, or for such longer period as we may consider necessary for our business purposes.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar will keep your personal data for ten years after you close your account, and potentially even longer if they decide it's necessary for their business. This is a very long retention period, even after you stop using the service.",
+        "user_already_signed": "NestNagar will keep your personal data for ten years after you close your account, and possibly longer. This means your data will be retained for a significant period, even if you are no longer an active user."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "Deletion requests shall be processed within ninety (90) days of receipt, subject to our retention rights under Clause 8.1.",
+      "lensExplanations": {
+        "user_about_to_sign": "If you request data deletion, NestNagar will take up to 90 days to process it. Importantly, your request is subject to their right to retain data for 10 years or longer for business purposes, meaning deletion might not be immediate or complete.",
+        "user_already_signed": "If you request to delete your account, NestNagar will process it within 90 days. However, this is subject to their right to retain your data for ten years or more, meaning full deletion may not occur immediately or at all for certain data."
+      }
+    },
+    {
+      "category": "missing_clause",
+      "quote": null,
+      "lensExplanations": {
+        "user_about_to_sign": "The policy does not mention specific provisions for children's data, such as minimum age requirements or parental consent mechanisms as per the DPDP Act. This is important if children might use the platform or if their data could be inadvertently collected.",
+        "user_already_signed": "The policy lacks specific details on how NestNagar handles data for children. If you or your family members under 18 use the platform, it's unclear what specific protections or consent requirements are in place under the DPDP Act."
+      }
+    },
+    {
+      "category": "missing_clause",
+      "quote": null,
+      "lensExplanations": {
+        "user_about_to_sign": "The policy does not include a nomination clause, which is a right under the DPDP Act. This means you cannot designate someone to exercise your rights under the Act in case of your death or incapacitation.",
+        "user_already_signed": "The policy does not provide a mechanism for you to nominate someone to exercise your rights under the DPDP Act in the event of your death or incapacitation. This is a right afforded to Data Principals that is not addressed here."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Subject to the DPDP Act, you have the right to obtain a summary of the Personal Data we process about you and of the processing activities undertaken, to request the correction, completion, updating and erasure of your Personal Data, and to have your grievances redressed.",
+      "lensExplanations": {
+        "user_about_to_sign": "Under the DPDP Act, you have rights to access a summary of your data, request corrections, updates, or erasure, and seek grievance redressal. These are important rights to be aware of before committing.",
+        "user_already_signed": "You have the right to get a summary of your personal data, request corrections, updates, or deletion, and to have any complaints addressed. These are key rights you can exercise regarding your data."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "You must provide accurate information on the Platform and must update your Personal Data within seven (7) days of any change in it.",
+      "lensExplanations": {
+        "user_about_to_sign": "You have a legal obligation to provide accurate personal information and to update it within seven days of any changes. Failure to do so could have consequences, as this is a duty under the DPDP Act.",
+        "user_already_signed": "You are legally required to ensure the personal data you provide is accurate and to update it within seven days if anything changes. Failing to do so could be a breach of your duties as a Data Principal."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "Please note that under the DPDP Act, a Data Principal who registers a false or frivolous grievance or complaint, or who furnishes false particulars, may be liable to a penalty of up to Rs. 10,000/-.",
+      "lensExplanations": {
+        "user_about_to_sign": "If you file a false complaint or provide incorrect information, you could face a penalty of up to Rs. 10,000 under the DPDP Act. Be truthful in all your interactions and data submissions.",
+        "user_already_signed": "If you submit a complaint that is found to be false or trivial, or if you provide incorrect personal details, you could be fined up to Rs. 10,000 as per the DPDP Act. Ensure your grievances and information are accurate."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "We use cookies to keep you signed in, to remember your preferences, to measure the performance of the Platform, and to show you advertisements on and off the Platform.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar uses cookies for various functions, including tracking your activities for personalized ads both on and off the platform. This means your browsing behavior will influence the advertisements you see.",
+        "user_already_signed": "NestNagar uses cookies to maintain your login, remember preferences, and deliver targeted advertisements both within and outside the platform. Your online activity is being used for advertising purposes."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "You can disable cookies in your browser settings, but some features of the Platform may then not work as intended.",
+      "lensExplanations": {
+        "user_about_to_sign": "While you can disable cookies in your browser, doing so might prevent some features of the platform from working correctly. You'll need to weigh your privacy preferences against potential loss of functionality.",
+        "user_already_signed": "You have the option to disable cookies through your browser settings, but this might negatively impact the functionality of some parts of the NestNagar Platform. Be aware of this trade-off."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "In accordance with the Information Technology Act, 2000 and the DPDP Act, our Grievance Officer is Ms. Farzana Q. Siddiqui, NestNagar Technologies Private Limited, 5th Floor, Orbit Square, Baner-Pashan Link Road, Pune, Maharashtra 411045, email: grievance@nestnagar.example.",
+      "lensExplanations": {
+        "user_about_to_sign": "The contact details for the Grievance Officer are provided, including name, physical address, and email. This is the person you should contact for any data-related grievances, corrections, or consent withdrawals.",
+        "user_already_signed": "If you have any issues or requests regarding your personal data, you should contact Ms. Farzana Q. Siddiqui, the Grievance Officer, at the provided email or postal address. Keep these details handy for exercising your rights."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "The Grievance Officer shall endeavour to acknowledge your grievance within seventy-two (72) hours and to resolve it within thirty (30) days of receipt.",
+      "lensExplanations": {
+        "user_about_to_sign": "The Grievance Officer is committed to acknowledging your complaint within 72 hours and resolving it within 30 days. This sets an expectation for the response time to your data-related issues.",
+        "user_already_signed": "The Grievance Officer has a target to acknowledge your complaint within 72 hours and resolve it within 30 days. This is the timeframe you can expect for a response and resolution to your data grievances."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "If you are not satisfied with our response, you may approach the Data Protection Board of India in accordance with the DPDP Act.",
+      "lensExplanations": {
+        "user_about_to_sign": "If you are not happy with how your grievance is handled by NestNagar, you have the right to escalate your complaint to the Data Protection Board of India. This is an important recourse provided by the DPDP Act.",
+        "user_already_signed": "If the Grievance Officer's resolution is not satisfactory, you have the right to take your complaint further to the Data Protection Board of India. This is the next step for unresolved data protection issues."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "We may modify this Privacy Policy at any time without prior notice to you. The modified Privacy Policy shall be effective immediately upon being posted on the Platform, and your continued use of the Platform shall constitute your acceptance of the modified Privacy Policy.",
+      "lensExplanations": {
+        "user_about_to_sign": "NestNagar can change this Privacy Policy at any time without telling you in advance, and the changes become effective immediately upon being posted. By continuing to use the platform, you automatically agree to these new terms, so you must regularly check for updates.",
+        "user_already_signed": "NestNagar can change this Privacy Policy without telling you beforehand. Any changes become active as soon as they are posted on the platform, and by continuing to use the service, you are agreeing to the new policy. You should periodically check the policy for updates."
+      }
+    }
+  ]
+}

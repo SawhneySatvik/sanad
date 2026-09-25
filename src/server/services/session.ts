@@ -13,7 +13,7 @@ import * as schema from "@/db/schema";
 import { createDevSignInAdapter, deriveDevUserId } from "@/server/auth/dev-session";
 import { AppError, notFound, safeMessageFor } from "@/server/core/errors";
 import type { Principal } from "@/server/core/types";
-import { DOCUMENT_GUEST_TTL_SECONDS } from "@/server/data/documents";
+import { guestDataTtlSeconds } from "@/server/core/guest-ttl";
 import type { DevSignInInput, SessionOutput } from "@/shared/contracts/session";
 
 const MAX_DISPLAY_NAME_CHARS = 120;
@@ -55,7 +55,7 @@ function signInIsAvailable(): boolean {
 // The guest data TTL, not the guest cookie's own (auth/session.ts's GUEST_SESSION_TTL_SECONDS governs
 // only the cookie's lifetime) — this is what the upload TTL notice is actually about.
 function guestTtlHours(): number {
-  return DOCUMENT_GUEST_TTL_SECONDS / 3600;
+  return guestDataTtlSeconds() / 3600;
 }
 
 /** GET /api/session's answer for the caller's current principal. */

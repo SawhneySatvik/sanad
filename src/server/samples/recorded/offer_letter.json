@@ -1,0 +1,284 @@
+{
+  "modelUsed": "gemini-2.5-flash",
+  "findings": [
+    {
+      "category": "ambiguity",
+      "quote": "Your initial place of posting will be the Company's office at Bellandur, Bengaluru. The Company presently follows a hybrid working model under which you are expected to work from the office at least three (3) days a week, subject to change as per business requirements.",
+      "lensExplanations": {
+        "employee_about_to_sign": "This clause states your initial work location and a hybrid model, but the company can change it based on 'business requirements'. You might want to ask for more clarity on what could trigger such changes and how much notice would be given.",
+        "employee_already_signed": "Your initial work location is Bellandur, Bengaluru, with a hybrid model requiring at least three days in the office. Be aware that the company can change this policy, including the number of days you need to work from the office, based on its business needs.",
+        "employer_about_to_sign": "This clause clearly states the initial work location and the current hybrid model. The phrase 'subject to change as per business requirements' gives the company flexibility to alter the working model without needing a formal amendment to the offer letter, should business needs evolve."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "During your employment, you may be transferred or deputed to any of the Company's offices, group companies, client locations or project sites, anywhere in India or abroad, and to any department or shift, as the Company may decide from time to time.",
+      "lensExplanations": {
+        "employee_about_to_sign": "This clause means you can be transferred to any of the company's locations, including abroad, or to different departments or shifts. Consider if this level of flexibility is acceptable to you regarding your personal circumstances.",
+        "employee_already_signed": "You are obligated to accept transfers or deputations to any company office, group company, client location, or project site, anywhere in India or abroad, and to any department or shift, if the company decides. Refusing a transfer could lead to disciplinary action.",
+        "employer_about_to_sign": "This clause provides the company with full flexibility to transfer or depute the employee to any location, department, or shift, in India or abroad, based on business needs. This ensures adaptability and optimal resource allocation for the company."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "This offer will stand automatically withdrawn if the Company does not receive a copy of this Offer Letter signed by you by 6:00 p.m. IST on 30th September, 2026.",
+      "lensExplanations": {
+        "employee_about_to_sign": "You must sign and return the offer letter by 6:00 p.m. IST on September 30, 2026, or the offer will be automatically withdrawn. Make sure to submit it before this deadline if you intend to accept.",
+        "employee_already_signed": "You were required to sign and return the offer letter by 6:00 p.m. IST on September 30, 2026. Since you have accepted, this deadline has passed.",
+        "employer_about_to_sign": "This clause sets a clear deadline for the candidate to accept the offer. It ensures a prompt decision and allows the company to move forward if the candidate does not respond by the specified date and time."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "If you do not report for duty on the date of joining, this offer shall lapse without any further communication from the Company.",
+      "lensExplanations": {
+        "employee_about_to_sign": "If you fail to report for duty on November 2, 2026, or the mutually agreed joining date, this offer will automatically become void. If you foresee any issues with your joining date, you must communicate with the company to mutually agree on a new date in writing.",
+        "employee_already_signed": "Since you have joined, this condition is fulfilled. If you had not reported on the agreed date, the offer would have lapsed automatically.",
+        "employer_about_to_sign": "This clause protects the company by automatically lapsing the offer if the candidate fails to report for duty on the agreed joining date. This avoids the need for formal withdrawal communication in such a scenario."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "Your annual Cost to Company (\"CTC\") will be Rs. 18,60,000/- (Rupees Eighteen Lakh Sixty Thousand only), the break-up of which is set out in Annexure A.",
+      "lensExplanations": {
+        "employee_about_to_sign": "Your total annual CTC is Rs. 18,60,000. Be aware that your actual take-home salary will be lower than one-twelfth of this amount, as CTC includes benefits like provident fund contributions, gratuity, and group medical insurance, as well as target variable pay.",
+        "employee_already_signed": "Your CTC is Rs. 18,60,000. Remember that your monthly take-home pay is significantly less than a twelfth of this due to statutory deductions, company contributions to provident fund and gratuity, insurance premiums, and the variable pay component.",
+        "employer_about_to_sign": "This clause clearly defines the total Cost to Company. It is crucial for the candidate to understand that the in-hand salary will be lower due to the inclusion of various components like PF, gratuity, and variable pay in the CTC."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "Your CTC includes the Company's contribution to provident fund, gratuity, the premium for group medical insurance and the target variable pay, and your monthly take-home salary will accordingly be lower than one-twelfth of your CTC.",
+      "lensExplanations": {
+        "employee_about_to_sign": "This clarifies that your take-home salary will be less than Rs. 1,55,000 per month because your CTC includes company contributions to provident fund, gratuity, group medical insurance premiums, and variable pay. Review Annexure A to understand the specific deductions.",
+        "employee_already_signed": "Your monthly take-home salary is lower than one-twelfth of your CTC because the CTC includes company contributions to provident fund, gratuity, and group medical insurance, plus the target variable pay. Refer to Annexure A for the exact breakdown of your monthly take-home pay.",
+        "employer_about_to_sign": "This statement is important for managing candidate expectations regarding their take-home salary. It explicitly clarifies that the CTC includes several components that are not directly paid out as monthly salary, such as PF, gratuity, and insurance premiums, ensuring transparency."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "The variable pay component is payable annually at the sole discretion of the management, based on individual and Company performance, and the Company may modify, defer or withdraw the variable pay plan at any time without assigning any reason.",
+      "lensExplanations": {
+        "employee_about_to_sign": "Your variable pay of Rs. 1,86,000 is not guaranteed. It's paid annually at the company's discretion, based on performance, and can be modified, deferred, or even withdrawn without explanation. You should factor this uncertainty into your overall compensation expectations.",
+        "employee_already_signed": "Your variable pay is not guaranteed. The company can decide whether to pay it, how much to pay, and can even change or withdraw the plan at any time. Do not rely on this amount as a fixed part of your income.",
+        "employer_about_to_sign": "This clause gives the company complete discretion over the variable pay component, linking it to performance and allowing for modification or withdrawal. This provides flexibility for the company to adapt compensation strategies based on business performance and individual contributions."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Company will reimburse your actual and reasonable relocation expenses from Chennai to Bengaluru, up to a maximum of Rs. 50,000/- (Rupees Fifty Thousand only), against original bills submitted within thirty (30) days of your date of joining.",
+      "lensExplanations": {
+        "employee_about_to_sign": "The company will reimburse your relocation expenses up to Rs. 50,000 from Chennai to Bengaluru. Ensure you keep original bills and submit them within 30 days of joining to claim this reimbursement.",
+        "employee_already_signed": "You must submit original bills for your relocation expenses from Chennai to Bengaluru within 30 days of your joining date to be reimbursed, up to a maximum of Rs. 50,000.",
+        "employer_about_to_sign": "This clause offers a clear relocation benefit with a cap and a deadline for submission of proof. It helps attract candidates from other cities while managing costs and ensuring proper documentation for reimbursements."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "You will be on probation for a period of six (6) months from your date of joining.",
+      "lensExplanations": {
+        "employee_about_to_sign": "You will be on probation for six months starting November 2, 2026. During this period, the terms of employment are different, especially regarding termination.",
+        "employee_already_signed": "You are currently in your six-month probation period, which started on your joining date. Your employment terms are different during this time, particularly regarding notice for resignation or termination.",
+        "employer_about_to_sign": "This clause clearly defines the probation period, which allows the company to assess the employee's suitability for the role before full confirmation. This is a standard and important part of the onboarding process."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "The Company may, at its sole discretion, extend the probation period for such further period or periods as it deems fit, and you shall continue to be on probation until you are confirmed in writing.",
+      "lensExplanations": {
+        "employee_about_to_sign": "The company can extend your probation period beyond six months without limit and you remain on probation until you receive written confirmation. This means your employment status could remain uncertain for an unspecified duration. You might want to ask about common practices for probation extensions.",
+        "employee_already_signed": "Your probation can be extended by the company for any length of time, and you will remain on probation until you receive written confirmation. This means the terms for probationary employees, such as termination without notice, can apply for longer than six months.",
+        "employer_about_to_sign": "This clause grants the company full discretion to extend the probation period as needed. It ensures that the company can thoroughly evaluate an employee's performance and fit before confirming their employment, providing flexibility and protection for the company."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "During probation, the Company may terminate your employment at any time without notice and without assigning any reason, and you may resign by giving thirty (30) days' written notice.",
+      "lensExplanations": {
+        "employee_about_to_sign": "During your six-month probation, the company can fire you without notice or reason. If you resign during probation, you must give 30 days' written notice. This means there's less job security for you during this period.",
+        "employee_already_signed": "As you are on probation, the company can terminate your employment without notice or reason at any time. If you decide to resign during this period, you are required to give 30 days' written notice.",
+        "employer_about_to_sign": "This clause clearly outlines the termination and resignation terms during probation. It allows the company to terminate employment without notice or reason during this period, and requires a 30-day notice from the employee, which is standard for probationary periods."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "After confirmation, you shall be required to give sixty (60) days' written notice of resignation to the Company.",
+      "lensExplanations": {
+        "employee_about_to_sign": "Once your probation is successfully completed and you are confirmed, you will be required to give 60 days' written notice if you decide to resign. This is a longer notice period than during probation.",
+        "employee_already_signed": "After your probation is confirmed, if you decide to resign, you are obligated to give the company 60 days' written notice. Failure to do so could result in penalties like withholding your full and final settlement.",
+        "employer_about_to_sign": "This clause establishes the notice period for confirmed employees, requiring 60 days' written notice for resignation. This provides the company with adequate time to manage transitions and find a replacement."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "After confirmation, the Company may terminate your employment by giving you thirty (30) days' written notice or salary in lieu thereof.",
+      "lensExplanations": {
+        "employee_about_to_sign": "After you are confirmed, the company can terminate your employment by giving you 30 days' written notice or by paying you 30 days' salary instead of notice. This means the company has flexibility in how it ends your employment.",
+        "employee_already_signed": "After your probation is confirmed, the company can terminate your employment by giving you 30 days' notice or by paying you 30 days' salary. This is a standard termination clause.",
+        "employer_about_to_sign": "This clause provides the company with the option to terminate employment after confirmation by providing 30 days' notice or salary in lieu. This offers flexibility in managing employee exits while adhering to a reasonable notice period."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "The Company may, at its sole discretion, accept a request from you to shorten the notice period, in which case you shall pay to the Company your gross salary for the unserved portion of the notice period.",
+      "lensExplanations": {
+        "employee_about_to_sign": "If you wish to leave before serving your full notice period (30 days during probation, 60 days after confirmation), the company might agree, but you would have to pay your gross salary for the days you don't serve. Consider this financial implication if you plan to leave early.",
+        "employee_already_signed": "If you want to shorten your notice period, the company might allow it, but you will have to pay the company your gross salary for any days of the notice period that you don't serve. This means leaving early without serving notice will cost you money.",
+        "employer_about_to_sign": "This clause provides a mechanism for employees to shorten their notice period while ensuring the company is compensated for the disruption. It offers flexibility to both parties and helps recover costs associated with early departure."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "If you leave the Company without serving the full notice period, the Company shall be entitled to withhold your relieving letter, experience certificate and full and final settlement until all dues are recovered from you.",
+      "lensExplanations": {
+        "employee_about_to_sign": "If you leave without serving your full notice period (30 days during probation, 60 days after confirmation) or paying for the unserved period, the company can withhold your relieving letter, experience certificate, and final payment. This could impact your ability to join a new employer.",
+        "employee_already_signed": "If you leave without serving your full notice period or paying the equivalent salary, the company can withhold your relieving letter, experience certificate, and final settlement until all outstanding amounts are recovered. This could severely impact your future employment.",
+        "employer_about_to_sign": "This clause provides a strong deterrent against employees leaving without serving their full notice period. By allowing the company to withhold crucial documents and final settlement, it ensures compliance or recovery of dues, protecting the company's interests."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Company may terminate your employment forthwith, without notice or payment in lieu of notice, in case of misconduct, breach of this Offer Letter, or if any information furnished by you is found to be false.",
+      "lensExplanations": {
+        "employee_about_to_sign": "The company can terminate your employment immediately, without notice or payment, if you commit misconduct, breach the offer letter terms, or if any information you provided is found to be false. This highlights the importance of adhering to company policies and providing accurate information.",
+        "employee_already_signed": "The company can fire you immediately, without notice or payment, if you engage in misconduct, breach your contract, or if any information you provided during hiring is found to be false. Ensure all information provided was accurate and adhere to company policies.",
+        "employer_about_to_sign": "This clause allows the company to immediately terminate employment without notice or payment in specific serious circumstances like misconduct, breach of contract, or false information. This is a critical protection for the company against serious employee transgressions."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "In consideration of the specialised training and onboarding investment that the Company will make in you, you agree to remain in the employment of the Company for a minimum period of twenty-four (24) months from your date of joining (the \"Minimum Service Period\").",
+      "lensExplanations": {
+        "employee_about_to_sign": "You are committing to work for the company for at least 24 months (two years) from your joining date due to the training and onboarding investment they will make in you. Be sure you are comfortable with this long-term commitment.",
+        "employee_already_signed": "You are obligated to remain employed with the company for a minimum of 24 months from your joining date. If you leave before this period, you will incur a penalty.",
+        "employer_about_to_sign": "This clause secures a minimum service commitment from the employee in exchange for the company's investment in training and onboarding. This helps the company recover its investment and maintain stability in its workforce."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "If you resign, or if your employment is terminated for any reason whatsoever, before the completion of the Minimum Service Period, you shall pay to the Company a sum of Rs. 2,50,000/- (Rupees Two Lakh Fifty Thousand only) as liquidated damages, which you agree is a genuine pre-estimate of the loss that the Company would suffer, and the Company may recover the same from any amount payable to you.",
+      "lensExplanations": {
+        "employee_about_to_sign": "If you leave the company or are terminated for any reason before completing 24 months, you will have to pay Rs. 2,50,000 as a penalty. This amount can be deducted from any money owed to you. This is a significant financial commitment to consider.",
+        "employee_already_signed": "If your employment ends for any reason before you complete 24 months of service, you are required to pay the company Rs. 2,50,000 as liquidated damages. This amount can be deducted from your final settlement or any other dues from the company. Consult a lawyer if this bond is enforced, as post-employment penalties like this can be challenged under Indian law.",
+        "employer_about_to_sign": "This clause imposes a service bond of Rs. 2,50,000 if the employee leaves before completing 24 months. This acts as a deterrent against early departures and helps the company recover its investment. The wording states it as 'liquidated damages' and a 'genuine pre-estimate' to strengthen its enforceability."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "You shall, during and after your employment, keep confidential all proprietary and confidential information of the Company and its clients, and shall not use or disclose it except in the proper performance of your duties.",
+      "lensExplanations": {
+        "employee_about_to_sign": "You are required to keep all company and client confidential information secret, both during and after your employment. You can only use or share this information as part of your job duties.",
+        "employee_already_signed": "You have a lifelong obligation to keep all confidential information of the company and its clients secret. You must not use or disclose this information outside of your job duties, even after you leave the company.",
+        "employer_about_to_sign": "This clause establishes a critical confidentiality obligation that extends beyond the employee's tenure. It protects the company's proprietary information and client data, which is vital for its business operations and competitive advantage."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "All inventions, software, works of authorship, designs and developments conceived, made or developed by you during the period of your employment, whether or not during working hours and whether or not using the Company's resources, shall be the sole and exclusive property of the Company, and you hereby assign all rights in them to the Company.",
+      "lensExplanations": {
+        "employee_about_to_sign": "Any inventions, software, or creative works you develop during your employment will belong solely to the company, even if you create them outside working hours or without using company resources. This is a broad assignment of intellectual property rights.",
+        "employee_already_signed": "All intellectual property (inventions, software, etc.) you create during your employment, even on your own time or with your own resources, legally belongs entirely to the company. You have assigned all rights to them.",
+        "employer_about_to_sign": "This clause ensures that all intellectual property created by the employee during their tenure, regardless of when or how it was developed, is the exclusive property of the company. This is crucial for protecting the company's innovations and securing its intellectual property rights."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "You shall, during and after your employment, sign all documents and do all acts reasonably required by the Company to record or protect its rights in such inventions and works.",
+      "lensExplanations": {
+        "employee_about_to_sign": "You are required to sign any documents and perform any actions the company reasonably requests to formalize or protect its ownership of your inventions and works, both during and after your employment. This is an ongoing obligation.",
+        "employee_already_signed": "You are obligated to assist the company, even after your employment ends, by signing documents or taking actions to help them protect their ownership of any intellectual property you created while working for them.",
+        "employer_about_to_sign": "This clause obliges the employee to cooperate in formalizing and protecting the company's intellectual property rights, even after their employment ceases. This is essential for ensuring robust legal protection of the company's assets."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "During your employment and for a period of twelve (12) months after its cessation for any reason, you shall not, directly or indirectly, join, be employed by, consult for, or render services to any company or firm engaged in data analytics, business intelligence or software services anywhere in India.",
+      "lensExplanations": {
+        "employee_about_to_sign": "This clause restricts you from working for any competitor in data analytics, business intelligence, or software services anywhere in India for 12 months after leaving the company. This post-employment non-compete clause is generally unenforceable in India under Section 27 of the Indian Contract Act, 1872, but the company may still try to enforce it. You should consult a lawyer if you have concerns.",
+        "employee_already_signed": "This clause imposes a non-compete restriction for 12 months after you leave the company, preventing you from working in data analytics, business intelligence, or software services anywhere in India. As general information, post-employment non-compete clauses are generally unenforceable in India under Section 27 of the Indian Contract Act, 1872. You should consult a lawyer if this clause is invoked against you.",
+        "employer_about_to_sign": "This clause aims to prevent the employee from joining competitors for 12 months post-employment, protecting the company's business interests. While post-employment non-competes are generally unenforceable in India under Section 27 of the Indian Contract Act, 1872, including this clause may still act as a deterrent and provides a basis for legal action if the employee causes significant harm."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "For a period of twelve (12) months after the cessation of your employment, you shall not solicit or induce any employee or client of the Company to leave the Company or to reduce their association with it.",
+      "lensExplanations": {
+        "employee_about_to_sign": "For 12 months after you leave, you cannot try to poach any of the company's employees or clients. This non-solicitation clause is a common restriction in employment contracts.",
+        "employee_already_signed": "For 12 months after you leave the company, you are prohibited from soliciting or encouraging any of the company's employees to leave or any clients to reduce their business with the company. Be mindful of this restriction when you move to a new role.",
+        "employer_about_to_sign": "This clause protects the company's workforce and client relationships by preventing the former employee from soliciting employees or clients for a period of 12 months after their departure. This is a common and generally enforceable clause that safeguards the company's assets."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "The Company's normal working hours are 9:30 a.m. to 6:30 p.m., Monday to Friday. Given the nature of your role, you may be required to work beyond normal working hours and on weekends or public holidays as business needs require, and no additional compensation or compensatory off shall be payable for the same.",
+      "lensExplanations": {
+        "employee_about_to_sign": "While normal hours are 9:30 a.m. to 6:30 p.m., Monday to Friday, you are expected to work extra hours, weekends, or holidays without additional pay or compensatory leave, if business needs arise. This implies a potentially demanding work schedule without extra remuneration.",
+        "employee_already_signed": "You are expected to work beyond normal hours, including weekends or holidays, when business needs demand it, without receiving extra pay or compensatory time off. Your normal working hours are 9:30 a.m. to 6:30 p.m., Monday to Friday.",
+        "employer_about_to_sign": "This clause clearly outlines the normal working hours but also stipulates the expectation for employees to work beyond these hours, including weekends or holidays, without additional compensation or compensatory off. This ensures the company's operational flexibility to meet business demands."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "This offer is subject to satisfactory background verification, including verification of your educational qualifications, previous employment, identity and criminal records, by the Company or its authorised agency.",
+      "lensExplanations": {
+        "employee_about_to_sign": "Your offer is conditional on a satisfactory background check covering your education, past employment, identity, and criminal records. Ensure all information you provided is accurate, as an unsatisfactory report can lead to offer withdrawal.",
+        "employee_already_signed": "Your employment is conditional on a satisfactory background verification. If any issues are found during this process, your employment can be terminated. Ensure that all information you provided during the application process was accurate.",
+        "employer_about_to_sign": "This clause makes the offer conditional on a satisfactory background verification, which is crucial for due diligence. It protects the company by allowing it to verify the candidate's credentials and history before finalizing employment."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Company reserves the right to withdraw this offer, or to terminate your employment if you have already joined, if the background verification report is not satisfactory to the Company or for any other reason that the Company may consider appropriate.",
+      "lensExplanations": {
+        "employee_about_to_sign": "The company can withdraw this offer or terminate your employment even after you've joined if your background check isn't satisfactory, or for 'any other reason' the company deems appropriate. The 'any other reason' part is very broad and gives the company significant power.",
+        "employee_already_signed": "The company can terminate your employment if your background verification is not satisfactory, or for 'any other reason' it deems appropriate. This means your job is conditional on this verification, and the company has broad discretion in termination if issues arise.",
+        "employer_about_to_sign": "This clause grants the company significant flexibility to withdraw the offer or terminate employment based on an unsatisfactory background check or other appropriate reasons. This is a crucial protective measure for the company, especially concerning the broad discretion of 'any other reason'."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "On your date of joining, you shall submit the documents listed in Annexure B, including the relieving letter issued by your previous employer.",
+      "lensExplanations": {
+        "employee_about_to_sign": "You must submit all documents listed in Annexure B, including your previous employer's relieving letter, on your joining date (November 2, 2026). Failing to provide the relieving letter could be problematic.",
+        "employee_already_signed": "You were required to submit all documents listed in Annexure B, including your previous employer's relieving letter, on your joining date. Ensure you have submitted all these documents as required.",
+        "employer_about_to_sign": "This clause sets a clear requirement for the candidate to submit all necessary documents on their joining date, particularly the relieving letter. This is essential for compliance and completing personnel records."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "You shall comply with the Company's code of conduct, information security policy and all other policies of the Company, as amended from time to time, which shall be deemed to form part of your terms of employment.",
+      "lensExplanations": {
+        "employee_about_to_sign": "You are required to follow all company policies, including the code of conduct and information security policy, which can be updated at any time. These policies become part of your employment terms, so familiarize yourself with them.",
+        "employee_already_signed": "You are bound to comply with all company policies, including the code of conduct and information security policy, and any future amendments. These policies are part of your employment terms, so ensure you stay informed about them.",
+        "employer_about_to_sign": "This clause ensures that the employee is bound by all company policies, including future amendments. This provides the company with the flexibility to update its internal rules and ensures employee compliance with current standards and regulations."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "You shall devote your full time and attention to the business of the Company and shall not take up any other employment, business or paid assignment, whether part-time or full-time, without the prior written consent of the Company.",
+      "lensExplanations": {
+        "employee_about_to_sign": "You are obligated to dedicate all your working time and effort to the company and cannot take on any other job or paid work without getting prior written permission from the company. This means no side hustles without approval.",
+        "employee_already_signed": "You must dedicate your full working time to the company and cannot engage in any other employment, business, or paid activity, whether part-time or full-time, without the company's prior written approval. This is to prevent conflicts of interest and ensure full commitment.",
+        "employer_about_to_sign": "This clause ensures the employee's full commitment to the company and prevents them from engaging in other employment or paid activities without prior consent. This protects the company's interests by avoiding conflicts of interest and ensuring the employee's undivided attention."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "On the cessation of your employment, you shall return all Company property in your possession, including your laptop, access card and any documents or data belonging to the Company.",
+      "lensExplanations": {
+        "employee_about_to_sign": "When your employment ends, you are required to return all company property, such as your laptop, access card, and any documents or data. Failure to do so could result in deductions from your final settlement.",
+        "employee_already_signed": "Upon leaving the company, you are obligated to return all company property in your possession, including your laptop, access card, documents, and data. Ensure you do this to avoid penalties.",
+        "employer_about_to_sign": "This clause clearly outlines the employee's obligation to return all company property upon cessation of employment. This is essential for asset management, data security, and ensuring a smooth offboarding process."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "The Company shall be entitled to deduct from your salary or full and final settlement any amount due from you to the Company, including advances, the shortfall in notice, the liquidated damages under Clause 6.2, and the value of any Company property not returned.",
+      "lensExplanations": {
+        "employee_about_to_sign": "The company can deduct any amounts you owe them, including advances, salary for unserved notice period, the Rs. 2,50,000 service bond penalty, or the cost of unreturned company property, from your salary or final settlement. This means these amounts will be recovered directly from you.",
+        "employee_already_signed": "The company has the right to deduct any money you owe them, such as unreturned advances, salary for a short notice period, the Rs. 2,50,000 service bond penalty, or the value of unreturned company property, from your salary or final settlement. Be aware of this if you have any outstanding dues.",
+        "employer_about_to_sign": "This clause provides the company with the legal right to recover any dues from the employee, including penalties and unreturned property costs, by deducting them from their salary or final settlement. This is a strong mechanism for protecting the company's financial interests during employee exits."
+      }
+    }
+  ]
+}

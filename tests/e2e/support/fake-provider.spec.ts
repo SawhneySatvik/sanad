@@ -1,8 +1,8 @@
 // Hold-and-release: the fake provider emits the first chunk of a streamed Ask answer, then holds
 // the rest until this spec releases it — proving the assertion genuinely observes a mid-stream
-// state, not a fast fake that finished before anyone looked (02-backend-slices.md §S5's own
-// warning about this exact race). Uses the global fetch + a body reader directly, not Playwright's
-// `request` fixture, which buffers a response's whole body before resolving.
+// state, not a fast fake that finished before anyone looked. Uses the global fetch + a body reader
+// directly, not Playwright's `request` fixture, which buffers a response's whole body before
+// resolving.
 
 import { randomUUID } from "node:crypto";
 import { test, expect } from "./fixtures";

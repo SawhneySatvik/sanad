@@ -69,7 +69,7 @@ describe("POST /api/documents/:id/prepare", () => {
     // since no ?lens= was sent — and the contract strips its internal-only description field.
     expect(body.lens).toEqual({ id: "tenant_about_to_sign", role: "tenant", stage: "about_to_sign" });
     expect("description" in body.lens).toBe(false);
-    expect(body.markdown).toContain("Prepared for: tenant, about to sign");
+    expect(body.markdown).toContain("Prepared for: Tenant, before signing");
 
     const finding = body.lawyerQuestions[0].findings[0];
     expect(finding.category).toBe("obligation");
@@ -102,7 +102,7 @@ describe("POST /api/documents/:id/prepare", () => {
     const body = (await res.json()) as PrepareOutput;
     if (body.state !== "complete") throw new Error(`expected complete, got ${body.state}`);
     expect(body.lens).toEqual({ id: "tenant_already_signed", role: "tenant", stage: "already_signed" });
-    expect(body.markdown).toContain("Prepared for: tenant, already signed");
+    expect(body.markdown).toContain("Prepared for: Tenant, already signed");
     const prompt = h.primary.calls[callsBefore].userPrompt;
     expect(prompt).toContain("as seen by tenant_already_signed");
     expect(prompt).not.toContain("as seen by tenant_about_to_sign");

@@ -5,7 +5,7 @@
  * state-changing request is refused before any cookie or identity is touched; a params validation
  * failure is always 404, byte-identical to a missing or foreign id. The principal rate-limit tier
  * is charged only inside `deps.llm`, per LLM call — never here, never twice. Every response,
- * refusals and errors included, carries SECURITY_HEADERS.
+ * refusals and errors included, carries securityHeaders().
  */
 
 import { randomUUID } from "node:crypto";
@@ -18,7 +18,7 @@ import { enforceIpLimit } from "@/server/rate-limit/limiter";
 import { crossSiteRefusal, errorResponse, logRequestError, mapError, type RequestLogContext } from "./errors";
 import { clearedGuestSessionCookie, type ClaimSession } from "./claim-session";
 import { clearedUserSessionCookie, guestFromCookie, mintedUserSessionCookie, resolveRequestPrincipal } from "./principal";
-import { SECURITY_HEADERS } from "./security-headers";
+import { securityHeaders } from "./security-headers";
 import { eventStreamResponse } from "./sse";
 import { toWire } from "./wire";
 
@@ -75,8 +75,17 @@ export interface JsonRouteSpec<P, Q, B> extends RouteSpecBase<P, Q, B> {
   response: z.ZodType;
   run(args: RunArgs<P, Q, B>): Promise<unknown>;
   claimSession?: never;
-  clearsGuestSession?: never;
+  clearsGuestSession?: boolean;
   userSession?: "set" | "clear";
+}
+
+export interface NoContentRouteSpec<P, Q, B> extends RouteSpecBase<P, Q, B> {
+  status: 204;
+  response?: never;
+  run(args: RunArgs<P, Q, B>): Promise<unknown>;
+  claimSession?: never;
+  clearsGuestSession?: never;
+  userSession?: never;
 }
 
 /** A route answering a server-sent-event stream instead of one JSON body. */
@@ -118,6 +127,7 @@ export interface AnonymousRouteSpec {
 
 type IdentifiedRouteSpec =
   | JsonRouteSpec<z.ZodType | undefined, z.ZodType | undefined, BodySpec | undefined>
+  | NoContentRouteSpec<z.ZodType | undefined, z.ZodType | undefined, BodySpec | undefined>
   | EventStreamRouteSpec<z.ZodType | undefined, z.ZodType | undefined, BodySpec | undefined>
   | ClaimRouteSpec<z.ZodType | undefined, z.ZodType | undefined, BodySpec | undefined>;
 type AnyRouteSpec = IdentifiedRouteSpec | AnonymousRouteSpec;
@@ -172,6 +182,11 @@ export function route<
   Q extends z.ZodType | undefined = undefined,
   B extends BodySpec | undefined = undefined,
 >(spec: JsonRouteSpec<P, Q, B>): RouteHandler;
+export function route<
+  P extends z.ZodType | undefined = undefined,
+  Q extends z.ZodType | undefined = undefined,
+  B extends BodySpec | undefined = undefined,
+>(spec: NoContentRouteSpec<P, Q, B>): RouteHandler;
 // A separate overload: in a union with JsonRouteSpec's, TS infers `any` for an untyped `run` callback.
 export function route<
   P extends z.ZodType | undefined = undefined,
@@ -237,7 +252,8 @@ async function handle(req: Request, ctx: RouteContext, spec: AnyRouteSpec): Prom
         clearGuestSession = spec.clearsGuestSession === true;
       } else {
         const result = await spec.run(args);
-        response = jsonResponse(spec.response, result);
+        response = "status" in spec && spec.status === 204 ? new Response(null, { status: 204 }) : jsonResponse(spec.response!, result);
+        if ("clearsGuestSession" in spec && spec.clearsGuestSession === true) clearGuestSession = true;
         // Reached only once run and the response contract both succeeded — same guarantee as
         // clearGuestSession above, and independent of it: see JsonRouteSpec's userSession doc.
         if (spec.userSession === "set") userSessionCookie = mintedUserSessionCookie(userIdFromResult(result));
@@ -249,7 +265,7 @@ async function handle(req: Request, ctx: RouteContext, spec: AnyRouteSpec): Prom
     logRequestError(log, mapped.status, error);
     response = errorResponse(mapped, log.correlationId);
   }
-  for (const [name, value] of Object.entries(SECURITY_HEADERS)) response.headers.set(name, value);
+  for (const [name, value] of Object.entries(securityHeaders())) response.headers.set(name, value);
   if (clearGuestSession) response.headers.append("set-cookie", clearedGuestSessionCookie());
   else if (setCookie) response.headers.append("set-cookie", setCookie);
   // Independent of the guest cookie above: a first-time sign-in may mint both in one response.

@@ -42,6 +42,7 @@ import {
   findLatestAnalysis,
   getCachedAnalysisOutput,
   insertAnalysisIfAbsent,
+  lockDocumentForAnalysisPersistence,
   putCachedAnalysisOutput,
   type Analysis,
 } from "../data/analyses";
@@ -287,13 +288,59 @@ async function transcribe(
  * already-analyzed returns the existing analysis with no model call. extraction_failed always
  * throws EXTRACTION_FAILED, since the document itself cannot be read. A concurrent run that loses
  * the analysis-uniqueness race persists nothing and returns the winner's analysis.
+ *
+ * Refuses a sample copy outright: a sample's analysis is fixed at the moment it was recorded, and
+ * retrying it live would silently turn a "recorded" result into a real one still labelled recorded.
+ * Checked immediately after the document loads — before extract() and before findLatestAnalysis's
+ * own early return — so this can never be reached by finding an already-persisted analysis first.
  */
 export async function analyzeDocument(
   deps: UnderstandDeps,
   principal: Principal,
   documentId: string,
 ): Promise<AnalyzedDocument> {
-  let document = await getDocument(deps.db, principal, documentId);
+  const document = await getDocument(deps.db, principal, documentId);
+  if (document.sampleId !== null) {
+    throw new AppError(
+      "INVALID_DOCUMENT",
+      "This document is a recorded sample and cannot be re-analyzed.",
+      { reason: "sample_readonly" },
+    );
+  }
+  return runAnalysis(deps, principal, documentId, document, {});
+}
+
+/**
+ * The samples flow's only entry point into this module (src/server/samples/open.ts calls it, never
+ * analyzeDocument): runs the same extraction/analysis/persistence core, with the shared result cache
+ * off in both directions (a sample's recorded output is per-sample fixed data, never something to
+ * read from or write into the cache real documents share). Refuses unless `documentId` is already
+ * tagged as this exact sample, so it can never become a general bypass of analyzeDocument()'s guard.
+ */
+export async function replayRecordedAnalysis(
+  deps: UnderstandDeps,
+  principal: Principal,
+  documentId: string,
+  sampleId: string,
+): Promise<AnalyzedDocument> {
+  const document = await getDocument(deps.db, principal, documentId);
+  if (document.sampleId !== sampleId) throw notFound();
+  return runAnalysis(deps, principal, documentId, document, { skipResultCache: true });
+}
+
+/** Whether the shared analyzed_result_cache is read from or written to by runAnalysis(). */
+interface RunAnalysisOptions {
+  skipResultCache?: boolean;
+}
+
+async function runAnalysis(
+  deps: UnderstandDeps,
+  principal: Principal,
+  documentId: string,
+  initialDocument: Document,
+  options: RunAnalysisOptions,
+): Promise<AnalyzedDocument> {
+  let document = initialDocument;
   if (document.processingStatus === "pending") document = await extract(deps, principal, document);
   const { canonicalText, canonicalTextHash, inputMode } = document;
   if (document.processingStatus !== "ready" || canonicalText === null || canonicalTextHash === null || inputMode === null) {
@@ -315,7 +362,7 @@ export async function analyzeDocument(
   }
   const documentType = toDocumentTypeId(document.documentType);
   const schema = buildUnderstandResponseSchema(documentType);
-  const cacheHit = await chargedCacheHit(deps, principal, documentId, schema);
+  const cacheHit = options.skipResultCache ? null : await chargedCacheHit(deps, principal, documentId, schema);
   const { data: output, modelUsed } =
     cacheHit ??
     (await deps.llm.complete({
@@ -344,6 +391,7 @@ export async function analyzeDocument(
   await deps.db.transaction(async (tx) => {
     // Inside the transaction every repository call gets `tx`: PGlite holds one connection, so a
     // query on the outer handle here would wait for this transaction forever.
+    await lockDocumentForAnalysisPersistence(tx, principal, documentId);
     const analysis = await insertAnalysisIfAbsent(tx, principal, {
       documentId,
       promptVersion: PROMPT_VERSION,
@@ -374,7 +422,9 @@ export async function analyzeDocument(
         })),
       ),
     );
-    if (cacheHit === null) {
+    // A sample's recorded output is fixed per sample, never something to seed the cache real
+    // documents share — skipResultCache takes this branch out entirely, not only the read above.
+    if (cacheHit === null && !options.skipResultCache) {
       await putCachedAnalysisOutput(tx, principal, documentId, {
         promptVersion: PROMPT_VERSION,
         modelUsed,

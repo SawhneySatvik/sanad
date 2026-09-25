@@ -1,7 +1,7 @@
 // Proves the suite really is driving the fake provider, not silently passing against nothing: a
 // real Ask turn, through the real orchestrator, through providers.ts's e2e redirect, answered by a
 // script this test itself registers. Red-proved by running this same file with the fake told to go
-// down first (SABOOT_E2E_CANARY_DOWN=1) — see this repo's build report for both outputs.
+// down first (SABOOT_E2E_CANARY_DOWN=1), which fails instead of passing vacuously.
 
 import { randomUUID } from "node:crypto";
 import { test, expect } from "./fixtures";

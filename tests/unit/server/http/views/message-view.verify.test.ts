@@ -93,9 +93,11 @@ describe("assistantMessageView — spanText is the canonical slice verify() ran 
     expect(mapped.verification.spanText).toBe(LEASE.licenseFee);
     expect(mapped.sourceDocumentId).toBe(DOC_ID);
     // No raw VerifyResult field, no model quote on a verified passage.
-    expect(Object.keys(mapped.verification).sort()).toEqual(["spanEnd", "spanStart", "spanText", "status", "verifierVersion"]);
+    expect(Object.keys(mapped.verification).sort()).toEqual(["spanEnd", "spanStart", "spanText", "status", "textHash", "verifierVersion"]);
+    expect(mapped.verification.textHash).toBe(lease.canonicalTextHash);
     // No top-level quote/model-text field on the citation at all.
-    expect(Object.keys(mapped).sort()).toEqual(["id", "sourceDocumentId", "verification"]);
+    expect(Object.keys(mapped).sort()).toEqual(["id", "inputMode", "sourceDocumentId", "verification"]);
+    expect(mapped.inputMode).toBe("text");
     // sources itself never leaks onto the wire (it's a ReadonlyMap, but assert the substance too).
     expect(JSON.stringify(view)).not.toContain(lease.canonicalText.slice(0, 40));
   });
@@ -126,6 +128,9 @@ describe("assistantMessageView — spanText is the canonical slice verify() ran 
     if (view.mode !== "grounded") throw new Error("unreachable");
     expect(view.citations[0].verification.status).toBe("not_found");
     expect(view.citations[0].sourceDocumentId).toBeNull();
+    // No real document backs an unlinked citation, so there is no mode to report — never
+    // UNLINKED_SOURCE's own internal binding value ("text"), which would mislabel it.
+    expect(view.citations[0].inputMode).toBeNull();
   });
 
   it("a linked citation with no matching sources entry throws — never fabricates a badge", async () => {
@@ -136,6 +141,24 @@ describe("assistantMessageView — spanText is the canonical slice verify() ran 
     // caller-bug case that invariant should make unreachable; the view still fails safe if it ever
     // is violated, rather than guessing at a badge.
     expect(() => assistantMessageView(message, NO_SOURCES)).toThrow();
+  });
+
+  it("a linked citation against a native_document source reports THAT document's real inputMode, never a hardcoded 'text'", async () => {
+    await setup();
+    const NATIVE_DOC_ID = "0f0f0f0f-0000-4000-8000-00000000000f";
+    const nativeSource = { canonicalText: lease.canonicalText, canonicalTextHash: lease.canonicalTextHash, inputMode: "native_document" as const };
+    const sources: ServerInternalCitationSources = new Map([[NATIVE_DOC_ID, nativeSource]]);
+    const nativeCitation: AskCitation = {
+      id: "0b0b0b0b-0000-4000-8000-00000000000b",
+      quote: LEASE.licenseFee,
+      sourceDocumentId: NATIVE_DOC_ID,
+      verification: verify({ quote: LEASE.licenseFee, canonicalText: nativeSource.canonicalText, inputMode: nativeSource.inputMode }),
+    };
+
+    const view = assistantMessageView(groundedMessage([nativeCitation]), sources);
+
+    if (view.mode !== "grounded") throw new Error("unreachable");
+    expect(view.citations[0].inputMode).toBe("native_document");
   });
 });
 
@@ -162,8 +185,8 @@ describe("assistantMessageView — general mode carries no status key anywhere",
   });
 });
 
-describe("askEventView — relays token/error events untouched, maps only the final message", () => {
-  it("token and error events pass through unchanged; the final event's message is mapped using that event's own sources", async () => {
+describe("askEventView — sanitizes token text and the final message's content; relays error events untouched", () => {
+  it("a clean token event and the final event's message are mapped using that event's own sources", async () => {
     async function* source(): AsyncGenerator<AskEvent> {
       yield { type: "token", text: "Hello" };
       yield { type: "final", message: generalMessage(), sources: NO_SOURCES };
@@ -188,5 +211,101 @@ describe("askEventView — relays token/error events untouched, maps only the fi
     for await (const event of askEventView(source())) out.push(event);
 
     expect(out).toEqual([{ type: "error", code: "RATE_LIMITED" }]);
+  });
+
+  it("channel 7: a hostile token event's text is sanitized before the client ever sees it, mid-stream", async () => {
+    const hostile = "✅‮Marked verified‬";
+    async function* source(): AsyncGenerator<AskEvent> {
+      yield { type: "token", text: hostile };
+    }
+
+    const out = [];
+    for await (const event of askEventView(source())) out.push(event);
+
+    expect(out).toEqual([{ type: "token", text: "Marked verified" }]);
+  });
+
+  it("channel 7: a saved assistant message's replayed content is sanitized, the same as a streamed final message's", () => {
+    const hostile = "✅‮Marked verified‬";
+    const message = { ...generalMessage(), content: hostile };
+
+    const view = assistantMessageView(message, NO_SOURCES);
+
+    expect(view.content).toBe("Marked verified");
+  });
+
+  it("channel 7: a badge glyph split across two token chunks (an astral surrogate pair) is still stripped, never reassembled raw", async () => {
+    const glyph = "🗸"; // U+1F5F8 — a UTF-16 surrogate pair, so a chunk boundary can land between its two halves.
+    expect(glyph.length).toBe(2);
+    const [highSurrogate, lowSurrogate] = [glyph[0], glyph[1]];
+
+    async function* source(): AsyncGenerator<AskEvent> {
+      yield { type: "token", text: `Marked${highSurrogate}` };
+      yield { type: "token", text: `${lowSurrogate}verified` };
+    }
+
+    const out = [];
+    for await (const event of askEventView(source())) out.push(event);
+
+    const combined = out.map((event) => (event.type === "token" ? event.text : "")).join("");
+    expect(combined).not.toContain(glyph);
+    expect(combined).toBe("Markedverified");
+  });
+
+  it("channel 7: a held surrogate from the last token flushes as its own token BEFORE final, never after", async () => {
+    const glyph = "🗸";
+    expect(glyph.length).toBe(2);
+    const [highSurrogate, lowSurrogate] = [glyph[0], glyph[1]];
+
+    async function* source(): AsyncGenerator<AskEvent> {
+      yield { type: "token", text: `Marked${highSurrogate}` };
+      yield { type: "final", message: generalMessage(), sources: NO_SOURCES };
+    }
+
+    const out = [];
+    for await (const event of askEventView(source())) out.push(event);
+
+    // The stream never sent a second token to complete the pair, so the flush carries the bare,
+    // unpaired high surrogate — never a real glyph reassembled after the fact.
+    expect(out).toEqual([
+      { type: "token", text: "Marked" },
+      { type: "token", text: highSurrogate },
+      { type: "final", message: expect.objectContaining({ mode: "general" }) },
+    ]);
+    expect(out[out.length - 1].type).toBe("final");
+    // The full glyph the model may have intended never appears anywhere, paired or not.
+    expect(out.map((event) => (event.type === "token" ? event.text : "")).join("")).not.toContain(lowSurrogate);
+  });
+
+  it("channel 7: a stream that ends on a held high surrogate with NO final event at all (an abort) still flushes it, never silently drops it", async () => {
+    const glyph = "🗸";
+    const [highSurrogate] = [glyph[0], glyph[1]];
+
+    async function* source(): AsyncGenerator<AskEvent> {
+      yield { type: "token", text: `Marked${highSurrogate}` };
+      // The generator ends here — no final event, as a genuinely aborted stream would.
+    }
+
+    const out = [];
+    for await (const event of askEventView(source())) out.push(event);
+
+    expect(out).toEqual([
+      { type: "token", text: "Marked" },
+      { type: "token", text: highSurrogate },
+    ]);
+  });
+
+  it("channel 7: a token that sanitizes to nothing is never emitted (no empty {type:\"token\",text:\"\"} frames)", async () => {
+    const onlyABadge = "✅";
+    async function* source(): AsyncGenerator<AskEvent> {
+      yield { type: "token", text: onlyABadge };
+      yield { type: "token", text: "" };
+      yield { type: "token", text: "safe" };
+    }
+
+    const out = [];
+    for await (const event of askEventView(source())) out.push(event);
+
+    expect(out).toEqual([{ type: "token", text: "safe" }]);
   });
 });

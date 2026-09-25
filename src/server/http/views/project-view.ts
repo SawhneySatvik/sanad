@@ -27,6 +27,7 @@ export function projectsListView(projects: readonly Project[]) {
 function documentSummaryView(row: ProjectDetail["documents"][number]) {
   return {
     id: row.id,
+    title: row.title ?? row.filename,
     filename: row.filename,
     mimeType: row.mimeType,
     inputMode: row.inputMode,
@@ -40,6 +41,7 @@ function documentSummaryView(row: ProjectDetail["documents"][number]) {
 function comparisonSummaryView(row: ProjectDetail["comparisons"][number]) {
   return {
     id: row.id,
+    title: row.title ?? `${row.titleA ?? "Document A"} vs ${row.titleB ?? "Document B"}`,
     documentAId: row.documentAId,
     documentBId: row.documentBId,
     modelUsed: row.modelUsed,
@@ -51,6 +53,7 @@ function comparisonSummaryView(row: ProjectDetail["comparisons"][number]) {
 function draftSummaryView(row: ProjectDetail["drafts"][number]) {
   return {
     id: row.id,
+    title: row.title,
     documentType: row.documentType,
     mode: row.mode,
     groundingDocumentId: row.groundingDocumentId,

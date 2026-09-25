@@ -48,6 +48,7 @@ export interface ComparisonChangeResult {
   id: string;
   changeType: ComparisonChangeType;
   explanation: string;
+  explanationProvenance: "ai_generated" | "templated";
   // null on the side the clause is absent from.
   quoteA: string | null;
   quoteB: string | null;
@@ -221,6 +222,7 @@ export async function get(deps: CompareDeps, principal: Principal, comparisonId:
         id: change.id,
         changeType: change.changeType,
         explanation: change.explanation,
+        explanationProvenance: change.explanation === FALLBACK_EXPLANATION[change.changeType] ? "templated" : "ai_generated",
         quoteA: a.quote,
         quoteB: b.quote,
         verificationA: a.verification,

@@ -11,6 +11,7 @@ import { FakeLlmClient } from "@tests/support/fakes/llm-client";
 import { FallbackLlmClient } from "@/server/llm/fallback";
 import { assertSafeResponseSchema } from "@/server/llm/schema-guard";
 import { compare, get, type ComparisonResult } from "@/server/services/compare";
+import { comparisonView } from "@/server/http/views/comparison-view";
 import {
   candidateIds,
   type CompareHarness,
@@ -41,6 +42,21 @@ async function compareLease(llm: FakeLlmClient | FallbackLlmClient, modes: Input
 async function storedChanges() {
   return h.t.db.select().from(schema.comparisonChanges).orderBy(schema.comparisonChanges.id);
 }
+
+it("a fallback explanation is templated per change even when the comparison used a model", async () => {
+  const llm = new FakeLlmClient({
+    responses: [{ data: { changes: [
+      { id: "c1", explanation: "The monthly fee rises.", quoteA: null, quoteB: null },
+      { id: "c2", explanation: "  ", quoteA: null, quoteB: null },
+    ] } }],
+  });
+  const created = await compareLease(llm);
+  const view = comparisonView(created);
+  expect(view.changes[0].explanationProvenance).toBe("ai_generated");
+  expect(view.changes[1].explanationProvenance).toBe("templated");
+  const reloaded = comparisonView(await get(h.deps(llm), guestA, created.comparison.id));
+  expect(reloaded.changes.map((change) => change.explanationProvenance).slice(0, 2)).toEqual(["ai_generated", "templated"]);
+});
 
 // The messages of a rejection and its cause chain (drizzle wraps the Postgres error).
 async function rejectionText(promise: Promise<unknown>): Promise<string> {

@@ -43,7 +43,8 @@ describe("toVerificationOutput", () => {
     if (output.status !== "verified") return;
     expect(output.spanText).toBe(lease.canonicalText.slice(output.spanStart, output.spanEnd));
     expect(output.spanText).toBe(LEASE.licenseFee);
-    expect(Object.keys(output).sort()).toEqual(["spanEnd", "spanStart", "spanText", "status", "verifierVersion"]);
+    expect(Object.keys(output).sort()).toEqual(["spanEnd", "spanStart", "spanText", "status", "textHash", "verifierVersion"]);
+    expect(output.textHash).toBe(lease.canonicalTextHash);
     expect(VerificationOutput.parse(output)).toEqual(output);
   });
 
@@ -55,9 +56,10 @@ describe("toVerificationOutput", () => {
     expect(output.spanText).toBe(lease.canonicalText.slice(output.spanStart, output.spanEnd));
     expect(output.spanText).not.toBe(LEASE.nearMiss);
     expect(output.claimedQuote).toBe(LEASE.nearMiss);
+    expect(output.textHash).toBe(lease.canonicalTextHash);
   });
 
-  it("not_found: no span, no text — only the claim", () => {
+  it("not_found: no span, no text — only the claim, and the source document's own real hash", () => {
     const output = toVerificationOutput(checked(LEASE.fabricated), { quote: LEASE.fabricated, ...lease });
 
     expect(output).toEqual({
@@ -67,6 +69,7 @@ describe("toVerificationOutput", () => {
       spanText: null,
       claimedQuote: LEASE.fabricated,
       verifierVersion: expect.any(String),
+      textHash: lease.canonicalTextHash,
     });
   });
 

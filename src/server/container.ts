@@ -8,7 +8,7 @@
  */
 
 import { getDb, type Db } from "@/db/client";
-import { requireEnv } from "@/server/core/env";
+import { ConfigError, optionalEnv, requireEnv } from "@/server/core/env";
 import type { Principal } from "@/server/core/types";
 import { canAccess } from "@/server/data/access";
 import type { AuthenticateUser } from "@/server/http/principal";
@@ -22,6 +22,7 @@ import { createRateLimitedLlmClient } from "@/server/rate-limit/rate-limited-llm
 import { chargeCallerLimits, type WithCallerLimitOptions } from "@/server/rate-limit/with-caller-limit";
 import { assertCacheModelId } from "@/server/services/understand";
 import { LocalFsStorageAdapter } from "@/server/storage/local-fs-adapter";
+import { PostgresStorageAdapter } from "@/server/storage/postgres-adapter";
 import type { StorageAdapter } from "@/server/storage/types";
 
 /** Everything one service call needs: db handle, storage adapter, rate-limited LLM client, and the cache-keying model id. */
@@ -182,13 +183,40 @@ export function createContainer(options: ContainerOptions): Container {
   };
 }
 
+// Vercel gives each function instance its own ephemeral disk, so LocalFsStorageAdapter's bytes
+// written by one instance (e.g. the relay step) are invisible to another (e.g. analyse) — the
+// Postgres-backed adapter is required there regardless of STORAGE_BACKEND. Off Vercel,
+// STORAGE_BACKEND opts a host with no shared disk (or a manual test of the Postgres path) into it too.
+function resolveStorageBackend(): "local" | "postgres" {
+  if (optionalEnv("VERCEL") !== undefined) return "postgres";
+  const raw = optionalEnv("STORAGE_BACKEND");
+  if (raw === undefined || raw === "local") return "local";
+  if (raw === "postgres") return "postgres";
+  // Reuses ConfigError's shape (variableName, configStatus().storage reads as unbuildable) rather
+  // than a bare Error — a typo like "postgress" must fail loudly, never silently fall back to a
+  // filesystem adapter that Vercel's ephemeral disk can't support.
+  const error = new ConfigError("STORAGE_BACKEND");
+  error.message = `STORAGE_BACKEND must be "postgres", "local", or unset (got ${JSON.stringify(raw)})`;
+  throw error;
+}
+
+function buildProductionStorageAdapter(db: Db, signingSecret: () => string): StorageAdapter {
+  const accessCheck = canAccess;
+  // The secret is required either way, read here (not at module scope) so a missing/short one fails
+  // when the adapter is first built, not at import time.
+  if (resolveStorageBackend() === "postgres") {
+    return new PostgresStorageAdapter({ db, accessCheck, signingSecret: signingSecret() });
+  }
+  return new LocalFsStorageAdapter({ accessCheck, signingSecret: signingSecret() });
+}
+
 /** The real env-driven ContainerOptions; exported for tests that exercise this wiring directly over their own database. */
 export function productionContainerOptions(db: Db): ContainerOptions {
   const localStorageSigningSecret = () => requireEnv("LOCAL_STORAGE_SIGNING_SECRET");
   return {
     db,
     // The adapter validates the secret, so a bad one fails here rather than on the first upload.
-    storage: () => new LocalFsStorageAdapter({ accessCheck: canAccess, signingSecret: localStorageSigningSecret() }),
+    storage: () => buildProductionStorageAdapter(db, localStorageSigningSecret),
     llm: () => ({ primary: createGeminiClient(), secondary: createGemmaClient() }),
     localStorageSigningSecret,
     primaryModelId: geminiModelId(),

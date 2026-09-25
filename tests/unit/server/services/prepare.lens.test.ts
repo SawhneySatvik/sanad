@@ -117,7 +117,7 @@ describe("generate() — lens selection", () => {
 
     const result = complete(await generate(h.deps(scriptFor(feeAlias)), guestA, analyzed.document.id, TENANT_ALREADY_SIGNED.id));
 
-    expect(result.markdown).toContain("Prepared for: tenant, already signed");
+    expect(result.markdown).toContain("Prepared for: Tenant, already signed");
   });
 
   it("an unknown lens id is VALIDATION_FAILED, with no LLM call", async () => {

@@ -226,11 +226,11 @@ describe("revise() when the grounding document is unavailable", () => {
     await h.t.db.update(schema.documents).set({ ownerGuestSessionId: "repo-guest-b" }).where(eq(schema.documents.id, doc.id));
 
     const llm = new FakeLlmClient({ responses: [{ data: draftModelOutput("grounded_response") }] });
-    const revision = await revise(h.deps(llm), guestA, root.id, { userInstructions: "revise it" });
-
-    expect(revision.groundingDocumentAvailable).toBe(false);
-    expect(llm.calls[0].userPrompt).not.toContain("CONFIDENTIAL");
-    expect(llm.calls[0].userPrompt).not.toContain("guestA's own document text");
+    await expect(revise(h.deps(llm), guestA, root.id, { userInstructions: "revise it" }))
+      .rejects.toMatchObject({ code: "NOT_FOUND" });
+    expect(llm.callCount).toBe(0);
+    const stored = await h.t.db.select().from(schema.drafts);
+    expect(stored).toHaveLength(1);
   });
 });
 

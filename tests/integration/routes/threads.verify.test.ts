@@ -155,7 +155,9 @@ describe("a forged verified citation, imported over a document the importer can'
     expect(assistant.citations[0].sourceDocumentId).toBeNull();
     expect(JSON.stringify(assistant.citations[0])).not.toContain("cached_verified");
     // No top-level quote/model-text field on the wire citation.
-    expect(Object.keys(assistant.citations[0]).sort()).toEqual(["id", "sourceDocumentId", "verification"]);
+    expect(Object.keys(assistant.citations[0]).sort()).toEqual(["id", "inputMode", "sourceDocumentId", "verification"]);
+    // Discarded to unlinked (the cited document is foreign): no real document to report a mode for.
+    expect(assistant.citations[0].inputMode).toBeNull();
 
     // Independently, through GET /api/threads/:id/messages too — never trusting a cached read.
     const listed = MessagesOutput.parse(

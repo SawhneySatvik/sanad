@@ -6,11 +6,15 @@
  */
 
 import type { DraftResult, DraftSectionOutput } from "@/server/services/draft";
+import { sanitizeModelText } from "@/server/deterministic/sanitize/model-text";
+import { renderDraftContent } from "@/server/deterministic/draft-templates";
 
 /** Maps a DraftResult to the wire shape. */
 export function draftView(result: DraftResult) {
+  const sections = result.sections.map(sectionView);
   return {
     id: result.id,
+    title: result.title,
     documentType: result.documentType,
     mode: result.mode,
     groundingDocumentId: result.groundingDocumentId,
@@ -22,11 +26,11 @@ export function draftView(result: DraftResult) {
     jurisdiction: result.jurisdiction,
     groundingDocumentAvailable: result.groundingDocumentAvailable,
     promptVersion: result.promptVersion,
-    content: result.content,
-    sections: result.sections.map(sectionView),
+    content: renderDraftContent(result.documentType, sections.map((section) => ({ sectionKey: section.key, content: section.content }))),
+    sections,
   };
 }
 
 function sectionView(section: DraftSectionOutput) {
-  return { key: section.key, heading: section.heading, provenance: section.provenance, content: section.content };
+  return { key: section.key, heading: section.heading, provenance: section.provenance, content: section.provenance === "ai_generated" ? sanitizeModelText(section.content) : section.content };
 }

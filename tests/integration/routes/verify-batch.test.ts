@@ -74,12 +74,16 @@ describe("POST /api/verify-batch", () => {
     expect(results.map((r: { status: string }) => r.status)).toEqual(["verified", "not_found", "approximate"]);
 
     const [verified, notFound, approximate] = results;
-    expect(Object.keys(verified).sort()).toEqual(["spanEnd", "spanStart", "spanText", "status", "verifierVersion"]);
+    expect(Object.keys(verified).sort()).toEqual(["spanEnd", "spanStart", "spanText", "status", "textHash", "verifierVersion"]);
     expect(verified.spanText).toBe(canonicalText.slice(verified.spanStart, verified.spanEnd));
     expect(verified.spanText).toBe(LEASE.licenseFee);
     expect(notFound).toMatchObject({ spanStart: null, spanEnd: null, spanText: null, claimedQuote: LEASE.fabricated });
     expect(approximate.spanText).toBe(canonicalText.slice(approximate.spanStart, approximate.spanEnd));
     expect(approximate.claimedQuote).toBe(LEASE.nearMiss);
+    // Every result is against the caller's own document, so every branch — including the
+    // fabricated not_found — carries that document's real textHash, never the anti-oracle sentinel.
+    const realHash = (await h.t.db.select({ h: schema.documents.canonicalTextHash }).from(schema.documents).where(eq(schema.documents.id, documentId)))[0].h;
+    expect([verified.textHash, notFound.textHash, approximate.textHash]).toEqual([realHash, realHash, realHash]);
   });
 
   it("the body holds no document text beyond the spans verify() placed for the caller's own quotes", async () => {

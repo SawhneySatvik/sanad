@@ -4,9 +4,12 @@
  * the result belongs to this quote and this document (quote, canonical-text hash and input mode all
  * match), so a result attached to the wrong finding or the wrong side of a comparison throws
  * instead of showing the wrong passage, then cuts spanText from the document's own canonical text.
+ * claimedQuote is sanitized here, after verify() has already run against it — never before, since
+ * verify() must match the model's own text, not a scrubbed copy of it.
  */
 
 import type { InputMode } from "@/server/core/types";
+import { sanitizeModelText } from "@/server/deterministic/sanitize/model-text";
 import { assertVerifyResultFor, type VerifyResult } from "@/server/deterministic/verify";
 import type { VerificationOutput } from "@/shared/contracts/common";
 
@@ -34,8 +37,9 @@ export function toVerificationOutput(result: VerifyResult, source: VerifiedAgain
     inputMode: source.inputMode,
   });
   const { verifierVersion } = result;
+  const textHash = source.canonicalTextHash;
   if (result.status === "not_found") {
-    return { status: "not_found", spanStart: null, spanEnd: null, spanText: null, claimedQuote: result.quote, verifierVersion };
+    return { status: "not_found", spanStart: null, spanEnd: null, spanText: null, claimedQuote: sanitizeModelText(result.quote), verifierVersion, textHash };
   }
   const span = {
     spanStart: result.spanStart,
@@ -43,6 +47,6 @@ export function toVerificationOutput(result: VerifyResult, source: VerifiedAgain
     spanText: source.canonicalText.slice(result.spanStart, result.spanEnd),
   };
   return result.status === "verified"
-    ? { status: "verified", ...span, verifierVersion }
-    : { status: "approximate", ...span, claimedQuote: result.quote, verifierVersion };
+    ? { status: "verified", ...span, verifierVersion, textHash }
+    : { status: "approximate", ...span, claimedQuote: sanitizeModelText(result.quote), verifierVersion, textHash };
 }

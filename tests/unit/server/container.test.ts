@@ -8,6 +8,8 @@ import { createTestDb, type TestDb } from "@tests/support/db";
 import { ConfigError } from "@/server/core/env";
 import { FakeLlmClient } from "@tests/support/fakes/llm-client";
 import { geminiModelId } from "@/server/llm/providers";
+import { LocalFsStorageAdapter } from "@/server/storage/local-fs-adapter";
+import { PostgresStorageAdapter } from "@/server/storage/postgres-adapter";
 import type { StorageAdapter } from "@/server/storage/types";
 import {
   createContainer,
@@ -214,6 +216,33 @@ describe("productionContainerOptions", () => {
 
     vi.stubEnv("LOCAL_STORAGE_SIGNING_SECRET", "x".repeat(32));
     expect(createContainer(productionContainerOptions(t.db)).configStatus().storage).toBe(true);
+  });
+
+  it("picks LocalFsStorageAdapter by default (unset STORAGE_BACKEND, no VERCEL) — the dev/e2e-server default", () => {
+    vi.stubEnv("LOCAL_STORAGE_SIGNING_SECRET", "x".repeat(32));
+    const container = createContainer(productionContainerOptions(t.db));
+    expect(container.forRequest(guestA, false).storage).toBeInstanceOf(LocalFsStorageAdapter);
+  });
+
+  it("STORAGE_BACKEND=postgres picks PostgresStorageAdapter even off Vercel", () => {
+    vi.stubEnv("STORAGE_BACKEND", "postgres");
+    vi.stubEnv("LOCAL_STORAGE_SIGNING_SECRET", "x".repeat(32));
+    const container = createContainer(productionContainerOptions(t.db));
+    expect(container.forRequest(guestA, false).storage).toBeInstanceOf(PostgresStorageAdapter);
+  });
+
+  it("VERCEL forces PostgresStorageAdapter regardless of STORAGE_BACKEND — each function instance has its own ephemeral disk", () => {
+    vi.stubEnv("VERCEL", "1");
+    vi.stubEnv("STORAGE_BACKEND", "local");
+    vi.stubEnv("LOCAL_STORAGE_SIGNING_SECRET", "x".repeat(32));
+    const container = createContainer(productionContainerOptions(t.db));
+    expect(container.forRequest(guestA, false).storage).toBeInstanceOf(PostgresStorageAdapter);
+  });
+
+  it("an unrecognized STORAGE_BACKEND value fails config status rather than silently falling back to LocalFs", () => {
+    vi.stubEnv("STORAGE_BACKEND", "postgress");
+    vi.stubEnv("LOCAL_STORAGE_SIGNING_SECRET", "x".repeat(32));
+    expect(createContainer(productionContainerOptions(t.db)).configStatus().storage).toBe(false);
   });
 
   it("the providers are unbuildable while any provider key is missing", () => {

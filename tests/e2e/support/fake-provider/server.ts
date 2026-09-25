@@ -43,7 +43,13 @@ const CONTROL_PREFIX = "/__control__";
 const HOLD_SAFETY_TIMEOUT_MS = 25_000;
 
 function jsonBody(res: http.ServerResponse, status: number, body: unknown): void {
-  const text = JSON.stringify(body);
+  rawJsonBody(res, status, JSON.stringify(body));
+}
+
+// geminiChunkBody/openAiChunkBody below already return serialized JSON text (a provider's own wire
+// format) — writing that through jsonBody() would JSON.stringify it a second time, turning the body
+// into a quoted string the real @google/genai/openai SDKs cannot parse as the response they expect.
+function rawJsonBody(res: http.ServerResponse, status: number, text: string): void {
   res.writeHead(status, { "content-type": "application/json", "content-length": Buffer.byteLength(text) });
   res.end(text);
 }
@@ -223,7 +229,7 @@ export async function startFakeProvider(port = 0): Promise<FakeProviderHandle> {
     const encodeChunk = (text: string) => (kind === "gemini" ? geminiChunkBody(text) : openAiChunkBody(text, streaming));
 
     if (!streaming) {
-      jsonBody(res, 200, encodeChunk(matched.chunks.join("")));
+      rawJsonBody(res, 200, encodeChunk(matched.chunks.join("")));
       return;
     }
 

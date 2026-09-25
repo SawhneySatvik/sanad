@@ -1,0 +1,275 @@
+{
+  "modelUsed": "gemini-2.5-flash",
+  "findings": [
+    {
+      "category": "deadline",
+      "quote": "This license shall be for a period of eleven (11) months commencing from the Commencement Date and ending on 31st August, 2027 (both days inclusive), unless terminated earlier in accordance with this Agreement.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "This clause specifies that your license to use the premises will last for 11 months, from October 1, 2026, to August 31, 2027. Be aware of this fixed period and plan your stay accordingly.",
+        "tenant_already_signed": "Your license to use the premises is for a fixed period of 11 months, ending on August 31, 2027. You must vacate the premises by this date unless a new agreement is made to renew the license.",
+        "landlord_about_to_sign": "This clause clearly defines the license period as 11 months, ending on August 31, 2027. This provides a clear end date for the agreement, after which you will regain possession unless a new agreement is signed.",
+        "landlord_already_signed": "The license agreement with your tenant is for a fixed term of 11 months and will automatically expire on August 31, 2027. Ensure the tenant vacates by this date or negotiate a new agreement if you wish to renew."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Parties may, by mutual consent recorded in writing, renew this license for a further period on such terms, including a revised License Fee, as may be agreed between them at that time. Any such renewal shall be by a fresh agreement, which shall be duly stamped and registered.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "If you wish to continue living in the premises after 11 months, you will need to negotiate a new agreement with the landlord. The terms, including the rent, can be revised at that time, and a new agreement must be signed and registered.",
+        "tenant_already_signed": "If you want to extend your stay beyond August 31, 2027, you must proactively discuss and agree upon a new license agreement with the landlord. Be prepared for potential changes in terms, including a revised monthly fee.",
+        "landlord_about_to_sign": "This clause allows for renewal by mutual consent and requires a fresh, duly stamped, and registered agreement. This ensures you can renegotiate terms, including the license fee, if you wish to continue the arrangement after the initial 11 months.",
+        "landlord_already_signed": "If your tenant wishes to continue their stay after the initial 11 months, you will need to draft and register a completely new agreement. This gives you the opportunity to revise the monthly fee and other terms as you see fit."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Licensee shall pay to the Licensor a monthly License Fee of Rs. 32,000/- (Rupees Thirty-Two Thousand only) for the use of the Licensed Premises.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "You will be required to pay a monthly license fee of Rs. 32,000/- for using the premises. Make sure this amount is within your budget.",
+        "tenant_already_signed": "You are obligated to pay a monthly license fee of Rs. 32,000/- to the landlord. Ensure this payment is made consistently as per the agreement.",
+        "landlord_about_to_sign": "You will receive a monthly license fee of Rs. 32,000/- from the tenant for the use of your property. Confirm this amount aligns with your expectations.",
+        "landlord_already_signed": "You are entitled to receive a monthly license fee of Rs. 32,000/- from the tenant. Track these payments to ensure they are received on time each month."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "The License Fee shall be payable in advance on or before the 5th day of each English calendar month by bank transfer to the account designated by the Licensor in writing.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "You must pay the monthly license fee in advance on or before the 5th day of each month. Failure to do so could result in penalties.",
+        "tenant_already_signed": "Remember to pay your monthly license fee by bank transfer on or before the 5th day of each month. Late payments will incur penalties as per the agreement.",
+        "landlord_about_to_sign": "The monthly license fee is due in advance on or before the 5th day of each month. This provides a consistent payment schedule for your income.",
+        "landlord_already_signed": "The tenant is required to pay the monthly license fee by the 5th of each month. Monitor your bank account to ensure timely receipt and follow up immediately if a payment is missed."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "If any License Fee or other amount payable by the Licensee is not paid on its due date, the Licensee shall pay interest on the outstanding amount at the rate of twenty-four percent (24%) per annum from the due date until the date of actual payment, together with a late payment charge of Rs. 500/- (Rupees Five Hundred only) for every day of delay.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "Be aware that late payments for the license fee or any other amount will incur a high interest rate of 24% per annum, plus a daily late payment charge of Rs. 500. This can add up very quickly.",
+        "tenant_already_signed": "If you fail to pay your license fee or any other amount on time, you will face a significant penalty: 24% annual interest on the overdue amount and a Rs. 500 daily late payment charge. Prioritise timely payments to avoid these steep costs.",
+        "landlord_about_to_sign": "This clause provides for substantial penalties for late payments: 24% annual interest and a daily late fee of Rs. 500. This incentivises the tenant to pay on time and provides you with compensation for delays.",
+        "landlord_already_signed": "You are entitled to charge 24% annual interest and a Rs. 500 daily late fee if the tenant does not pay the license fee or other amounts on time. Ensure you apply these penalties consistently if payments are delayed."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "In addition to the License Fee, the Licensee shall bear and pay the monthly maintenance charges of the Society, together with all special levies, sinking fund contributions, repair fund contributions and non-occupancy charges levied by the Society in respect of the Licensed Premises during the License Period.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "Besides the monthly license fee, you will be responsible for paying the society's monthly maintenance charges, as well as any special levies, sinking fund, repair fund contributions, and non-occupancy charges. Factor these additional costs into your budget.",
+        "tenant_already_signed": "You are responsible for paying the society's monthly maintenance charges, special levies, sinking fund contributions, repair fund contributions, and non-occupancy charges. Make sure you receive and pay these bills promptly, in addition to your license fee.",
+        "landlord_about_to_sign": "This clause shifts the burden of society maintenance charges and various other contributions and levies to the licensee. This is beneficial for you as it reduces your recurring expenses related to the property during the license period.",
+        "landlord_already_signed": "The tenant is responsible for paying all society charges, including maintenance, special levies, sinking fund, repair fund contributions, and non-occupancy charges. You should ensure these are paid by the tenant to avoid any defaults with the society."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Licensee shall pay the electricity charges as per the bills of the electricity supply company, the piped gas charges, and the charges for internet and cable television directly to the concerned service providers, and shall produce the paid receipts to the Licensor on demand.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "You are responsible for paying electricity, piped gas, internet, and cable television bills directly. You must also keep the payment receipts and provide them to the landlord if requested.",
+        "tenant_already_signed": "You must pay electricity, piped gas, internet, and cable television bills directly to the service providers. Keep all paid receipts readily available, as the landlord may ask to see them.",
+        "landlord_about_to_sign": "This clause specifies that the tenant will directly pay for electricity, piped gas, internet, and cable television. This frees you from managing these utility payments and ensures the tenant is responsible for their consumption.",
+        "landlord_already_signed": "The tenant is obligated to pay utility bills directly and show you the receipts upon request. Periodically check with the tenant for these receipts to ensure timely payments and prevent service disruptions."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The municipal property tax in respect of the Licensed Premises shall be borne and paid by the Licensor.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "The municipal property tax for the premises will be paid by the landlord, so this is not an expense you need to worry about.",
+        "tenant_already_signed": "You are not responsible for paying the municipal property tax; the landlord will handle this. This is an advantage for you.",
+        "landlord_about_to_sign": "You will be responsible for paying the municipal property tax for the premises. Make sure to budget for this ongoing expense.",
+        "landlord_already_signed": "You are obligated to pay the municipal property tax for the licensed premises. Ensure you pay these taxes on time to avoid any penalties or issues with the municipal authorities."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Licensee has, on or before the execution of this Agreement, paid to the Licensor an interest-free refundable Security Deposit of Rs. 1,50,000/- (Rupees One Lakh Fifty Thousand only) by bank transfer, the receipt whereof the Licensor hereby admits and acknowledges.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "You are required to pay an interest-free security deposit of Rs. 1,50,000/- to the landlord. Ensure this payment is properly documented and acknowledged before signing the agreement.",
+        "tenant_already_signed": "You have already paid an interest-free security deposit of Rs. 1,50,000/-. This amount will be held by the landlord and is refundable, subject to deductions, after you vacate the premises.",
+        "landlord_about_to_sign": "You will receive an interest-free security deposit of Rs. 1,50,000/- from the tenant. This amount will be held as security against any potential damages or unpaid dues.",
+        "landlord_already_signed": "You have received an interest-free security deposit of Rs. 1,50,000/- from the tenant. This amount will be held until the tenant vacates and can be used to cover permitted deductions."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "The Security Deposit shall be refunded to the Licensee within a reasonable time after the Licensee has handed over vacant and peaceful possession of the Licensed Premises to the Licensor, subject to the deductions permitted under this Clause 5.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "The security deposit will be refunded within a 'reasonable time' after you vacate the premises, subject to deductions. 'Reasonable time' is vague and could lead to disputes; you might want to negotiate a specific timeframe.",
+        "tenant_already_signed": "Your security deposit will be refunded within a 'reasonable time' after you vacate, minus any allowed deductions. The term 'reasonable time' is not precisely defined, so be prepared for potential delays in receiving your refund.",
+        "landlord_about_to_sign": "You are obligated to refund the security deposit within a 'reasonable time' after the tenant vacates, minus any permitted deductions. The vagueness of 'reasonable time' gives you flexibility but could be a point of contention with the tenant.",
+        "landlord_already_signed": "You must refund the security deposit within a 'reasonable time' after the tenant vacates the premises, after making any necessary deductions. Ensure you process this refund promptly to avoid disputes, keeping in mind the ambiguity of 'reasonable time'."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Licensor shall be entitled to deduct from the Security Deposit such amounts as the Licensor may, in his sole discretion, consider necessary towards unpaid dues, damage to the Licensed Premises or its contents, cleaning, and any other expenses incurred by the Licensor on account of the Licensee.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "The landlord has broad discretion to deduct amounts from your security deposit for unpaid dues, damages, cleaning, or 'any other expenses' incurred due to you. This clause is very broad and could be used to make many deductions, so you might want to clarify what constitutes 'any other expenses' or seek a more specific list.",
+        "tenant_already_signed": "The landlord has extensive power to deduct from your security deposit for various reasons, including damages, unpaid dues, cleaning, and other expenses, as determined 'in his sole discretion.' Document the condition of the premises thoroughly when moving in and out to dispute any unfair deductions.",
+        "landlord_about_to_sign": "This clause gives you broad discretion to deduct from the security deposit for various reasons, including unpaid dues, damages, cleaning, and other expenses incurred because of the tenant. This offers significant protection for your property.",
+        "landlord_already_signed": "You have the right to deduct from the security deposit for unpaid dues, damages, cleaning, and other expenses, using your sole discretion. Ensure you clearly document the reasons for any deductions made."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "Notwithstanding anything contained in this Agreement, a sum equal to one (1) month's License Fee shall in all cases be retained by the Licensor from the Security Deposit towards repainting of the Licensed Premises, irrespective of the condition in which the Licensed Premises are handed back.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "Regardless of how well you maintain the premises, one month's license fee (Rs. 32,000) will automatically be deducted from your security deposit for repainting. Factor this unavoidable cost into your financial planning.",
+        "tenant_already_signed": "One month's license fee (Rs. 32,000) will always be deducted from your security deposit for repainting, regardless of the condition of the premises. This is a non-negotiable deduction that you should expect.",
+        "landlord_about_to_sign": "This clause guarantees that you can retain one month's license fee from the security deposit for repainting, regardless of the property's condition upon vacation. This ensures you have funds for refreshing the premises for the next tenant.",
+        "landlord_already_signed": "You are entitled to deduct one month's license fee (Rs. 32,000) from the security deposit for repainting, even if the tenant returns the premises in excellent condition. Make sure to apply this deduction consistently."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "If the amounts due from the Licensee exceed the Security Deposit, the Licensee shall pay the shortfall to the Licensor within seven (7) days of a written demand.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "If the deductions from your security deposit exceed the deposit amount, you will be required to pay the additional shortfall to the landlord within seven days of receiving a written demand. This means your liability is not capped at the security deposit amount.",
+        "tenant_already_signed": "Should the costs for damages or unpaid dues exceed your security deposit, you are legally obligated to pay the remaining balance to the landlord within seven days of their written request. Be aware that your financial liability is not limited to the security deposit.",
+        "landlord_about_to_sign": "This clause ensures that if the tenant's liabilities exceed the security deposit, they must pay the difference within seven days of your written demand. This protects you from potential losses greater than the deposit amount.",
+        "landlord_already_signed": "If the total deductions exceed the security deposit, you have the right to demand the remaining amount from the tenant, and they must pay it within seven days. Ensure you make this demand in writing."
+      }
+    },
+    {
+      "category": "deadline",
+      "quote": "The Licensee agrees that the first eight (8) months of the License Period, that is, from 1st October, 2026 to 31st May, 2027, shall be a lock-in period during which the Licensee shall not terminate this Agreement or vacate the Licensed Premises.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "You are bound to stay in the premises for the first eight months (October 1, 2026, to May 31, 2027). If your plans are uncertain, be aware that you cannot terminate the agreement or vacate during this period without facing a penalty.",
+        "tenant_already_signed": "You are in a lock-in period until May 31, 2027. You cannot terminate the agreement or vacate the premises before this date without incurring significant financial penalties.",
+        "landlord_about_to_sign": "This clause establishes an eight-month lock-in period for the tenant, ensuring a minimum duration of occupancy and rental income. This protects you from early termination by the tenant.",
+        "landlord_already_signed": "There is an eight-month lock-in period for the tenant, ending on May 31, 2027. This means the tenant cannot terminate the agreement or vacate the premises before this date without facing penalties, providing you with assured rental income for this duration."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "If the Licensee terminates this Agreement or vacates the Licensed Premises for any reason before the expiry of the lock-in period, the Licensee shall be liable to pay to the Licensor the License Fee for the entire unexpired portion of the lock-in period, and the Licensor shall be entitled to recover such amount from the Security Deposit.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "If you break the lock-in period, you will be liable to pay the license fee for the remaining months of that period. For example, if you leave after 3 months of an 8-month lock-in, you still owe 5 months' rent, which the landlord can deduct from your security deposit.",
+        "tenant_already_signed": "If you vacate before May 31, 2027 (the end of the lock-in), you must pay the license fee for the entire remaining lock-in period. The landlord can deduct this substantial amount directly from your security deposit, so be certain about your plans before terminating early.",
+        "landlord_about_to_sign": "This clause provides a strong penalty if the tenant breaks the lock-in period, requiring them to pay the license fee for the remaining lock-in duration. This ensures your income and compensates for early vacancy, with the security deposit available for recovery.",
+        "landlord_already_signed": "If the tenant vacates during the lock-in period (before May 31, 2027), you are entitled to collect the license fee for the entire unexpired portion of that period. You can recover this amount from their security deposit."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "The Licensor may terminate this Agreement at any time, including during the lock-in period, by giving the Licensee fifteen (15) days' written notice, without assigning any reason.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "The landlord can terminate this agreement at any time, even during your lock-in period, by giving you only 15 days' notice and does not need to provide a reason. This offers you very little security of tenure, even during the lock-in, so consider if this short notice period works for your plans.",
+        "tenant_already_signed": "Be aware that the landlord can terminate your agreement with just 15 days' written notice, even during your lock-in period, and does not need to give a reason. You will need to find new accommodation quickly if this happens.",
+        "landlord_about_to_sign": "This clause gives you a significant advantage: you can terminate the agreement at any time, including during the tenant's lock-in period, with just 15 days' written notice and without needing to provide a reason. This offers you maximum flexibility.",
+        "landlord_already_signed": "You have the right to terminate the agreement at any time, even within the tenant's lock-in period, by giving only 15 days' written notice and without needing to state a reason. This provides you with considerable flexibility should your circumstances change."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "After the expiry of the lock-in period, the Licensee may terminate this Agreement by giving to the Licensor not less than thirty (30) days' prior written notice.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "After the initial eight-month lock-in period, if you wish to terminate the agreement, you must provide the landlord with at least 30 days' written notice. Be sure to factor this notice period into your moving plans.",
+        "tenant_already_signed": "Once the lock-in period ends (after May 31, 2027), if you decide to move out, you must give the landlord a minimum of 30 days' written notice before vacating the premises. Failure to do so could lead to additional charges.",
+        "landlord_about_to_sign": "After the lock-in period, the tenant must give you at least 30 days' written notice if they wish to terminate the agreement. This provides you with reasonable time to find a new tenant.",
+        "landlord_already_signed": "After the lock-in period, if the tenant wants to leave, they are required to give you at least 30 days' written notice. This gives you time to prepare for a new tenant and manage your property effectively."
+      }
+    },
+    {
+      "category": "penalty",
+      "quote": "If the Licensee fails to hand over vacant possession of the Licensed Premises on the expiry or earlier termination of this Agreement, the Licensee shall be liable to pay to the Licensor damages calculated at three (3) times the License Fee, on a per-day basis, for every day of such unauthorised occupation, without prejudice to the other rights and remedies of the Licensor.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "If you overstay beyond the agreement's end date or early termination, you will face a severe penalty: three times the daily license fee for each day you remain. This means you could pay Rs. 3,200 per day (Rs. 32,000 / 30 days * 3). This is a very high cost, so plan your move carefully.",
+        "tenant_already_signed": "Overstaying even a single day after the agreement ends or is terminated will result in a heavy penalty. You will be charged three times the daily license fee (Rs. 3,200 per day) for each day of unauthorised occupation, so ensure you vacate on time.",
+        "landlord_about_to_sign": "This clause imposes a significant penalty for overstaying: three times the daily license fee for each day of unauthorized occupation. This strongly deters the tenant from holding over and protects your right to regain possession.",
+        "landlord_already_signed": "If the tenant fails to vacate the premises on time, you are entitled to charge damages at three times the daily license fee (Rs. 3,200 per day) for every day they overstay. This provides a strong incentive for timely vacation."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Licensee shall, at her own cost, carry out all repairs to the Licensed Premises, whether minor or major, including repairs to plumbing, electrical wiring, water seepage and leakage, and the replacement of any fixture or appliance that ceases to function during the License Period.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "You are responsible for the cost of all repairs, both minor and major, including plumbing, electrical, water seepage, and replacing broken fixtures or appliances. This is a significant responsibility and cost, so ensure you are prepared for potential repair expenses.",
+        "tenant_already_signed": "You are fully responsible for the cost and execution of all repairs, major and minor, including plumbing, electrical, and appliance replacements. Budget for these potential expenses and arrange for repairs promptly to maintain the premises.",
+        "landlord_about_to_sign": "This clause places the responsibility and cost of all repairs, including major ones like plumbing, electrical, and appliance replacement, entirely on the tenant. This is highly advantageous for you, as it minimises your maintenance expenses during the license period.",
+        "landlord_already_signed": "The tenant is responsible for all repairs, major and minor, including plumbing, electrical, water seepage, and replacing faulty fixtures or appliances. You should ensure they perform these repairs to maintain the property's condition."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Licensee shall use the Licensed Premises only for the residence of herself and her immediate family members, and for no other purpose whatsoever.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "You can only use the premises for residential purposes for yourself and your immediate family. You cannot use it for commercial activities, a home office if it involves clients visiting, or for anyone beyond immediate family to live there.",
+        "tenant_already_signed": "You must only use the premises for residential purposes for yourself and your immediate family. Any other use, such as running a business from the flat or having non-family members live there, would be a breach of this agreement.",
+        "landlord_about_to_sign": "This clause restricts the use of the premises solely to the tenant and their immediate family for residential purposes, preventing commercial use or occupancy by others. This protects your property from unauthorised use.",
+        "landlord_already_signed": "The tenant is restricted to using the premises only for their residence and that of their immediate family. Ensure they are not engaging in any other activities, such as commercial operations, that would violate this clause."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Licensee shall not sub-license, sublet, assign or part with the possession of the Licensed Premises or any part thereof, or permit any other person to occupy the same.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "You are strictly prohibited from subletting the premises or allowing anyone else to live there. If you plan to have roommates or temporary occupants who are not immediate family, this agreement does not permit it.",
+        "tenant_already_signed": "You are expressly forbidden from subletting the property, assigning your license, or allowing any other person to occupy the premises. Violating this clause could lead to immediate termination of the agreement.",
+        "landlord_about_to_sign": "This clause explicitly prohibits the tenant from sub-licensing, subletting, or assigning the premises, or allowing anyone else to occupy it. This protects your ownership and control over the property.",
+        "landlord_already_signed": "The tenant is strictly prohibited from subletting or allowing anyone else to occupy the premises. Regularly monitor the property to ensure compliance, as a breach of this clause could be grounds for termination."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "Guests of the Licensee shall not stay overnight in the Licensed Premises for more than three (3) nights in any calendar month without the prior written consent of the Licensor.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "Your guests cannot stay overnight for more than three nights per month without getting prior written permission from the landlord. This is a very restrictive clause for having guests.",
+        "tenant_already_signed": "You must obtain prior written consent from the landlord if any guest plans to stay overnight for more than three nights in a calendar month. Be mindful of this restriction to avoid breaching the agreement.",
+        "landlord_about_to_sign": "This clause restricts guests from staying overnight for more than three nights per month without your written consent. This gives you control over who stays on your property and for how long.",
+        "landlord_already_signed": "The tenant's guests are limited to three overnight stays per month without your prior written consent. If you notice frequent or extended stays, you can address this with the tenant."
+      }
+    },
+    {
+      "category": "missing_clause",
+      "quote": null,
+      "lensExplanations": {
+        "tenant_about_to_sign": "There is no mention of whether pets are allowed or prohibited in the premises. If you have pets or plan to get one, you should clarify this with the landlord and get it in writing before signing.",
+        "tenant_already_signed": "The agreement does not specify rules regarding pets. If you have a pet, it's best to seek clarification from the landlord in writing to avoid any misunderstandings or potential breaches.",
+        "landlord_about_to_sign": "The agreement does not include a clause about pets. If you have a preference regarding pets, you should add a specific clause to address this to avoid future disputes.",
+        "landlord_already_signed": "The agreement is silent on the topic of pets. If you discover the tenant has pets and you wish to prohibit them, you will need to negotiate this with the tenant, as the agreement does not explicitly forbid them."
+      }
+    },
+    {
+      "category": "ambiguity",
+      "quote": "The Licensor, and any person authorised by him, shall be entitled to enter upon the Licensed Premises at all reasonable times, with or without prior notice to the Licensee, to inspect the condition of the Licensed Premises or to show the same to prospective licensees or purchasers.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "The landlord or their agent can enter your home at 'all reasonable times' without prior notice for inspections or showings. 'Reasonable times' is not defined, which could lead to a lack of privacy. You might want to negotiate a requirement for notice, except in emergencies.",
+        "tenant_already_signed": "The landlord can enter your home, even without notice, at 'reasonable times' to inspect or show the property. This means you might have unexpected visitors, impacting your privacy. Document any such visits.",
+        "landlord_about_to_sign": "This clause allows you and your authorised representatives to enter the premises at 'reasonable times' with or without prior notice for inspection or showing the property. This provides flexibility and ensures you can monitor the property's condition and market it if needed.",
+        "landlord_already_signed": "You have the right to enter the premises, or send someone, at 'reasonable times' without prior notice for inspections or showings. Exercise this right judiciously to avoid privacy concerns with your tenant, but know that you do not legally need to give notice as per the contract."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "This Agreement shall be registered with the office of the Sub-Registrar of Assurances in accordance with Section 55 of the Maharashtra Rent Control Act, 1999, and the Parties shall cooperate in completing the registration, including through the online e-registration facility where available.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "This agreement must be registered with the Sub-Registrar of Assurances, which is a legal requirement under Maharashtra law. Both parties must cooperate in this process. Ensure the agreement is registered to protect your rights as a licensee.",
+        "tenant_already_signed": "The agreement must be registered, which is a legal requirement under Maharashtra law. Ensure that this registration process is completed, as it provides legal validity and protection for your rights as a licensee.",
+        "landlord_about_to_sign": "This agreement must be registered with the Sub-Registrar of Assurances, as required by Maharashtra law. You and the tenant must cooperate to complete this, potentially using e-registration. This step is crucial for the legal validity of the agreement.",
+        "landlord_already_signed": "You are obligated to ensure this agreement is registered with the Sub-Registrar of Assurances. This is a legal requirement in Maharashtra and provides legal backing for the terms of your agreement. Follow up with the tenant to complete any necessary steps for registration."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The entire stamp duty and registration charges payable on this Agreement, and all incidental expenses thereof, shall be borne and paid solely by the Licensee.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "You will be solely responsible for paying all stamp duty and registration charges, as well as any associated expenses for this agreement. These costs can be substantial, so inquire about the exact amount before signing.",
+        "tenant_already_signed": "You are responsible for having paid all the stamp duty and registration charges, along with any other related expenses, for this agreement. Ensure you have receipts for these payments.",
+        "landlord_about_to_sign": "This clause specifies that the tenant will bear the entire cost of stamp duty, registration charges, and incidental expenses. This is a financial advantage for you, as these costs can be significant.",
+        "landlord_already_signed": "The tenant was responsible for paying all stamp duty, registration charges, and related expenses. Ensure these payments were made, as proper registration protects your interests in the agreement."
+      }
+    },
+    {
+      "category": "obligation",
+      "quote": "The Licensor shall furnish the particulars of the Licensee to the local police station as required by the orders of the police authorities in force, and the Licensee shall provide such identity documents and photographs as may be required for this purpose.",
+      "lensExplanations": {
+        "tenant_about_to_sign": "Your landlord will provide your details to the local police, a common requirement in India. You must provide your identity documents and photographs as needed for this process.",
+        "tenant_already_signed": "The landlord is required to submit your details to the local police. You must cooperate by providing any necessary identity documents and photographs for this mandatory process.",
+        "landlord_about_to_sign": "You are obligated to furnish the tenant's details to the local police station as required by law. The tenant is obligated to provide you with the necessary identity documents and photographs for this purpose.",
+        "landlord_already_signed": "You are required by law to submit the tenant's particulars to the local police. Ensure the tenant has provided all necessary identity documents and photographs for you to complete this formality."
+      }
+    }
+  ]
+}

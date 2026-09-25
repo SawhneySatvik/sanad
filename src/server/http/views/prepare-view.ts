@@ -13,6 +13,7 @@ import type {
   PrepareQuestion,
   PrepareResult,
 } from "@/server/services/prepare";
+import { sanitizeModelText } from "@/server/deterministic/sanitize/model-text";
 
 /** Maps a PrepareResult to the wire shape. */
 export function prepareView(result: PrepareResult) {
@@ -36,8 +37,8 @@ export function prepareView(result: PrepareResult) {
 // the model), so every question/item here is model text, unlike Compare's per-change explanation.
 function questionView(question: PrepareQuestion) {
   return {
-    question: question.question,
-    whyItMatters: question.whyItMatters,
+    question: sanitizeModelText(question.question),
+    whyItMatters: sanitizeModelText(question.whyItMatters),
     provenance: "ai_generated" as const,
     findingIds: question.findingIds,
     findings: question.findings.map(findingRefView),
@@ -45,7 +46,7 @@ function questionView(question: PrepareQuestion) {
 }
 
 function checklistItemView(item: PrepareChecklistItem) {
-  return { item: item.item, provenance: "ai_generated" as const, findingIds: item.findingIds, findings: item.findings.map(findingRefView) };
+  return { item: sanitizeModelText(item.item), provenance: "ai_generated" as const, findingIds: item.findingIds, findings: item.findings.map(findingRefView) };
 }
 
 function findingRefView(ref: PrepareFindingRef) {

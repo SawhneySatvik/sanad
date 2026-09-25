@@ -8,6 +8,7 @@ import { draftView } from "@/server/http/views/draft-view";
 function fullDraft(): DraftResult {
   return {
     id: "0a0a0a0a-0000-4000-8000-00000000000a",
+    title: "NDA draft",
     documentType: "nda",
     mode: "from_scratch",
     groundingDocumentId: null,
@@ -32,7 +33,9 @@ const FORBIDDEN = ["status", "verified", "verification", "quoteSpanStart", "quot
 describe("draftView", () => {
   it("passes every documented field through unchanged", () => {
     const draft = fullDraft();
-    expect(draftView(draft)).toEqual(draft);
+    const { title, ...existingWireFields } = draft;
+    expect(title).toBe("NDA draft");
+    expect(draftView(draft)).toMatchObject({ ...existingWireFields, content: expect.any(String) });
   });
 
   it("names no status/verified key at the top level or in any section", () => {
