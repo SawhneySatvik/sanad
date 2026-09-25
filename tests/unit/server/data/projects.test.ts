@@ -164,7 +164,7 @@ describe("saveToProject", () => {
     expect(left.expiresAt).not.toBeNull();
   });
 
-  it("a malformed self-referencing draft still saves (the chain walk terminates)", async () => {
+  it("a malformed self-referencing draft fails closed without changing its assignment", async () => {
     const project = await createProject(t.db, userA, { name: "p" });
     const id = "3c3c3c3c-0000-4000-8000-00000000000c";
     await t.db.insert(schema.drafts).values({
@@ -178,6 +178,9 @@ describe("saveToProject", () => {
       modelUsed: "gemini-test",
     });
 
-    expect((await saveToProject(t.db, userA, { kind: "draft", id }, project.id)).itemIds).toEqual([id]);
+    await expect(saveToProject(t.db, userA, { kind: "draft", id }, project.id))
+      .rejects.toMatchObject({ code: "NOT_FOUND" });
+    const [stored] = await t.db.select().from(schema.drafts).where(eq(schema.drafts.id, id));
+    expect(stored.projectId).toBeNull();
   });
 });

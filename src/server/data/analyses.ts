@@ -9,8 +9,9 @@ import { createHash } from "node:crypto";
 import { and, desc, eq, gt, sql } from "drizzle-orm";
 import type { Db } from "../../db/client";
 import * as schema from "../../db/schema";
-import { AppError } from "../core/errors";
+import { AppError, notFound } from "../core/errors";
 import type { Principal } from "../core/types";
+import { assertCanAccess } from "./access";
 import { getDocumentSummary, type DocumentSummary } from "./documents";
 
 /** A persisted analysis row, as read from the database. */
@@ -23,6 +24,21 @@ export interface NewAnalysisInput {
   modelUsed: string;
 }
 
+/**
+ * Keeps claim and delete behind analysis persistence until its transaction commits. NO KEY UPDATE,
+ * not SHARE: the same transaction later bumps documents.updated_at, and two persisters each holding
+ * SHARE would both wait on the other's lock for that UPDATE — a deadlock. NO KEY UPDATE serializes
+ * persisters of one document while still conflicting with the FOR UPDATE claim and delete take.
+ */
+export async function lockDocumentForAnalysisPersistence(tx: Db, principal: Principal, documentId: string): Promise<void> {
+  const [locked] = await tx.select({ ownerUserId: schema.documents.ownerUserId,
+    ownerGuestSessionId: schema.documents.ownerGuestSessionId, expiresAt: schema.documents.expiresAt })
+    .from(schema.documents).where(eq(schema.documents.id, documentId)).for("no key update");
+  assertCanAccess(principal, locked);
+  if (locked.expiresAt !== null && locked.expiresAt.getTime() <= Date.now()) throw notFound();
+  await getDocumentSummary(tx, principal, documentId);
+}
+
 /** Returns null when a run for the same (document, prompt_version, model_used) already exists — the caller lost a race and must not write findings of its own. */
 export async function insertAnalysisIfAbsent(db: Db, principal: Principal, input: NewAnalysisInput): Promise<Analysis | null> {
   await getDocumentSummary(db, principal, input.documentId);
@@ -33,6 +49,7 @@ export async function insertAnalysisIfAbsent(db: Db, principal: Principal, input
       target: [schema.analyses.documentId, schema.analyses.promptVersion, schema.analyses.modelUsed],
     })
     .returning();
+  if (row) await db.update(schema.documents).set({ updatedAt: sql`now()` }).where(eq(schema.documents.id, input.documentId));
   return row ?? null;
 }
 

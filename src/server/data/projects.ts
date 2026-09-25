@@ -5,13 +5,15 @@
  * sets project_id and clears expires_at in one statement, taking it out of the guest-TTL sweep's scope.
  */
 
-import { asc, desc, eq, inArray, sql } from "drizzle-orm";
+import { desc, eq, inArray, sql } from "drizzle-orm";
 import type { Db } from "../../db/client";
 import * as schema from "../../db/schema";
-import { AppError } from "../core/errors";
+import { AppError, notFound } from "../core/errors";
 import type { Principal } from "../core/types";
+import { DOCUMENT_TYPE_REGISTRY } from "../deterministic/document-type-registry";
 import { assertCanAccess, assertCanAccessAll, canAccess, type OwnedResource } from "./access";
 import { isUuidShaped } from "./documents";
+import { draftChain, getLibraryRow, lockDraftChain } from "./library";
 
 /** A persisted project row, as read from the database. */
 export type Project = typeof schema.projects.$inferSelect;
@@ -54,6 +56,7 @@ const documentSummaryColumns = {
   jurisdiction: schema.documents.jurisdiction,
   uploadedAt: schema.documents.uploadedAt,
   expiresAt: schema.documents.expiresAt,
+  title: schema.documents.title,
 };
 
 const comparisonSummaryColumns = {
@@ -66,6 +69,9 @@ const comparisonSummaryColumns = {
   modelUsed: schema.comparisons.modelUsed,
   createdAt: schema.comparisons.createdAt,
   expiresAt: schema.comparisons.expiresAt,
+  title: schema.comparisons.title,
+  titleA: sql<string>`(select coalesce(d.title, d.filename) from documents d where d.id = ${schema.comparisons.documentAId} and d.owner_user_id is not distinct from ${schema.comparisons.ownerUserId} and d.owner_guest_session_id is not distinct from ${schema.comparisons.ownerGuestSessionId} and (d.expires_at is null or d.expires_at > now()))`,
+  titleB: sql<string>`(select coalesce(d.title, d.filename) from documents d where d.id = ${schema.comparisons.documentBId} and d.owner_user_id is not distinct from ${schema.comparisons.ownerUserId} and d.owner_guest_session_id is not distinct from ${schema.comparisons.ownerGuestSessionId} and (d.expires_at is null or d.expires_at > now()))`,
 };
 
 // No content: the draft text is read through the drafts repository.
@@ -83,6 +89,7 @@ const draftSummaryColumns = {
   modelUsed: schema.drafts.modelUsed,
   createdAt: schema.drafts.createdAt,
   expiresAt: schema.drafts.expiresAt,
+  title: schema.drafts.title,
 };
 
 const threadSummaryColumns = {
@@ -151,12 +158,13 @@ function selectComparisons(db: Db, projectId: string) {
     .orderBy(desc(schema.comparisons.createdAt), desc(schema.comparisons.id));
 }
 
-function selectDrafts(db: Db, projectId: string) {
-  return db
+async function selectDrafts(db: Db, projectId: string) {
+  const rows = await db
     .select(draftSummaryColumns)
     .from(schema.drafts)
     .where(eq(schema.drafts.projectId, projectId))
     .orderBy(desc(schema.drafts.createdAt), desc(schema.drafts.id));
+  return rows.map((row) => ({ ...row, title: row.title ?? `${DOCUMENT_TYPE_REGISTRY.find((entry) => entry.id === row.documentType)?.label ?? row.documentType} draft` }));
 }
 
 function selectThreads(db: Db, projectId: string) {
@@ -179,31 +187,25 @@ export async function getProject(db: Db, principal: Principal, projectId: string
   const drafts = await selectDrafts(db, project.id);
   const threads = await selectThreads(db, project.id);
 
+  for (const row of documents) assertCanAccess(principal, row);
+  for (const row of comparisons) {
+    assertCanAccess(principal, row);
+    if (row.titleA === null || row.titleB === null) throw notFound();
+    await getLibraryRow(db, principal, "comparison", row.id);
+  }
+  for (const row of drafts) {
+    assertCanAccess(principal, row);
+    await draftChain(db, principal, row.id);
+  }
+  for (const row of threads) assertCanAccess(principal, userOwned(row));
+
   return {
     project,
-    documents: documents.filter((row) => canAccess(principal, row)),
-    comparisons: comparisons.filter((row) => canAccess(principal, row)),
-    drafts: drafts.filter((row) => canAccess(principal, row)),
-    threads: threads.filter((row) => canAccess(principal, userOwned(row))),
+    documents,
+    comparisons,
+    drafts,
+    threads,
   };
-}
-
-// Every revision connected to `draftId` through parent_draft_id: its ancestors up to the root, and
-// everything descending from any of them. UNION (not UNION ALL) so a malformed cyclic chain still
-// terminates.
-function draftChainIds(draftId: string) {
-  return sql`(
-    WITH RECURSIVE ancestors (id, parent_draft_id) AS (
-      SELECT id, parent_draft_id FROM drafts WHERE id = ${draftId}
-      UNION
-      SELECT d.id, d.parent_draft_id FROM drafts d JOIN ancestors a ON d.id = a.parent_draft_id
-    ), chain (id) AS (
-      SELECT id FROM ancestors
-      UNION
-      SELECT d.id FROM drafts d JOIN chain c ON d.parent_draft_id = c.id
-    )
-    SELECT id FROM chain
-  )`;
 }
 
 // The rows a save would move, locked until the transaction ends.
@@ -222,12 +224,7 @@ async function lockItemRows(tx: Db, item: ProjectItem): Promise<(OwnedResource &
         .where(eq(schema.comparisons.id, item.id))
         .for("update");
     case "draft":
-      return tx
-        .select({ id: schema.drafts.id, ownerUserId: schema.drafts.ownerUserId, ownerGuestSessionId: schema.drafts.ownerGuestSessionId })
-        .from(schema.drafts)
-        .where(sql`${schema.drafts.id} IN ${draftChainIds(item.id)}`)
-        .orderBy(asc(schema.drafts.revisionNumber), asc(schema.drafts.id))
-        .for("update");
+      throw new Error("Draft chain locks require the principal.");
     case "thread": {
       const rows = await tx
         .select({ id: schema.threads.id, ownerUserId: schema.threads.ownerUserId })
@@ -244,16 +241,16 @@ async function lockItemRows(tx: Db, item: ProjectItem): Promise<(OwnedResource &
 async function moveItemRows(tx: Db, kind: ProjectItemKind, ids: string[], projectId: string): Promise<void> {
   switch (kind) {
     case "document":
-      await tx.update(schema.documents).set({ projectId, expiresAt: null }).where(inArray(schema.documents.id, ids));
+      await tx.update(schema.documents).set({ projectId, expiresAt: null, updatedAt: sql`now()` }).where(inArray(schema.documents.id, ids));
       return;
     case "comparison":
-      await tx.update(schema.comparisons).set({ projectId, expiresAt: null }).where(inArray(schema.comparisons.id, ids));
+      await tx.update(schema.comparisons).set({ projectId, expiresAt: null, updatedAt: sql`now()` }).where(inArray(schema.comparisons.id, ids));
       return;
     case "draft":
-      await tx.update(schema.drafts).set({ projectId, expiresAt: null }).where(inArray(schema.drafts.id, ids));
+      await tx.update(schema.drafts).set({ projectId, expiresAt: null, updatedAt: sql`now()` }).where(inArray(schema.drafts.id, ids));
       return;
     case "thread":
-      await tx.update(schema.threads).set({ projectId }).where(inArray(schema.threads.id, ids));
+      await tx.update(schema.threads).set({ projectId, updatedAt: sql`now()` }).where(inArray(schema.threads.id, ids));
       return;
   }
 }
@@ -280,9 +277,12 @@ export async function saveToProject(
           .where(eq(schema.projects.id, projectId))
           .for("share")
       : [];
-    const rows = isUuidShaped(item.id) ? await lockItemRows(tx, item) : [];
+    const rows = isUuidShaped(item.id)
+      ? item.kind === "draft" ? await lockDraftChain(tx, principal, item.id) : await lockItemRows(tx, item)
+      : [];
     // An empty item lookup is passed as `undefined`, so it denies like a foreign item.
     assertCanAccessAll(principal, [project && userOwned(project), ...(rows.length > 0 ? rows : [undefined])]);
+    await getLibraryRow(tx, principal, item.kind, item.id);
 
     const itemIds = rows.map((row) => row.id);
     await moveItemRows(tx, item.kind, itemIds, projectId);

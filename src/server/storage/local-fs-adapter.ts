@@ -11,7 +11,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { assertUploadAllowed, assertWrittenSizeAllowed, displayFilename, UNCONFIRMED_UPLOAD_TTL_MS } from "./policy";
 import { buildRef, parseRef, principalKey, refBelongsTo, refToPath } from "./refs";
-import { signLocalUrl } from "./signed-url";
+import { assertUsableSigningSecret, signLocalUrl } from "./signed-url";
 import type {
   AccessCheck,
   ConfirmedUpload,
@@ -38,33 +38,13 @@ const SIGNED_URL_TTL_MS = 15 * 60 * 1000; // 15 minutes — arbitrary, local-onl
  */
 export const UNCONFIRMED_SWEEP_INTERVAL_MS = 5 * 60 * 1000;
 
-const MIN_SIGNING_SECRET_BYTES = 32;
-
 /** Constructor options for LocalFsStorageAdapter. */
 export interface LocalFsStorageAdapterOptions {
   accessCheck: AccessCheck;
   rootDir?: string;
-  // Required, not defaulted: a hardcoded fallback secret shipped in source would let anyone with the
-  // repo forge a signed URL. Validated at construction time (>= 32 bytes, not whitespace-only),
-  // mirroring src/server/auth/session.ts's GUEST_SESSION_SECRET floor.
+  // Required, not defaulted: validated at construction time (see signed-url.ts's
+  // assertUsableSigningSecret), mirroring src/server/auth/session.ts's GUEST_SESSION_SECRET floor.
   signingSecret: string;
-}
-
-function isWhitespaceOnly(raw: string): boolean {
-  return raw.trim().length === 0;
-}
-
-function assertUsableSigningSecret(secret: string): void {
-  if (secret.length === 0 || isWhitespaceOnly(secret)) {
-    throw new Error(
-      "LocalFsStorageAdapter: signingSecret must not be empty or whitespace-only.",
-    );
-  }
-  if (Buffer.byteLength(secret, "utf8") < MIN_SIGNING_SECRET_BYTES) {
-    throw new Error(
-      `LocalFsStorageAdapter: signingSecret must be at least ${MIN_SIGNING_SECRET_BYTES} bytes (got ${Buffer.byteLength(secret, "utf8")}).`,
-    );
-  }
 }
 
 // Resolves ref -> absolute path, translating any malformed-ref failure into the same NOT_FOUND shape
@@ -87,7 +67,7 @@ export class LocalFsStorageAdapter implements StorageAdapter {
   private sweeping: Promise<void> = Promise.resolve();
 
   constructor(options: LocalFsStorageAdapterOptions) {
-    assertUsableSigningSecret(options.signingSecret);
+    assertUsableSigningSecret(options.signingSecret, "LocalFsStorageAdapter");
     this.accessCheck = options.accessCheck;
     this.rootDir = path.resolve(/*turbopackIgnore: true*/ options.rootDir ?? DEFAULT_ROOT_DIR);
     this.signingSecret = options.signingSecret;

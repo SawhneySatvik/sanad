@@ -160,10 +160,12 @@ export async function attachDocument(
     document ? { ownerUserId: document.ownerUserId, ownerGuestSessionId: document.ownerGuestSessionId } : undefined,
   ]);
 
-  await db
+  const inserted = await db
     .insert(schema.threadDocuments)
     .values({ threadId, documentId })
-    .onConflictDoNothing();
+    .onConflictDoNothing()
+    .returning({ threadId: schema.threadDocuments.threadId });
+  if (inserted.length) await db.update(schema.threads).set({ updatedAt: sql`now()` }).where(eq(schema.threads.id, threadId));
 }
 
 /** Attached document ids for a thread, oldest first; the caller loads each through the documents repository, which authorizes it again. */

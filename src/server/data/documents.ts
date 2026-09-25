@@ -7,6 +7,7 @@ import { and, desc, eq, gt, isNull, or, sql } from "drizzle-orm";
 import type { Db } from "../../db/client";
 import * as schema from "../../db/schema";
 import { optionalEnv } from "../core/env";
+import { guestDataTtlSeconds } from "../core/guest-ttl";
 import { AppError, notFound } from "../core/errors";
 import type { InputMode, Principal } from "../core/types";
 import type { DocumentTypeId } from "../deterministic/document-type-registry";
@@ -140,16 +141,29 @@ export async function createPendingDocument(db: Db, principal: Principal, input:
       : {
           ownerUserId: null,
           ownerGuestSessionId: principal.guestSessionId,
-          expiresAt: new Date(Date.now() + DOCUMENT_GUEST_TTL_SECONDS * 1000),
+          expiresAt: new Date(Date.now() + guestDataTtlSeconds() * 1000),
         };
   return db.transaction(async (tx) => {
     await assertBelowActiveRowCap(tx, principal, "documents");
-    const rows = await tx
-      .insert(schema.documents)
-      .values({ ...owner, storageRef: input.storageRef, filename: input.filename, mimeType: input.mimeType })
-      .onConflictDoNothing()
-      .returning();
-    return firstOrNotFound(rows);
+    const [reserved] = await tx.select({ storageRef: schema.storageCleanupOutbox.storageRef })
+      .from(schema.storageCleanupOutbox)
+      .where(sql`lower(${schema.storageCleanupOutbox.storageRef}) = lower(${input.storageRef})`)
+      .limit(1);
+    if (reserved) throw notFound();
+    try {
+      const rows = await tx
+        .insert(schema.documents)
+        .values({ ...owner, storageRef: input.storageRef, filename: input.filename, mimeType: input.mimeType })
+        .onConflictDoNothing()
+        .returning();
+      return firstOrNotFound(rows);
+    } catch (error) {
+      const databaseError = error as { code?: string; constraint?: string; cause?: { code?: string; constraint?: string } };
+      const code = databaseError.code ?? databaseError.cause?.code;
+      const constraint = databaseError.constraint ?? databaseError.cause?.constraint;
+      if (code === "23514" && constraint === "documents_storage_ref_tombstone_guard") throw notFound();
+      throw error;
+    }
   });
 }
 
@@ -160,18 +174,34 @@ export async function createPendingDocument(db: Db, principal: Principal, input:
  */
 export async function getDocument(db: Db, principal: Principal, documentId: string): Promise<Document> {
   await getDocumentSummary(db, principal, documentId);
-  const [row] = await db.select().from(schema.documents).where(eq(schema.documents.id, documentId));
+  const [row] = await db.select().from(schema.documents).where(and(
+    eq(schema.documents.id, documentId),
+    or(isNull(schema.documents.expiresAt), gt(schema.documents.expiresAt, sql`now()`)),
+  ));
   // Checked again on the row actually returned: it may have been deleted or re-owned in between.
   assertCanAccess(principal, row);
+  if (row.projectId) {
+    const [project] = await db.select({ ownerUserId: schema.projects.ownerUserId }).from(schema.projects)
+      .where(eq(schema.projects.id, row.projectId));
+    assertCanAccess(principal, project && { ownerUserId: project.ownerUserId, ownerGuestSessionId: null });
+  }
   return row;
 }
 
 /** Fetches a document's summary (everything but canonical_text) by id. */
 export async function getDocumentSummary(db: Db, principal: Principal, documentId: string): Promise<DocumentSummary> {
   const [row] = isUuidShaped(documentId)
-    ? await db.select(summaryColumns).from(schema.documents).where(eq(schema.documents.id, documentId))
+    ? await db.select(summaryColumns).from(schema.documents).where(and(
+        eq(schema.documents.id, documentId),
+        or(isNull(schema.documents.expiresAt), gt(schema.documents.expiresAt, sql`now()`)),
+      ))
     : [];
   assertCanAccess(principal, row);
+  if (row.projectId) {
+    const [project] = await db.select({ ownerUserId: schema.projects.ownerUserId }).from(schema.projects)
+      .where(eq(schema.projects.id, row.projectId));
+    assertCanAccess(principal, project && { ownerUserId: project.ownerUserId, ownerGuestSessionId: null });
+  }
   return row;
 }
 
@@ -184,7 +214,7 @@ export async function listDocuments(db: Db, principal: Principal): Promise<Docum
   const rows = await db
     .select(summaryColumns)
     .from(schema.documents)
-    .where(ownerFilter)
+    .where(and(ownerFilter, or(isNull(schema.documents.expiresAt), gt(schema.documents.expiresAt, sql`now()`))))
     .orderBy(desc(schema.documents.uploadedAt), desc(schema.documents.id));
   // The WHERE clause narrows the scan; canAccess stays the authority on what is returned.
   return rows.filter((row) => canAccess(principal, row));
@@ -215,8 +245,9 @@ export async function markDocumentReady(
   await getDocumentSummary(db, principal, documentId);
   const [row] = await db
     .update(schema.documents)
-    .set({ ...extraction, processingStatus: "ready" })
-    .where(and(eq(schema.documents.id, documentId), eq(schema.documents.processingStatus, "pending")))
+    .set({ ...extraction, processingStatus: "ready", updatedAt: sql`now()` })
+    .where(and(eq(schema.documents.id, documentId), eq(schema.documents.processingStatus, "pending"),
+      principal.type === "user" ? eq(schema.documents.ownerUserId, principal.userId) : eq(schema.documents.ownerGuestSessionId, principal.guestSessionId)))
     .returning();
   return row ?? null;
 }
@@ -226,6 +257,7 @@ export async function markDocumentExtractionFailed(db: Db, principal: Principal,
   await getDocumentSummary(db, principal, documentId);
   await db
     .update(schema.documents)
-    .set({ processingStatus: "extraction_failed" })
-    .where(and(eq(schema.documents.id, documentId), eq(schema.documents.processingStatus, "pending")));
+    .set({ processingStatus: "extraction_failed", updatedAt: sql`now()` })
+    .where(and(eq(schema.documents.id, documentId), eq(schema.documents.processingStatus, "pending"),
+      principal.type === "user" ? eq(schema.documents.ownerUserId, principal.userId) : eq(schema.documents.ownerGuestSessionId, principal.guestSessionId)));
 }

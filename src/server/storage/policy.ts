@@ -79,6 +79,21 @@ export function assertUploadAllowed(metadata: CreateUploadTargetInput): void {
 }
 
 /**
+ * Same INVALID_DOCUMENT/too_large shape assertUploadAllowed uses, parameterized on a stricter cap —
+ * reused by an adapter whose own ceiling sits below MAX_UPLOAD_SIZE_BYTES (postgres-adapter.ts's
+ * Vercel relay-body-size cap), so the UI's error card never has to distinguish two "too large" reasons.
+ */
+export function assertSizeWithinCap(sizeBytes: number, capBytes: number, capLabel: string): void {
+  if (sizeBytes > capBytes) {
+    throw new AppError(
+      "INVALID_DOCUMENT",
+      `File size ${sizeBytes} bytes exceeds ${capLabel}'s ${capBytes}-byte upload cap.`,
+      { reason: "too_large" },
+    );
+  }
+}
+
+/**
  * Re-checked against the actual bytes at writeRelayed time — in server-relay mode the declared
  * sizeBytes at createUploadTarget came from the client and isn't itself trustworthy. This check runs
  * after the request body has already been fully buffered into `bytes: Uint8Array` — it bounds what

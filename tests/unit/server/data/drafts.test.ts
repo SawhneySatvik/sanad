@@ -8,6 +8,7 @@ import type { DraftProvenance } from "@/server/deterministic/draft-templates";
 import { requiredSectionKeys } from "@/server/deterministic/draft-templates";
 import { caught, createRepoTestDb, guestA, readyDocument, userA, USER_A_ID } from "@tests/support/data/documents";
 import { createDraft, DRAFT_GUEST_TTL_SECONDS, getDraft, reviseDraft, type NewDraftSectionInput } from "@/server/data/drafts";
+import { saveToProject } from "@/server/data/projects";
 
 let t: TestDb;
 beforeEach(async () => {
@@ -19,6 +20,19 @@ afterEach(async () => {
 
 const MODEL_USED = "fake-model";
 const JURISDICTION = "IN";
+
+describe("revision library metadata", () => {
+  it("inherits its parent's project, title, and expiry", async () => {
+    const [project] = await t.db.insert(schema.projects).values({ ownerUserId: USER_A_ID, name: "Matter" }).returning();
+    const root = await createDraft(t.db, userA, { documentType: "nda", mode: "from_scratch", sections: sectionsFor("nda"), content: "v1", modelUsed: MODEL_USED, jurisdiction: JURISDICTION, title: "NDA draft", userInstructions: "create" });
+    await saveToProject(t.db, userA, { kind: "draft", id: root.id }, project.id);
+    const child = await reviseDraft(t.db, userA, root.id, { sections: sectionsFor("nda"), content: "v2", modelUsed: MODEL_USED, userInstructions: "revise" });
+    expect(child.projectId).toBe(project.id);
+    expect(child.title).toBe("NDA draft");
+    expect(child.expiresAt).toBeNull();
+    expect(child.userInstructions).toBe("revise");
+  });
+});
 
 function sectionsFor(documentType: "nda" | "leave_and_license" | "grounded_response", overrides: Record<string, string> = {}): NewDraftSectionInput[] {
   return requiredSectionKeys(documentType).map((key) => ({

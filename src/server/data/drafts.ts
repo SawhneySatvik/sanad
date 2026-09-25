@@ -9,6 +9,7 @@ import { eq } from "drizzle-orm";
 import type { Db } from "../../db/client";
 import * as schema from "../../db/schema";
 import { AppError, notFound } from "../core/errors";
+import { guestDataTtlSeconds } from "../core/guest-ttl";
 import type { Principal } from "../core/types";
 import {
   isDraftableDocumentType,
@@ -19,6 +20,7 @@ import {
 } from "../deterministic/draft-templates";
 import { assertCanAccess, type OwnedResource } from "./access";
 import { assertBelowActiveRowCap } from "./documents";
+import { draftChain, lockDraftChain } from "./library";
 
 /** A persisted draft row, as read from the database. */
 export type Draft = typeof schema.drafts.$inferSelect;
@@ -63,7 +65,7 @@ function draftOwnedResource(row: Pick<Draft, "ownerUserId" | "ownerGuestSessionI
 }
 
 function ownTtlExpiresAt(principal: Principal): Date | null {
-  return principal.type === "guest" ? new Date(Date.now() + DRAFT_GUEST_TTL_SECONDS * 1000) : null;
+  return principal.type === "guest" ? new Date(Date.now() + guestDataTtlSeconds() * 1000) : null;
 }
 
 // null means "no cap" (a user-owned row with no TTL) — treated as +infinity so a null on either side
@@ -123,6 +125,7 @@ async function getDraftRow(db: Db, principal: Principal, draftId: string): Promi
   const [row] = isUuidShaped(draftId) ? await db.select().from(schema.drafts).where(eq(schema.drafts.id, draftId)) : [];
   assertCanAccess(principal, draftOwnedResource(row));
   assertNotExpired(row);
+  await draftChain(db, principal, draftId);
   return row;
 }
 
@@ -135,6 +138,8 @@ export interface NewDraftSectionInput {
 
 /** Fields required to create a draft's root revision. */
 export interface CreateDraftInput {
+  userInstructions?: string;
+  title?: string;
   documentType: DraftableDocumentTypeId;
   mode: DraftMode;
   // Already fetched and ownership-checked by the caller (services/draft.ts, before the LLM call) for
@@ -162,8 +167,6 @@ export async function createDraft(db: Db, principal: Principal, input: CreateDra
   }
   assertExactSectionSet(input.documentType, input.sections);
 
-  const own = ownTtlExpiresAt(principal);
-  const expiresAt = input.mode === "document_grounded" ? earliestExpiry(own, input.groundingDocument!.expiresAt) : own;
   const owner: Pick<Draft, "ownerUserId" | "ownerGuestSessionId"> =
     principal.type === "user"
       ? { ownerUserId: principal.userId, ownerGuestSessionId: null }
@@ -174,19 +177,34 @@ export async function createDraft(db: Db, principal: Principal, input: CreateDra
     // connection, so a query against `db` here would wait on this transaction forever (matches
     // services/understand.ts's analyzeDocument comment on the same trap).
     await assertBelowActiveRowCap(tx, principal, "drafts");
+    let groundingDocument: { id: string; expiresAt: Date | null } | undefined;
+    if (input.mode === "document_grounded") {
+      const [locked] = await tx.select().from(schema.documents)
+        .where(eq(schema.documents.id, input.groundingDocument!.id)).for("share");
+      assertCanAccess(principal, locked);
+      if (locked.expiresAt !== null && locked.expiresAt.getTime() <= Date.now()) throw notFound();
+      if (locked.processingStatus !== "ready" || locked.canonicalText === null || locked.canonicalTextHash === null) {
+        throw new AppError("INVALID_DOCUMENT", "The grounding document has not finished processing.", { reason: "grounding_not_ready" });
+      }
+      groundingDocument = locked;
+    }
+    const own = ownTtlExpiresAt(principal);
+    const expiresAt = groundingDocument ? earliestExpiry(own, groundingDocument.expiresAt) : own;
     const [draft] = await tx
       .insert(schema.drafts)
       .values({
         ...owner,
         documentType: input.documentType,
         mode: input.mode,
-        groundingDocumentId: input.groundingDocument?.id ?? null,
+        groundingDocumentId: groundingDocument?.id ?? null,
         content: input.content,
         revisionNumber: 1,
         parentDraftId: null,
         expiresAt,
         modelUsed: input.modelUsed,
         jurisdiction: input.jurisdiction,
+        userInstructions: input.userInstructions ?? null,
+        title: input.title ?? null,
       })
       .returning();
     const sectionRows = input.sections.length
@@ -201,6 +219,7 @@ export async function createDraft(db: Db, principal: Principal, input: CreateDra
 
 /** Fields required to create a new revision of an existing draft. */
 export interface ReviseDraftInput {
+  userInstructions?: string;
   sections: NewDraftSectionInput[];
   content: string;
   // The model that produced this revision's text — a fresh LLM call, so its own value, never
@@ -223,30 +242,37 @@ export async function reviseDraft(db: Db, principal: Principal, parentDraftId: s
   assertExactSectionSet(documentType, input.sections);
 
   return db.transaction(async (tx) => {
+    await lockDraftChain(tx, principal, parent.id);
+    const [currentParent] = await tx.select().from(schema.drafts).where(eq(schema.drafts.id, parent.id)).for("update");
+    assertCanAccess(principal, draftOwnedResource(currentParent));
+    assertNotExpired(currentParent);
     await assertBelowActiveRowCap(tx, principal, "drafts");
     const [draft] = await tx
       .insert(schema.drafts)
       .values({
-        ownerUserId: parent.ownerUserId,
-        ownerGuestSessionId: parent.ownerGuestSessionId,
-        documentType: parent.documentType,
-        mode: parent.mode,
-        groundingDocumentId: parent.groundingDocumentId,
+        ownerUserId: currentParent.ownerUserId,
+        ownerGuestSessionId: currentParent.ownerGuestSessionId,
+        projectId: currentParent.projectId,
+        title: currentParent.title,
+        userInstructions: input.userInstructions ?? null,
+        documentType: currentParent.documentType,
+        mode: currentParent.mode,
+        groundingDocumentId: currentParent.groundingDocumentId,
         content: input.content,
         // No uniqueness constraint, deliberately: two children of the same parentDraftId sharing a
         // revisionNumber is an accepted shape (a revision tree, e.g. trying two rewrites of v1 side
         // by side), not a bug — this is purely a display/ordering hint along one chain, never global.
-        revisionNumber: parent.revisionNumber + 1,
-        parentDraftId: parent.id,
+        revisionNumber: currentParent.revisionNumber + 1,
+        parentDraftId: currentParent.id,
         // Inherited unchanged — never recomputed from "now": a later revision must never get a later
         // expiry than its parent, or the guest-TTL sweep would hit parent_draft_id's RESTRICT rule.
-        expiresAt: parent.expiresAt,
+        expiresAt: currentParent.expiresAt,
         // NOT inherited — this revision's own fresh LLM call may have used a different model
         // (fallback) than the parent's.
         modelUsed: input.modelUsed,
         // Inherited unchanged, same reasoning as expires_at — a draft's jurisdiction describes the
         // document being drafted, not the revision. Never caller-supplied here.
-        jurisdiction: parent.jurisdiction,
+        jurisdiction: currentParent.jurisdiction,
       })
       .returning();
     const sectionRows = input.sections.length

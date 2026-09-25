@@ -9,6 +9,25 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 const SCHEME = "local-storage:";
 const PATHNAME = "/object";
 
+/** Floor every StorageAdapter's signing secret is validated against — a hardcoded fallback shipped in source would let anyone with the repo forge a signed URL. */
+export const MIN_SIGNING_SECRET_BYTES = 32;
+
+/**
+ * Shared by every StorageAdapter that signs local-storage: URLs (LocalFsStorageAdapter,
+ * PostgresStorageAdapter) — one floor, checked once, so a future adapter can't quietly accept a
+ * weaker secret than the others. `callerLabel` names the adapter in the thrown message only.
+ */
+export function assertUsableSigningSecret(secret: string, callerLabel: string): void {
+  if (secret.length === 0 || secret.trim().length === 0) {
+    throw new Error(`${callerLabel}: signingSecret must not be empty or whitespace-only.`);
+  }
+  if (Buffer.byteLength(secret, "utf8") < MIN_SIGNING_SECRET_BYTES) {
+    throw new Error(
+      `${callerLabel}: signingSecret must be at least ${MIN_SIGNING_SECRET_BYTES} bytes (got ${Buffer.byteLength(secret, "utf8")}).`,
+    );
+  }
+}
+
 function hmac(secret: string, ref: string, expiresAtMs: number): string {
   return createHmac("sha256", secret).update(`${ref}:${expiresAtMs}`).digest("hex");
 }

@@ -6,15 +6,16 @@
  * side's document — a side-A result offered for side B throws; what's stored is an audit record.
  */
 
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq, gt, isNull, or, sql } from "drizzle-orm";
 import type { Db } from "../../db/client";
 import { newId } from "../../db/ids";
 import * as schema from "../../db/schema";
-import { AppError } from "../core/errors";
+import { AppError, notFound } from "../core/errors";
+import { guestDataTtlSeconds } from "../core/guest-ttl";
 import type { InputMode, Principal } from "../core/types";
 import { assertVerifyResultFor, type VerifyResult } from "../deterministic/verify";
 import { assertCanAccess, assertCanAccessAll } from "./access";
-import { assertBelowActiveRowCap, DOCUMENT_GUEST_TTL_SECONDS, isUuidShaped, type Document } from "./documents";
+import { assertBelowActiveRowCap, isUuidShaped, type Document } from "./documents";
 
 /** A persisted comparison row, as read from the database. */
 export type Comparison = typeof schema.comparisons.$inferSelect;
@@ -86,8 +87,9 @@ async function lockDocument(db: Db, documentId: string) {
 
 // Called only after assertCanAccessAll, so a foreign pending document is NOT_FOUND, never this.
 function ready<
-  T extends { processingStatus: string; canonicalText?: string | null; canonicalTextHash: string | null; inputMode: InputMode | null },
+  T extends { processingStatus: string; canonicalText?: string | null; canonicalTextHash: string | null; inputMode: InputMode | null; expiresAt: Date | null },
 >(document: T): T & { canonicalTextHash: string; inputMode: InputMode } {
+  if (document.expiresAt !== null && document.expiresAt.getTime() <= Date.now()) throw notFound();
   if (
     document.processingStatus !== "ready" ||
     document.canonicalText === null ||
@@ -122,7 +124,7 @@ function comparisonExpiry(
   documentB: { expiresAt: Date | null },
 ): Date | null {
   const bounds = [documentA.expiresAt, documentB.expiresAt];
-  if (principal.type === "guest") bounds.push(new Date(Date.now() + DOCUMENT_GUEST_TTL_SECONDS * 1000));
+  if (principal.type === "guest") bounds.push(new Date(Date.now() + guestDataTtlSeconds() * 1000));
   const times = bounds.filter((bound): bound is Date => bound !== null).map((bound) => bound.getTime());
   return times.length === 0 ? null : new Date(Math.min(...times));
 }
@@ -231,9 +233,25 @@ export async function createComparison(
 /** A comparison and its changes, in the order they were written. */
 export async function getComparison(db: Db, principal: Principal, comparisonId: string): Promise<ComparisonWithChanges> {
   const [comparison] = isUuidShaped(comparisonId)
-    ? await db.select().from(schema.comparisons).where(eq(schema.comparisons.id, comparisonId))
+    ? await db.select().from(schema.comparisons).where(and(
+        eq(schema.comparisons.id, comparisonId),
+        or(isNull(schema.comparisons.expiresAt), gt(schema.comparisons.expiresAt, sql`now()`)),
+      ))
     : [];
   assertCanAccess(principal, comparison);
+  const [documentA, documentB] = await Promise.all([
+    selectDocument(db, comparison.documentAId),
+    selectDocument(db, comparison.documentBId),
+  ]);
+  assertCanAccessAll(principal, [documentA, documentB]);
+  if ([documentA, documentB].some((document) => document!.expiresAt !== null && document!.expiresAt!.getTime() <= Date.now())) {
+    throw notFound();
+  }
+  if (comparison.projectId) {
+    const [project] = await db.select({ ownerUserId: schema.projects.ownerUserId }).from(schema.projects)
+      .where(eq(schema.projects.id, comparison.projectId));
+    assertCanAccess(principal, project && { ownerUserId: project.ownerUserId, ownerGuestSessionId: null });
+  }
   const changes = await db
     .select()
     .from(schema.comparisonChanges)

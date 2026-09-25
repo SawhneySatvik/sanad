@@ -71,7 +71,7 @@ describe("getProject IDOR", () => {
     await expect(getProject(t.db, userA, project.id)).resolves.toMatchObject({ project: { id: project.id } });
   });
 
-  it("a row of another principal's that names this project is never listed, of any kind; the owner's own rows are", async () => {
+  it("a foreign nested assignment makes project detail 404; the owner's rows appear once malformed links are removed", async () => {
     const project = await createProject(t.db, userA, { name: "a's" });
     const mine = await itemsOf(userA, USER_A_ID);
     const foreign = await itemsOf(userB, USER_B_ID);
@@ -86,6 +86,14 @@ describe("getProject IDOR", () => {
     await plant("drafts", [mine.draft, foreign.draft, guestsDraft.id]);
     await plant("threads", [mine.thread, foreign.thread]);
 
+    await expect(getProject(t.db, userA, project.id)).rejects.toMatchObject({ code: "NOT_FOUND" });
+    const unplant = async (table: string, ids: string[]) => {
+      for (const id of ids) await t.client.query(`UPDATE ${table} SET project_id = NULL WHERE id = $1`, [id]);
+    };
+    await unplant("documents", [foreign.document, guestsDocument.id]);
+    await unplant("comparisons", [foreign.comparison]);
+    await unplant("drafts", [foreign.draft, guestsDraft.id]);
+    await unplant("threads", [foreign.thread]);
     const detail = await getProject(t.db, userA, project.id);
     expect(detail.documents.map((d) => d.id)).toEqual([mine.document]);
     expect(detail.comparisons.map((c) => c.id)).toEqual([mine.comparison]);
