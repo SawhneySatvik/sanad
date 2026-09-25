@@ -19,7 +19,7 @@ import {
   writePart,
   type PartMeta,
   type PartOptions,
-} from "./wave";
+} from "./part";
 
 // services/compare.ts's text for a candidate the model did not explain (module-private there). An
 // explanation equal to it is the server's, not the model's, so it never counts as explained.

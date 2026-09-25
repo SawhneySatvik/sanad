@@ -14,8 +14,8 @@
 //   understand --render-only --note="…"        add a reviewer note to the saved run, then re-render
 //   understand --fixtures=a,b --caps=tier:n,…  only those fixtures; per-tier request ceilings (tiers:
 //                                              primary, flash-lite, gemma-google, nim, openrouter)
-//   ask | compare | draft --flash-lite=N       one live part of the wave; N is its share of the
-//                                              wave's Flash-Lite calls (required for a live run)
+//   ask | compare | draft --flash-lite=N       one of three live parts sharing a Flash-Lite
+//                                              allocation; N is this part's share of it (required for a live run)
 //   ask | compare | draft --dry-run[=…]        the same over FakeLlmClient, zero calls, self-check
 //   ask | compare | draft --render-only        rebuild that part's report from its saved JSON
 //   all                                        refuses: each part is run on its own, with its budget
@@ -29,7 +29,7 @@ import { renderAsk, runAsk } from "./ask";
 import { renderCompare, runCompare } from "./compare";
 import { renderDraft, runDraft } from "./draft";
 import { runUnderstand, type DryRunMode } from "./understand";
-import { tierModels, type PartOptions } from "./wave";
+import { tierModels, type PartOptions } from "./part";
 
 const PARTS: Record<string, (opts: PartOptions) => Promise<number>> = { ask: runAsk, compare: runCompare, draft: runDraft };
 const PART_RENDERERS: Record<string, (outDir: string) => Promise<number>> = { ask: renderAsk, compare: renderCompare, draft: renderDraft };
@@ -91,7 +91,7 @@ async function main(): Promise<number> {
     const flashLiteFlag = flag(args, "flash-lite");
     const flashLite = typeof flashLiteFlag === "string" ? Number(flashLiteFlag) : dryRun !== null ? 0 : NaN;
     if (!Number.isInteger(flashLite) || flashLite < 0) {
-      console.error(`validate:live ${command}: a live run needs --flash-lite=N, this part's share of the wave's Flash-Lite calls.`);
+      console.error(`validate:live ${command}: a live run needs --flash-lite=N, this part's share of the shared Flash-Lite allocation.`);
       return 1;
     }
     const outFlag = flag(args, "out");

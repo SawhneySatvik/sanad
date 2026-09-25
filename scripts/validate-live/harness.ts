@@ -79,7 +79,7 @@ export interface BlockedCall {
   model: string | null;
   at: string;
   // "budget": the run's total was spent. "cap": a deliberate per-model cap (a tier known to be out
-  // of quota or unresponsive, or a quota the wave shares) — expected, not a failure.
+  // of quota or unresponsive, or a quota shared across the ask/compare/draft parts) — expected, not a failure.
   reason?: "budget" | "cap";
 }
 

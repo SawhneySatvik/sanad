@@ -20,7 +20,7 @@ import {
   writePart,
   type PartMeta,
   type PartOptions,
-} from "./wave";
+} from "./part";
 
 // The two most representative: a tenant's lease from scratch, and an employee's offer letter
 // grounded on the fixture offer letter.

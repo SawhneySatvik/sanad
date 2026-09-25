@@ -2,7 +2,7 @@
 
 Mode **live** · started 2026-09-23T10:22:52.903Z · wall time 42s · provider requests sent **4** (gemini-2.5-flash 1, gemini-3.5-flash-lite 3) · refused locally: 4 by a per-model cap, 0 by the total · Flash-Lite allocation 6
 
-**Measured on the FALLBACK tier: answered by `gemini-3.5-flash-lite`.** The primary `gemini-2.5-flash` answered HTTP 429 (per_day); later primary attempts were refused locally by the harness's cap. The cap is the harness's (one real primary request per part, set because the primary was out of its daily quota when the wave was planned), not the product's.
+**Measured on the FALLBACK tier: answered by `gemini-3.5-flash-lite`.** The primary `gemini-2.5-flash` answered HTTP 429 (per_day); later primary attempts were refused locally by the harness's cap. The cap is the harness's (one real primary request per part, since the primary's daily quota is scarce), not the product's.
 
 ## Concerns
 

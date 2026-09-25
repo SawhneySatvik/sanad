@@ -28,7 +28,7 @@ import {
   writePart,
   type PartMeta,
   type PartOptions,
-} from "./wave";
+} from "./part";
 
 // One per audience the product serves (tenant, employee, freelancer), each routing to one specialist.
 const LIVE_GROUNDED = ["LL-Q2", "JO-Q1", "FS-Q1"];
