@@ -402,6 +402,9 @@ test.describe("App shell & sidebar", () => {
 
   test("layout: /settings' content wrapper scrolls on overflow while the document itself never does", async ({ page }) => {
     await page.goto("/settings");
+    // Probe only once the shell has rendered its content wrapper; injected earlier, a re-render
+    // replaces the wrapper and takes the probe with it.
+    await expect(page.getByRole("heading", { level: 1, name: "Settings" })).toBeVisible();
 
     // A real overflow to prove the contract against, not however tall Settings' own two sections
     // happen to be today. flex-shrink: 0 — the wrapper is itself a flex column, and without it the
@@ -512,6 +515,13 @@ test.describe("App shell & sidebar", () => {
     // could actually reach right now.
     const tryAgain = page.getByRole("dialog").getByRole("button", { name: "Try again" });
     await expect(tryAgain).toBeVisible();
+    // The drawer slides in; measure once its position has stopped changing, not mid-animation.
+    await expect.poll(async () => {
+      const a = await tryAgain.boundingBox();
+      await page.waitForTimeout(100);
+      const b = await tryAgain.boundingBox();
+      return a !== null && b !== null && a.x === b.x && a.x >= 0;
+    }).toBe(true);
     const box = await tryAgain.boundingBox();
     expect(box).not.toBeNull();
 
