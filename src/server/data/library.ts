@@ -7,6 +7,8 @@ import { assertCanAccess, canAccess } from "./access";
 import { getDocumentSummary, isUuidShaped } from "./documents";
 import { getThread } from "./threads";
 import { sweepOrderOfDrafts } from "../auth/claim";
+import { executeRows } from "./execute-rows";
+
 
 export type LibraryKind = "document" | "comparison" | "draft" | "thread" | "project";
 
@@ -240,7 +242,7 @@ export async function listDraftChainsPage(db: Db, principal: Principal, cursor: 
     SELECT id, revision_count, updated_at::text AS cursor_updated_at FROM ranked WHERE position = 1 ${afterCursor}
     ORDER BY updated_at DESC, id DESC LIMIT ${limit + 1}
   `);
-    const entries = (result as { rows: { id: string; revision_count: number; cursor_updated_at: string }[] }).rows;
+    const entries = executeRows<{ id: string; revision_count: number; cursor_updated_at: string }>(result);
     if (entries.length === 0) break;
     for (const entry of entries) {
       position = { updatedAt: entry.cursor_updated_at, id: entry.id };
@@ -281,7 +283,7 @@ export async function draftChain(db: Db, principal: Principal, id: string) {
     UNION
     SELECT d.id FROM drafts d JOIN chain c ON d.parent_draft_id = c.id
   ) SELECT id FROM chain`);
-  const chainIds = (ids as { rows: { id: string }[] }).rows.map((row) => row.id);
+  const chainIds = executeRows<{ id: string }>(ids).map((row) => row.id);
   const chain = await db.select().from(schema.drafts).where(inArray(schema.drafts.id, chainIds))
     .orderBy(asc(schema.drafts.createdAt), asc(schema.drafts.id));
   if (chain.length !== chainIds.length) throw notFound();
