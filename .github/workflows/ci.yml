@@ -36,7 +36,7 @@ jobs:
 
       # Uploaded even when the threshold check above fails the step, so a regression is visible
       # in the run's artifacts rather than only in the red exit code.
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ !cancelled() }}
         with:
           name: coverage-summary
@@ -64,7 +64,7 @@ jobs:
       # secrets and redirects every provider call to a local fake at the transport boundary.
       - run: npm run test:e2e -- --reporter=list,html
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: failure()
         with:
           name: playwright-report
