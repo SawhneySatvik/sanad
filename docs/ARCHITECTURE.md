@@ -830,6 +830,52 @@ and sits behind the same three-tier rate limiting as every other route.
 
 ---
 
+## Caching
+
+A cache in this app is always a way to skip re-computing something already trusted elsewhere — a
+Postgres row, an LLM call — never a way to skip `verify()`. `KeyValueCache`
+(`src/server/cache/types.ts`) is the one port every tier implements: opaque string values, `get`/
+`set` only, no adapter throws into a request. `MemoryKeyValueCache` is a bounded per-instance LRU
+with per-entry TTL — the only tier in dev/tests, and L1 in front of Redis everywhere else.
+`UpstashRedisCache` (`src/server/cache/upstash.ts`) talks to Upstash's REST API over `fetch`, no
+client library; every command races a hard ~250ms timeout, so a stalled connection can't hang the
+request it exists to speed up. `LayeredCache` reads L1 then L2 (backfilling L1 on an L2 hit) and
+writes both. `NamespacedCache` prefixes every key with `VERCEL_ENV` (or `"local"` off Vercel) —
+local dev and a Vercel deployment can point at the very same Upstash instance, and without this a
+`npm run dev` session would read and write the exact keys a live user's request does. The
+container builds this whole stack once, from `KV_REST_API_URL`/`KV_REST_API_TOKEN` or
+`UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` (either complete pair; absent, or under the e2e
+harness, means memory-only) — never per request, or L1 does nothing.
+
+Two uses today:
+
+- **Analysis cache** (channel 6). A Redis tier sits in front of `analyzed_result_cache`
+  (understand.ts's `chargedCacheHit`), keyed identically to the Postgres row: sha256 of
+  `(canonicalTextHash, documentType, jurisdiction, promptVersion, modelId)`. It stores exactly what
+  Postgres stores — the model's raw, pre-verification output and which model produced it, nothing
+  else — and TTLs at the same 7-day retention (or whatever's left of the Postgres row's own,
+  guest-capped expiry, on a backfill from a Postgres hit). A hit from either tier feeds the exact
+  same downstream path a miss does: `verifyQuotes()` re-runs `verify()` against the document's live
+  `canonical_text` before anything is persisted or returned. A hand-poisoned Redis entry — a
+  fabricated quote claiming `status: "verified"` with its own spans — is exactly as inert as a
+  poisoned Postgres row: the schema parse keeps only `findings[].quote`, and `verify()` finds no
+  match, so it comes back `not_found`. Written after the persisting transaction commits, not inside
+  it, so Redis latency never extends the row lock the transaction holds, and a write that rolls back
+  can never leave a Redis entry for output nothing actually persisted.
+- **General-chat answer cache** (channels 2, 3, 7). `src/server/orchestrator/general-cache.ts` keys
+  on sha256 of the normalized question (trimmed, whitespace-collapsed, lowercased) plus the
+  specialist ids the non-LLM classifier chose, the model id and the orchestrator's prompt version.
+  Only a turn with no attached document and no history (a genuine first turn) is eligible, and only
+  a real, single-model general answer is written back — never the non_legal redirect (no LLM call
+  to save) and never a fallback-produced answer (its own model id, not the primary's `deps.modelId`
+  the cache is keyed on) — so a degraded answer can never become the 24h answer for every later
+  caller asking the same thing. A hit skips the LLM call entirely (so it charges no LLM rate limit)
+  and replays the exact SSE shape a live turn produces: one token event carrying the whole answer,
+  then the final event. This can never create a path to "verified": general mode has no
+  verification state at all — `GeneralAssistantMessage` is structurally incapable of carrying a
+  status (services/ask.ts's `GeneralModeHasNoStatus` compile-time assertion) — so a cache hit is
+  exactly as safe as a live general answer, poisoned or not.
+
 ## Env inventory
 
 | Var | Scope | Notes |
@@ -843,12 +889,17 @@ and sits behind the same three-tier rate limiting as every other route.
 | `GUEST_SESSION_SECRET_PREVIOUS` | server-only, optional | Verify-only previous secret during rotation, so live guest sessions survive |
 | `RATE_LIMIT_IP_HASH_SECRET` | server-only | HMAC key for IP-bucket keys — raw IPs are never stored |
 | `LOCAL_STORAGE_SIGNING_SECRET` | server-only | Signs `local-storage:` relay/signed URLs — read by whichever storage adapter is installed, local filesystem or Postgres |
+| `SUPABASE_PROJECT_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_JWKS_URL` | server-only | Email sign-in: the Supabase Auth REST endpoints, and the key set that verifies the access token's signature |
+| `USER_SESSION_SECRET` | server-only | Signs the `__Host-user_session` account cookie (≥32 bytes, never equal to `GUEST_SESSION_SECRET`) |
+| `RATE_LIMIT_AUTH_IP_PER_MINUTE`, `…_PER_HOUR`, `RATE_LIMIT_AUTH_EMAIL_PER_MINUTE`, `…_PER_HOUR` | server-only, optional | Sign-in/sign-up limits per IP and per hashed email (defaults 5/min, 20/hour) |
 | `STORAGE_BACKEND` | server-only, optional | `postgres` forces the Postgres/`bytea` storage adapter; `local` or unset picks the local filesystem adapter, except on Vercel (`VERCEL` set), where Postgres is forced regardless — each function instance has its own ephemeral disk |
 | `RATE_LIMIT_{PRINCIPAL,IP,GEMINI,GEMINI_FALLBACK,GEMMA,GEMMA_GOOGLE}_PER_MINUTE` | server-only, optional | Per-minute limit overrides, one per bucket; defaults in [`limiter.ts`](../src/server/rate-limit/limiter.ts) |
 | `RATE_LIMIT_IP_LLM_PER_MINUTE`, `RATE_LIMIT_PRINCIPAL_PER_DAY`, `RATE_LIMIT_IP_LLM_PER_DAY` | server-only, optional | Per-call IP limit and the daily LLM-call caps per principal and per IP |
 | `MAX_ACTIVE_ROWS_PER_GUEST`, `MAX_ACTIVE_ROWS_PER_USER` | server-only, optional | Active-row cap overrides; defaults in [`documents.ts`](../src/server/data/documents.ts) |
 | `TRUSTED_PROXY_HOPS` | server-only, optional, off Vercel only | Number of reverse proxies in front of the app; unset means `x-forwarded-for` is ignored and every client shares one bucket |
 | `VERCEL` | set by the platform | When present, only `x-vercel-forwarded-for` is trusted for the client IP |
+| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | server-only, optional | Upstash's own dashboard names; either complete pair enables the Redis cache tier — see "Caching" below |
+| `KV_REST_API_URL`, `KV_REST_API_TOKEN` | server-only, optional | The same, under the names Vercel's Upstash marketplace integration injects |
 
 Every value may stay blank for local work; see [README.md](../README.md#run-it-locally) for what
 works keyless.
