@@ -5,6 +5,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { createTestDb, type TestDb } from "@tests/support/db";
+import { MemoryKeyValueCache } from "@/server/cache/memory";
+import { NamespacedCache } from "@/server/cache/namespaced";
 import { ConfigError } from "@/server/core/env";
 import { FakeLlmClient } from "@tests/support/fakes/llm-client";
 import { geminiModelId } from "@/server/llm/providers";
@@ -196,6 +198,22 @@ describe("createContainer", () => {
 
     expect(await container.authenticateUser(req)).toBeNull();
   });
+
+  it("no cache thunk: deps.cache is undefined — never silently defaulted to a memory cache", () => {
+    const container = createContainer(options());
+    expect(container.forRequest(guestA).cache).toBeUndefined();
+  });
+
+  it("a cache thunk is built once per container, not once per request — an L1 tier does nothing otherwise", () => {
+    const cache = vi.fn(() => new MemoryKeyValueCache());
+    const container = createContainer(options({ cache }));
+
+    const first = container.forRequest(guestA).cache;
+    const second = container.forRequest(guestB).cache;
+
+    expect(cache).toHaveBeenCalledTimes(1);
+    expect(first).toBe(second);
+  });
 });
 
 describe("productionContainerOptions", () => {
@@ -268,6 +286,26 @@ describe("productionContainerOptions", () => {
     const real = createContainer(productionContainerOptions(t.db));
     expect(real.forRequest(guestA).modelId).toBe("gemini-test-model");
     expect(real.configStatus().llm).toBe(true);
+  });
+
+  it("builds a memory-only cache with no Upstash env var set", () => {
+    vi.stubEnv("UPSTASH_REDIS_REST_URL", "");
+    vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "");
+    vi.stubEnv("KV_REST_API_URL", "");
+    vi.stubEnv("KV_REST_API_TOKEN", "");
+    const container = createContainer(productionContainerOptions(t.db));
+    // usesLlm: false — this test cares about the cache thunk, not the LLM providers, which would
+    // otherwise demand a GEMINI_API_KEY this suite never stubs.
+    expect(container.forRequest(guestA, false).cache).toBeInstanceOf(MemoryKeyValueCache);
+  });
+
+  it("builds a layered, namespaced cache once a complete Upstash pair is set — without ever calling it", () => {
+    vi.stubEnv("UPSTASH_REDIS_REST_URL", "https://example.upstash.io");
+    vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "tok");
+    const container = createContainer(productionContainerOptions(t.db));
+    // instanceof only — this suite never calls .get()/.set(), so it can never reach the network
+    // even if a real Upstash instance happened to be reachable at this URL.
+    expect(container.forRequest(guestA, false).cache).toBeInstanceOf(NamespacedCache);
   });
 });
 

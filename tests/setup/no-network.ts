@@ -308,6 +308,13 @@ function deleteSecretEnvVars(): void {
   delete process.env.GOOGLE_APPLICATION_CREDENTIALS;
   delete process.env.GOOGLE_GENAI_USE_VERTEXAI;
   delete process.env.DATABASE_URL;
+  // A real Upstash instance can be configured for local dev too (namespaced apart from prod, but
+  // still a live host) — deleted the same way so a container built from process.env in a test can
+  // only ever resolve to the memory-only cache tier.
+  delete process.env.UPSTASH_REDIS_REST_URL;
+  delete process.env.UPSTASH_REDIS_REST_TOKEN;
+  delete process.env.KV_REST_API_URL;
+  delete process.env.KV_REST_API_TOKEN;
 }
 
 // Covers fetch, http/https request()/get(), new http.ClientRequest, http2.connect, net/tls

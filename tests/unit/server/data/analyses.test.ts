@@ -89,6 +89,7 @@ describe("result cache", () => {
     expect(await getCachedAnalysisOutput(t.db, userA, document.id, lookup)).toEqual({
       rawModelOutput: entry.rawModelOutput,
       modelUsed: "m1",
+      expiresAt: expect.any(Date),
     });
     expect(await getCachedAnalysisOutput(t.db, userA, document.id, { ...lookup, modelId: "m2" })).toBeNull();
 

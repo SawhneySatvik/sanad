@@ -113,6 +113,10 @@ function cacheKeyFor(document: DocumentSummary, promptVersion: string, modelId: 
 export interface CachedAnalysisOutput {
   rawModelOutput: string;
   modelUsed: string;
+  // A caller backfilling a faster tier (understand.ts's Redis read-through) needs this to cap that
+  // tier's own TTL at what's left of this row's — never longer than the Postgres retention it's
+  // standing in for, including a guest document's own tighter, document-capped expiry.
+  expiresAt: Date;
 }
 
 /** Looks up a non-expired cached analysis output for the given document, prompt, and model. */
@@ -127,6 +131,7 @@ export async function getCachedAnalysisOutput(
     .select({
       rawModelOutput: schema.analyzedResultCache.rawModelOutput,
       modelUsed: schema.analyzedResultCache.modelUsed,
+      expiresAt: schema.analyzedResultCache.expiresAt,
     })
     .from(schema.analyzedResultCache)
     .where(

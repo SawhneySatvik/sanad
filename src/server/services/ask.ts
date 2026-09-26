@@ -9,18 +9,25 @@
  */
 
 import type { Db } from "../../db/client";
+import type { KeyValueCache } from "../cache/types";
 import { AppError, type AppErrorCode, type ErrorReason } from "../core/errors";
 import type { Principal } from "../core/types";
 import { MAX_QUOTE_CHARS, type VerifyResult } from "../deterministic/verify";
 import type { LlmClient } from "../llm/types";
 import {
+  classify,
+  generalChatCacheKey,
+  GENERAL_CHAT_CACHE_TTL_SECONDS,
   MAX_HISTORY_CHARS,
   MAX_HISTORY_TURNS,
+  parseCachedGeneralAnswer,
   runOrchestrator,
   type OrchestratorDocumentInput,
   type OrchestratorFinalEvent,
   type OrchestratorHistoryMessage,
+  type SpecialistId,
 } from "../orchestrator";
+import { PROMPT_VERSION as ORCHESTRATOR_PROMPT_VERSION } from "../prompts/orchestrator/version";
 import { getDocument } from "../data/documents";
 import {
   countCitations,
@@ -47,6 +54,10 @@ export interface AskDeps {
   /** Built per request by the composition root with createRateLimitedLlmClient: the principal is charged per LLM call there. ask() never charges a limit itself. */
   llm: LlmClient;
   timeoutMs?: number;
+  /** Keys the general-chat answer cache; a real client id, never the fallback model's. Absent: caching is off. */
+  modelId?: string;
+  /** Absent: the general-chat answer cache is off — every turn calls the LLM, same as before this existed. */
+  cache?: KeyValueCache;
 }
 
 /** Input caps. The route's zod contracts should use the same numbers; these hold even if they don't. */
@@ -229,29 +240,65 @@ export async function* ask(deps: AskDeps, principal: Principal, input: AskInput)
     throw error;
   }
 
-  // Drained to the end before anything is written: no transaction or connection is held while a
-  // model call is in flight.
+  // Null unless this turn even qualifies (no document, no history — see generalCacheKeyFor); a
+  // qualifying turn still only reads the cache, never trusts it blindly — parseCachedGeneralAnswer
+  // rejects a malformed entry back to a normal (uncached) run below.
+  const cacheKey = generalCacheKeyFor(deps, context, input.query);
   let final: OrchestratorFinalEvent | undefined;
-  for await (const event of runOrchestrator({
-    query: input.query,
-    documents: context.documents,
-    history: context.history,
-    llmClient: deps.llm,
-    signal: input.signal,
-    timeoutMs: deps.timeoutMs,
-  })) {
-    if (event.type === "token") {
-      yield { type: "token", text: event.text };
-    } else if (event.type === "error") {
-      // OrchestratorErrorEvent and AskErrorEvent share the same two-arm shape, so the event forwards
-      // as-is — reason and retryAfterSeconds included — with no rebuild.
-      yield event;
-      return;
-    } else {
-      final = event;
+  let cacheWriteKey: string | undefined;
+
+  if (cacheKey !== null) {
+    const raw = await deps.cache!.get(cacheKey);
+    const cached = raw === null ? null : parseCachedGeneralAnswer(raw);
+    if (cached !== null) {
+      // Replays the exact SSE shape a live general-mode turn produces: one token event carrying
+      // the whole answer, then the final event below — general mode has no verification state to
+      // fast-forward past, so there is nothing else a real run would have shown first.
+      yield { type: "token", text: cached.answer };
+      final = {
+        type: "final",
+        answer: cached.answer,
+        mode: "general",
+        redirect: false,
+        routedDomains: cached.routedDomains as readonly SpecialistId[],
+        modelUsed: cached.modelUsed,
+        citations: [],
+      };
     }
   }
-  if (!final) throw new Error("runOrchestrator ended without a final or error event");
+
+  if (!final) {
+    // Drained to the end before anything is written: no transaction or connection is held while a
+    // model call is in flight.
+    for await (const event of runOrchestrator({
+      query: input.query,
+      documents: context.documents,
+      history: context.history,
+      llmClient: deps.llm,
+      signal: input.signal,
+      timeoutMs: deps.timeoutMs,
+    })) {
+      if (event.type === "token") {
+        yield { type: "token", text: event.text };
+      } else if (event.type === "error") {
+        // OrchestratorErrorEvent and AskErrorEvent share the same two-arm shape, so the event forwards
+        // as-is — reason and retryAfterSeconds included — with no rebuild.
+        yield event;
+        return;
+      } else {
+        final = event;
+      }
+    }
+    if (!final) throw new Error("runOrchestrator ended without a final or error event");
+
+    // Only a genuine, single-model general answer is written back: final.modelUsed === deps.modelId
+    // excludes both the non_legal redirect (modelUsed "none") and a fallback-produced answer (the
+    // fallback's own id, never the primary's) — the same rule understand.ts's result cache uses, so
+    // a degraded answer never becomes the 24h answer for every later caller asking the same thing.
+    if (cacheKey !== null && final.mode === "general" && !final.redirect && final.modelUsed === deps.modelId) {
+      cacheWriteKey = cacheKey;
+    }
+  }
 
   let turn: CompletedTurn;
   try {
@@ -264,6 +311,35 @@ export async function* ask(deps: AskDeps, principal: Principal, input: AskInput)
     throw error;
   }
   yield { type: "final", message: turn.message, sources: turn.sources };
+
+  // After the final frame, never before — sse.ts's pull() calls this generator once more to learn
+  // it's done, so this still runs before the HTTP stream closes, but a slow or timed-out cache
+  // write can no longer delay the answer the client already has.
+  if (cacheWriteKey !== undefined) {
+    await deps.cache!.set(
+      cacheWriteKey,
+      JSON.stringify({ answer: final.answer, modelUsed: final.modelUsed, routedDomains: final.routedDomains }),
+      GENERAL_CHAT_CACHE_TTL_SECONDS,
+    );
+  }
+}
+
+// No document, no history (first turn — a saved thread's own recent-message read, or an unsaved
+// turn's client-held one, either way), a cache and a model id both supplied, and the deterministic
+// classifier — no LLM call — puts the query in general mode already: cacheable. Returns null
+// otherwise, including the non_legal redirect (classify() here mirrors runOrchestrator's own,
+// document-free call to it exactly, so "kind" can never disagree between this check and the real run).
+function generalCacheKeyFor(deps: AskDeps, context: TurnContext, query: string): string | null {
+  if (deps.cache === undefined || deps.modelId === undefined) return null;
+  if (context.documents.length > 0 || context.history.length > 0) return null;
+  const classification = classify(query);
+  if (classification.kind !== "legal") return null;
+  return generalChatCacheKey({
+    query,
+    specialistIds: classification.domains.map((domain) => domain.id),
+    modelId: deps.modelId,
+    promptVersion: ORCHESTRATOR_PROMPT_VERSION,
+  });
 }
 
 async function loadTurnContext(db: Db, principal: Principal, input: AskInput): Promise<TurnContext> {
@@ -275,8 +351,10 @@ async function loadTurnContext(db: Db, principal: Principal, input: AskInput): P
       throw invalid("A saved thread uses its own attached documents and history.");
     }
     const documentIds = await listThreadDocumentIds(db, principal, input.threadId); // authorizes the thread
-    const documents = await loadContextDocuments(db, principal, documentIds);
-    const recent = await listMessageRows(db, principal, input.threadId, MAX_HISTORY_TURNS);
+    const [documents, recent] = await Promise.all([
+      loadContextDocuments(db, principal, documentIds),
+      listMessageRows(db, principal, input.threadId, MAX_HISTORY_TURNS),
+    ]);
     return { threadId: input.threadId, documents, history: boundedHistory(recent) };
   }
   const documents = await loadContextDocuments(db, principal, [...new Set(input.documentIds ?? [])]);
@@ -294,8 +372,9 @@ async function loadContextDocuments(
   if (documentIds.length > MAX_CONTEXT_DOCUMENTS) {
     throw invalid(`At most ${MAX_CONTEXT_DOCUMENTS} documents can ground one question.`);
   }
-  const documents = [];
-  for (const id of documentIds) documents.push(await getDocument(db, principal, id));
+  // Independent owner-checked reads, capped at MAX_CONTEXT_DOCUMENTS above: one round-trip's worth
+  // of latency instead of one per document.
+  const documents = await Promise.all(documentIds.map((id) => getDocument(db, principal, id)));
   return documents.map((document) => {
     if (
       document.processingStatus !== "ready" ||

@@ -78,6 +78,12 @@ function buildChildEnv(): NodeJS.ProcessEnv {
     GOOGLE_APPLICATION_CREDENTIALS: "",
     OPENAI_API_KEY: "",
     OPENAI_BASE_URL: "",
+    // Cleared so this harness's cache is always memory-only: local dev and prod can share one real
+    // Upstash instance, and this run's fake-provider answers must never land in it under a real key.
+    UPSTASH_REDIS_REST_URL: "",
+    UPSTASH_REDIS_REST_TOKEN: "",
+    KV_REST_API_URL: "",
+    KV_REST_API_TOKEN: "",
   };
 }
 

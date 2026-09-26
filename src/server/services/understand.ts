@@ -12,6 +12,7 @@
 import { createHash } from "node:crypto";
 import { setImmediate as nextTurnOfEventLoop } from "node:timers/promises";
 import type { Db } from "../../db/client";
+import type { KeyValueCache } from "../cache/types";
 import { AppError, notFound, type AppErrorCode } from "../core/errors";
 import type { DocumentCategory, InputMode, Principal } from "../core/types";
 import { detectDocumentType } from "../deterministic/detect-type";
@@ -39,6 +40,8 @@ import {
 } from "../prompts/understand/transcribe";
 import type { StorageAdapter } from "../storage/types";
 import {
+  analysisCacheKey,
+  ANALYSIS_CACHE_TTL_SECONDS,
   findLatestAnalysis,
   getCachedAnalysisOutput,
   insertAnalysisIfAbsent,
@@ -71,6 +74,12 @@ export interface UnderstandDeps {
    * deps that never read the cache need not supply it.
    */
   chargeLlmCall?: () => Promise<void>;
+  /**
+   * A read-through tier in front of the Postgres result cache, keyed identically — see
+   * chargedCacheHit(). Absent: the Postgres cache is still read/written on its own, exactly as
+   * before this existed.
+   */
+  cache?: KeyValueCache;
 }
 
 /**
@@ -362,7 +371,7 @@ async function runAnalysis(
   }
   const documentType = toDocumentTypeId(document.documentType);
   const schema = buildUnderstandResponseSchema(documentType);
-  const cacheHit = options.skipResultCache ? null : await chargedCacheHit(deps, principal, documentId, schema);
+  const cacheHit = options.skipResultCache ? null : await chargedCacheHit(deps, principal, document, schema);
   const { data: output, modelUsed } =
     cacheHit ??
     (await deps.llm.complete({
@@ -433,22 +442,92 @@ async function runAnalysis(
     }
   });
 
+  // Redis is written after the transaction commits, never inside it: network I/O must never
+  // extend the row lock lockDocumentForAnalysisPersistence takes, and a write that rolls back
+  // (a concurrent caller won insertAnalysisIfAbsent's race, so `persisted` is false) must never
+  // leave a Redis entry for output nothing actually persisted.
+  if (persisted && cacheHit === null && !options.skipResultCache) {
+    const redisKey = deps.cache ? analysisRedisKey(document, modelUsed) : null;
+    if (redisKey !== null) {
+      await deps.cache!.set(
+        redisKey,
+        JSON.stringify({ rawModelOutput: JSON.stringify(output), modelUsed }),
+        ANALYSIS_CACHE_TTL_SECONDS,
+      );
+    }
+  }
+
   const analyzed = await getAnalyzed(deps, principal, documentId);
   // A concurrent call that won the insert returns its own analysis; our counts would not describe it.
   return persisted ? { ...analyzed, findingsDropped: dropped } : analyzed;
 }
 
+// Same key analysisCacheKey (and so Postgres's analyzed_result_cache) uses for this document,
+// prompt version and model id — a Redis hit and a Postgres hit must be interchangeable, or the two
+// tiers would silently diverge on what "the same cached analysis" means. Null for a document with
+// no extracted text/type yet: cacheKeyFor in analyses.ts would throw for the same reason.
+function analysisRedisKey(document: Pick<Document, "canonicalTextHash" | "documentType" | "jurisdiction">, modelId: string): string | null {
+  if (document.canonicalTextHash === null || document.documentType === null) return null;
+  return (
+    "analysis:" +
+    analysisCacheKey({
+      canonicalTextHash: document.canonicalTextHash,
+      documentType: document.documentType,
+      jurisdiction: document.jurisdiction,
+      promptVersion: PROMPT_VERSION,
+      modelId,
+    })
+  );
+}
+
+interface CachedAnalysisEntry {
+  rawModelOutput: string;
+  modelUsed: string;
+}
+
+// Never trusts a cached payload's shape — a hand-edited or malformed entry (including one carrying
+// extra fields like a self-certified "status") is a miss here, same as a schema mismatch below;
+// only rawModelOutput/modelUsed are ever read out of it.
+function parseCachedAnalysisEntry(raw: string): CachedAnalysisEntry | null {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  if (typeof parsed !== "object" || parsed === null) return null;
+  const { rawModelOutput, modelUsed } = parsed as Record<string, unknown>;
+  if (typeof rawModelOutput !== "string" || typeof modelUsed !== "string") return null;
+  return { rawModelOutput, modelUsed };
+}
+
 // The cache is shared across principals, so a hit is served only once charged like the model call
 // it replaces: otherwise a caller at their limit would get 200 for text someone else has analyzed
 // and 429 for text nobody has. A miss is charged by `llm` itself. null: a miss, or no way to charge.
+// Redis is read first (deps.cache, keyed identically to Postgres) and Postgres second; a Postgres
+// hit backfills Redis so the next identical lookup skips Postgres too.
 async function chargedCacheHit(
   deps: UnderstandDeps,
   principal: Principal,
-  documentId: string,
+  document: Document,
   schema: ReturnType<typeof buildUnderstandResponseSchema>,
 ): Promise<{ data: UnderstandModelOutput; modelUsed: string } | null> {
   if (deps.chargeLlmCall === undefined) return null;
-  const cached = await getCachedAnalysisOutput(deps.db, principal, documentId, {
+  const redisKey = deps.cache ? analysisRedisKey(document, deps.modelId) : null;
+
+  if (redisKey !== null) {
+    const raw = await deps.cache!.get(redisKey);
+    const entry = raw === null ? null : parseCachedAnalysisEntry(raw);
+    if (entry !== null) {
+      const parsed = schema.safeParse(parseJson(entry.rawModelOutput));
+      if (parsed.success) {
+        await deps.chargeLlmCall();
+        return { data: parsed.data, modelUsed: entry.modelUsed };
+      }
+    }
+  }
+
+  const cached = await getCachedAnalysisOutput(deps.db, principal, document.id, {
     promptVersion: PROMPT_VERSION,
     modelId: deps.modelId,
   });
@@ -457,6 +536,10 @@ async function chargedCacheHit(
   const parsed = schema.safeParse(parseJson(cached.rawModelOutput));
   if (!parsed.success) return null;
   await deps.chargeLlmCall();
+  if (redisKey !== null) {
+    const ttlSeconds = Math.max(1, Math.min(ANALYSIS_CACHE_TTL_SECONDS, Math.round((cached.expiresAt.getTime() - Date.now()) / 1000)));
+    await deps.cache!.set(redisKey, JSON.stringify({ rawModelOutput: cached.rawModelOutput, modelUsed: cached.modelUsed }), ttlSeconds);
+  }
   return { data: parsed.data, modelUsed: cached.modelUsed };
 }
 

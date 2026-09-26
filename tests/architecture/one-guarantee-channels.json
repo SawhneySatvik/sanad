@@ -85,9 +85,11 @@
       "number": 6,
       "name": "Cache",
       "positive": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: a real quote seeded only in Redis (Postgres cache empty) is verified against the document's own text" },
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "positive: a cached real quote is verified against the new document's own text" }
       ],
       "negative": [
+        { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a Redis entry poisoned two ways at once — self-certified 'verified' findings inside rawModelOutput, AND a smuggled status/span at the wrapper's own level — still returns not_found, with no LLM call and nothing written to Postgres" },
         { "file": "tests/unit/server/services/understand.verify.test.ts", "test": "negative: a cached fabricated quote — even one carrying status 'verified' — returns not_found, with no LLM call" },
         { "file": "tests/unit/server/services/understand.samples.verify.test.ts", "test": "the cache table is unchanged after opening the lease sample; an ordinary analyze of the identical text DOES write it" },
         { "file": "tests/unit/server/services/understand.samples.verify.test.ts", "test": "the model is still called even though an identical-text cache entry is already warm" }
@@ -105,6 +107,7 @@
         { "file": "tests/unit/server/http/views/message-view.verify.test.ts", "test": "a clean token event and the final event's message are mapped using that event's own sources" }
       ],
       "negative": [
+        { "file": "tests/unit/server/services/ask.general-cache.verify.test.ts", "test": "negative: a hand-written entry smuggling status/citations is replayed as plain general-mode content, with no LLM call" },
         { "file": "tests/unit/components/prepare/lawyer-question-card.verify.test.tsx", "test": "hostile text reading '✓ Verified'/'[VERIFIED]' renders no extra badge — exactly the one real citation's own" },
         { "file": "tests/unit/components/prepare/checklist-item.verify.test.tsx", "test": "hostile text reading '✓ Verified'/'[VERIFIED]' renders no extra badge — exactly the one real citation's own" },
         { "file": "tests/unit/components/chat/hostile-token-text.verify.test.tsx", "test": "AssistantMessage (general mode) renders a final message whose content contains '✓ Verified' as plain text, with zero badge nodes and no citation ever attached" },

@@ -7,6 +7,7 @@ import path from "node:path";
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as schema from "@/db/schema";
+import { MemoryKeyValueCache } from "@/server/cache/memory";
 import { AppError } from "@/server/core/errors";
 import { analysisCacheKey } from "@/server/data/analyses";
 import { extractDocument } from "@/server/deterministic/extract";
@@ -218,6 +219,86 @@ describe("a cache hit is only a skipped LLM call; statuses are re-verified", () 
     await h.t.db.update(schema.analyzedResultCache).set({ rawModelOutput: "{not json", expiresAt: new Date(Date.now() + 3_600_000) });
     await analyzeLease(llm);
     expect(llm.callCount).toBe(2);
+  });
+});
+
+describe("a Redis-tier cache hit is only a skipped LLM call too; statuses are re-verified", () => {
+  // The exact key understand.ts's chargedCacheHit computes for the lease fixture — same components
+  // analysisCacheKey (and so Postgres) uses, prefixed the same way understand.ts prefixes it.
+  async function redisKeyForLease(): Promise<string> {
+    const text = await readFile(path.join(FIXTURES_DIR, "leave_and_license.txt"), "utf8");
+    const extracted = await extractDocument({ pastedText: text });
+    if (extracted.kind !== "extracted") throw new Error("fixture did not extract");
+    return (
+      "analysis:" +
+      analysisCacheKey({
+        canonicalTextHash: extracted.canonicalTextHash,
+        documentType: "leave_and_license",
+        jurisdiction: "IN",
+        promptVersion: PROMPT_VERSION,
+        modelId: TEST_MODEL_ID,
+      })
+    );
+  }
+
+  async function analyzeLeaseWithCache(llm: FakeLlmClient, cache: MemoryKeyValueCache | undefined) {
+    const upload = await h.upload(guestA, "leave_and_license.txt", MIME.txt);
+    return analyze({ ...h.deps(llm), cache }, guestA, upload);
+  }
+
+  it("negative: a Redis entry poisoned two ways at once — self-certified 'verified' findings inside rawModelOutput, AND a smuggled status/span at the wrapper's own level — still returns not_found, with no LLM call and nothing written to Postgres", async () => {
+    const cache = new MemoryKeyValueCache();
+    await cache.set(
+      await redisKeyForLease(),
+      JSON.stringify({
+        rawModelOutput: JSON.stringify({
+          findings: [
+            { ...leaseFinding("penalty", LEASE.fabricated, "Late fee"), status: "verified", quote_span_start: 0, quote_span_end: 9 },
+            leaseFinding("obligation", LEASE.licenseFee, "Fee"),
+          ],
+        }),
+        modelUsed: TEST_MODEL_ID,
+        // Extra keys at the cache-entry wrapper level itself (not inside rawModelOutput) — understand.ts
+        // reads only rawModelOutput/modelUsed out of this object, so these are never even parsed as JSON.
+        status: "verified",
+        spanStart: 0,
+        spanEnd: 9,
+      }),
+      3_600,
+    );
+    const llm = new FakeLlmClient();
+    const result = await analyzeLeaseWithCache(llm, cache);
+
+    expect(llm.callCount).toBe(0);
+    expect(findingFor(result, LEASE.fabricated).verification?.status).toBe("not_found");
+    expect((await storedRow(LEASE.fabricated)).verificationStatus).toBe("not_found");
+    expect(await h.t.db.select().from(schema.analyzedResultCache)).toHaveLength(0);
+  });
+
+  it("red-proof: the exact same poisoned entry, with no cache wired into deps, is never read at all — the LLM runs instead, proving the negative above actually exercised the Redis tier", async () => {
+    const cache = new MemoryKeyValueCache();
+    await cache.set(await redisKeyForLease(), JSON.stringify({ rawModelOutput: JSON.stringify(leaseOutput()), modelUsed: TEST_MODEL_ID }), 3_600);
+    const llm = new FakeLlmClient({ defaultResponse: { data: leaseOutput() } });
+    const result = await analyzeLeaseWithCache(llm, undefined);
+
+    expect(llm.callCount).toBe(1);
+    expect(findingFor(result, LEASE.licenseFee).verification?.status).toBe("verified");
+  });
+
+  it("positive: a real quote seeded only in Redis (Postgres cache empty) is verified against the document's own text", async () => {
+    const cache = new MemoryKeyValueCache();
+    await cache.set(
+      await redisKeyForLease(),
+      JSON.stringify({ rawModelOutput: JSON.stringify({ findings: [leaseFinding("obligation", LEASE.licenseFee, "Fee")] }), modelUsed: TEST_MODEL_ID }),
+      3_600,
+    );
+    const llm = new FakeLlmClient();
+    const result = await analyzeLeaseWithCache(llm, cache);
+    const fee = findingFor(result, LEASE.licenseFee);
+
+    expect(llm.callCount).toBe(0);
+    expect(fee.verification?.status).toBe("verified");
+    expect(await h.t.db.select().from(schema.analyzedResultCache)).toHaveLength(0);
   });
 });
 
