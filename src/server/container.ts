@@ -8,10 +8,12 @@
  */
 
 import { getDb, type Db } from "@/db/client";
+import { createCacheFromEnv } from "@/server/cache";
+import type { KeyValueCache } from "@/server/cache/types";
 import { ConfigError, optionalEnv, requireEnv } from "@/server/core/env";
 import type { Principal } from "@/server/core/types";
 import { canAccess } from "@/server/data/access";
-import type { AuthenticateUser } from "@/server/http/principal";
+import { accountUserFromCookie, type AuthenticateUser } from "@/server/http/principal";
 import { tiersOf } from "@/server/llm/fallback";
 import { GeminiLlmClient } from "@/server/llm/gemini";
 import { createGeminiClient, createGemmaClient, geminiModelId } from "@/server/llm/providers";
@@ -31,9 +33,17 @@ export interface ServiceDeps {
   storage: StorageAdapter;
   llm: LlmClient;
   modelId: string;
+  // The same normalized (or UNKNOWN_CLIENT_IP) client IP forRequest was called with — for a service
+  // that must charge its own IP-keyed bucket outside the LLM tiers below (auth.signIn/signUp's
+  // rate-limit-specific buckets), never read any other way.
+  clientIp: string;
   // Charges one LLM call to the same caller tiers, limits and clock as `llm`, without making one —
   // for a result served in place of a model call, which must cost exactly what the call would.
   chargeLlmCall(): Promise<void>;
+  // Absent (no `cache` thunk on ContainerOptions) means every cache-reading service call treats it
+  // as off, exactly as before this existed — never defaulted to a memory cache here, or a container
+  // built for one test (no chat-cache assertions of its own) would silently start caching for it.
+  cache?: KeyValueCache;
 }
 
 /** The primary and secondary LLM clients a container wires up. */
@@ -69,6 +79,10 @@ export interface ContainerOptions {
   primaryModelId: string;
   authenticateUser?: AuthenticateUser;
   rateLimits?: RateLimitOverrides;
+  // Optional, like the others above: absent means no cache tier at all (see ServiceDeps.cache), not
+  // a silent default. A test that wants to exercise caching installs its own, e.g. `() => new
+  // MemoryKeyValueCache()`.
+  cache?: () => KeyValueCache;
 }
 
 /** Whether the providers and storage adapter can be built, by building them. */
@@ -124,6 +138,9 @@ export function createContainer(options: ContainerOptions): Container {
     return built;
   });
   const localStorageSigningSecret = once(options.localStorageSigningSecret);
+  // Built once per container (never per request) — an L1 memory tier does nothing if a fresh one
+  // is handed out on every call.
+  const cache = options.cache ? once(options.cache) : undefined;
 
   return {
     db,
@@ -174,6 +191,8 @@ export function createContainer(options: ContainerOptions): Container {
         },
         modelId: primaryModelId,
         chargeLlmCall: () => chargeCallerLimits(caller),
+        cache: cache?.(),
+        clientIp,
       };
     },
     configStatus: () => ({
@@ -220,6 +239,11 @@ export function productionContainerOptions(db: Db): ContainerOptions {
     llm: () => ({ primary: createGeminiClient(), secondary: createGemmaClient() }),
     localStorageSigningSecret,
     primaryModelId: geminiModelId(),
+    cache: () => createCacheFromEnv(),
+    // Real identity, once a real sign-in has minted the account-session cookie: a pure signature
+    // check over the request's own cookie, never a network round-trip — Supabase itself was already
+    // verified once, at sign-in time (server/auth/supabase-auth.ts).
+    authenticateUser: async (req) => accountUserFromCookie(req),
   };
 }
 

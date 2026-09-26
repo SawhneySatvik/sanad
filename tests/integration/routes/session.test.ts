@@ -157,7 +157,7 @@ describe("POST /api/auth/dev-sign-in's wire body — the real route, not just th
 
     const rawText = await res.text();
     const body = JSON.parse(rawText);
-    expect(Object.keys(body).sort()).toEqual(["displayName", "guestTtlHours", "kind", "signInAvailable"]);
+    expect(Object.keys(body).sort()).toEqual(["displayName", "guestTtlHours", "kind", "signInAvailable", "signInMethod"]);
 
     const userId = devUserCookieOf(res)!.split(";")[0].split("=")[1].split(".")[0];
     expect(userId.length).toBeGreaterThan(0);

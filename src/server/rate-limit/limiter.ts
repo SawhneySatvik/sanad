@@ -1,10 +1,11 @@
 /**
  * Three-tier rate limiter: per-principal, per-IP (hashed) and global-per-provider buckets, each an
  * atomic `INSERT ... ON CONFLICT ... RETURNING`, never wrapped in a transaction and never spanning
- * an LLM call. Fixed-minute windows (plus fixed UTC-day windows for the daily LLM-call caps), keyed
- * by an injectable `Clock` rather than `Date.now()` directly, so window-rollover is deterministic in
- * tests — this lets a caller achieve up to ~2x the nominal limit by timing requests across a window
- * boundary, an accepted property at this project's scale.
+ * an LLM call. Fixed-minute windows (plus fixed UTC-hour windows for the auth-specific buckets and
+ * fixed UTC-day windows for the daily LLM-call caps), keyed by an injectable `Clock` rather than
+ * `Date.now()` directly, so window-rollover is deterministic in tests — this lets a caller achieve
+ * up to ~2x the nominal limit by timing requests across a window boundary, an accepted property at
+ * this project's scale.
  */
 
 import { sql, lt } from "drizzle-orm";
@@ -14,7 +15,7 @@ import { AppError, safeMessageFor } from "@/server/core/errors";
 import { ConfigError, optionalEnv } from "@/server/core/env";
 import type { Principal } from "@/server/core/types";
 import { normalizeIp, UNKNOWN_CLIENT_IP } from "./client-ip";
-import { hashIp } from "./ip-hash";
+import { hashAuthEmail, hashIp } from "./ip-hash";
 
 /** Time source every limiter check goes through, so window-rollover is deterministic in tests. */
 export interface Clock {
@@ -35,7 +36,13 @@ function dayKeyFor(now: Date): string {
   return now.toISOString().slice(0, 10);
 }
 
+// "2026-09-23T10": the UTC hour — coarser than windowKeyFor's minute, finer than dayKeyFor's day.
+function hourKeyFor(now: Date): string {
+  return now.toISOString().slice(0, 13);
+}
+
 const MINUTE_MS = 60_000;
+const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * 60 * MINUTE_MS;
 
 function secondsUntilNext(windowMs: number, now: Date): number {
@@ -58,6 +65,22 @@ function principalDailyKeyFor(principal: Principal): string {
 function ipHashFor(ip: string): string {
   const normalized = normalizeIp(ip);
   return hashIp(normalized.ok ? normalized.value : UNKNOWN_CLIENT_IP);
+}
+
+// Own key prefixes (not just a distinct window shape) so a request-count bucket never shares a row
+// with the generic per-IP/per-principal tiers every other route pays — a credential-stuffing script
+// against sign-in/sign-up is throttled well below the generic tier, on its own budget.
+function authIpMinuteKeyFor(ip: string): string {
+  return `authip:${ipHashFor(ip)}`;
+}
+function authIpHourKeyFor(ip: string): string {
+  return `authip-hour:${ipHashFor(ip)}`;
+}
+function authEmailMinuteKeyFor(email: string): string {
+  return `authemail:${hashAuthEmail(email)}`;
+}
+function authEmailHourKeyFor(email: string): string {
+  return `authemail-hour:${hashAuthEmail(email)}`;
 }
 
 async function incrementPrincipalBucket(db: Db, principalKey: string, windowKey: string): Promise<number> {
@@ -154,6 +177,17 @@ export const DEFAULT_PRINCIPAL_DAILY_LIMIT = Math.floor(PRIMARY_MODEL_REQUESTS_P
 export const DEFAULT_IP_DAILY_LIMIT = DEFAULT_PRINCIPAL_DAILY_LIMIT * 2;
 
 /**
+ * Sign-in/sign-up-specific limits, charged before any Supabase call and independent of every other
+ * tier above: a credential-stuffing script rotating IPs is capped by the email bucket, one rotating
+ * emails against one IP is capped by the IP bucket, and either working slowly enough to dodge the
+ * per-minute cap still hits the per-hour one.
+ */
+export const DEFAULT_AUTH_IP_PER_MINUTE = 5;
+export const DEFAULT_AUTH_IP_PER_HOUR = 20;
+export const DEFAULT_AUTH_EMAIL_PER_MINUTE = 5;
+export const DEFAULT_AUTH_EMAIL_PER_HOUR = 20;
+
+/**
  * Which shared quota a global bucket counts against. Two keys can point at the same underlying
  * provider account (gemini/gemini_fallback/gemma_google all use GEMINI_API_KEY) when the provider
  * meters them as separate per-model quotas — this type tracks quota pools, not provider companies.
@@ -235,6 +269,19 @@ function resolveIpLimit(override?: number): number {
 
 function resolveGlobalLimit(providerKey: ProviderKey, override?: number): number {
   return resolveLimit(GLOBAL_LIMIT_ENV_VAR[providerKey], DEFAULT_GLOBAL_LIMIT[providerKey], override);
+}
+
+function resolveAuthIpMinuteLimit(override?: number): number {
+  return resolveLimit("RATE_LIMIT_AUTH_IP_PER_MINUTE", DEFAULT_AUTH_IP_PER_MINUTE, override);
+}
+function resolveAuthIpHourLimit(override?: number): number {
+  return resolveLimit("RATE_LIMIT_AUTH_IP_PER_HOUR", DEFAULT_AUTH_IP_PER_HOUR, override);
+}
+function resolveAuthEmailMinuteLimit(override?: number): number {
+  return resolveLimit("RATE_LIMIT_AUTH_EMAIL_PER_MINUTE", DEFAULT_AUTH_EMAIL_PER_MINUTE, override);
+}
+function resolveAuthEmailHourLimit(override?: number): number {
+  return resolveLimit("RATE_LIMIT_AUTH_EMAIL_PER_HOUR", DEFAULT_AUTH_EMAIL_PER_HOUR, override);
 }
 
 /** The outcome of one rate-limit check. */
@@ -355,6 +402,80 @@ export async function checkIpLlmDailyLimit(db: Db, ip: string, opts: IpLimitOpti
 /** Throws RATE_LIMITED, retryable at the next UTC midnight, when the IP is over its daily LLM-call cap. */
 export async function enforceIpLlmDailyLimit(db: Db, ip: string, opts: IpLimitOptions = {}): Promise<LimitResult> {
   return enforce(await checkIpLlmDailyLimit(db, ip, opts));
+}
+
+/** Increments and checks the sign-in/sign-up IP bucket (per minute) without throwing — its own tier, separate from the generic per-request IP limit every route pays. */
+export async function checkAuthIpLimit(db: Db, ip: string, opts: IpLimitOptions = {}): Promise<LimitResult> {
+  const limit = resolveAuthIpMinuteLimit(opts.limit);
+  const now = (opts.clock ?? systemClock).now();
+  const count = await incrementIpBucket(db, authIpMinuteKeyFor(ip), windowKeyFor(now));
+  return buildResult(count, limit, MINUTE_MS, now);
+}
+
+/** Throws RATE_LIMITED when the IP is over its per-minute sign-in/sign-up limit. */
+export async function enforceAuthIpLimit(db: Db, ip: string, opts: IpLimitOptions = {}): Promise<LimitResult> {
+  return enforce(await checkAuthIpLimit(db, ip, opts));
+}
+
+/** Increments and checks the sign-in/sign-up IP bucket (per hour) without throwing. */
+export async function checkAuthIpHourlyLimit(db: Db, ip: string, opts: IpLimitOptions = {}): Promise<LimitResult> {
+  const limit = resolveAuthIpHourLimit(opts.limit);
+  const now = (opts.clock ?? systemClock).now();
+  const count = await incrementIpBucket(db, authIpHourKeyFor(ip), hourKeyFor(now));
+  return buildResult(count, limit, HOUR_MS, now);
+}
+
+/** Throws RATE_LIMITED when the IP is over its hourly sign-in/sign-up limit. */
+export async function enforceAuthIpHourlyLimit(db: Db, ip: string, opts: IpLimitOptions = {}): Promise<LimitResult> {
+  return enforce(await checkAuthIpHourlyLimit(db, ip, opts));
+}
+
+/** Increments and checks the sign-in/sign-up per-email bucket (per minute) without throwing — keyed by HMAC(RATE_LIMIT_IP_HASH_SECRET, lowercased email), never the raw email. */
+export async function checkAuthEmailLimit(db: Db, email: string, opts: PrincipalLimitOptions = {}): Promise<LimitResult> {
+  const limit = resolveAuthEmailMinuteLimit(opts.limit);
+  const now = (opts.clock ?? systemClock).now();
+  const count = await incrementPrincipalBucket(db, authEmailMinuteKeyFor(email), windowKeyFor(now));
+  return buildResult(count, limit, MINUTE_MS, now);
+}
+
+/** Throws RATE_LIMITED when the email is over its per-minute sign-in/sign-up limit. */
+export async function enforceAuthEmailLimit(db: Db, email: string, opts: PrincipalLimitOptions = {}): Promise<LimitResult> {
+  return enforce(await checkAuthEmailLimit(db, email, opts));
+}
+
+/** Increments and checks the sign-in/sign-up per-email bucket (per hour) without throwing. */
+export async function checkAuthEmailHourlyLimit(db: Db, email: string, opts: PrincipalLimitOptions = {}): Promise<LimitResult> {
+  const limit = resolveAuthEmailHourLimit(opts.limit);
+  const now = (opts.clock ?? systemClock).now();
+  const count = await incrementPrincipalBucket(db, authEmailHourKeyFor(email), hourKeyFor(now));
+  return buildResult(count, limit, HOUR_MS, now);
+}
+
+/** Throws RATE_LIMITED when the email is over its hourly sign-in/sign-up limit. */
+export async function enforceAuthEmailHourlyLimit(db: Db, email: string, opts: PrincipalLimitOptions = {}): Promise<LimitResult> {
+  return enforce(await checkAuthEmailHourlyLimit(db, email, opts));
+}
+
+/** Overrides for enforceAuthRateLimits's four buckets; unset means the env var or the built-in default. */
+export interface AuthRateLimitOptions {
+  ipPerMinute?: number;
+  ipPerHour?: number;
+  emailPerMinute?: number;
+  emailPerHour?: number;
+  clock?: Clock;
+}
+
+/**
+ * Charges the sign-in/sign-up-specific IP and email buckets, IP before email, each its own atomic
+ * increment — called once per attempt, before any Supabase call. IP first means a request already
+ * over its own IP budget never also charges (and can't help exhaust) an innocent victim's email
+ * bucket.
+ */
+export async function enforceAuthRateLimits(db: Db, ip: string, email: string, opts: AuthRateLimitOptions = {}): Promise<void> {
+  await enforceAuthIpLimit(db, ip, { limit: opts.ipPerMinute, clock: opts.clock });
+  await enforceAuthIpHourlyLimit(db, ip, { limit: opts.ipPerHour, clock: opts.clock });
+  await enforceAuthEmailLimit(db, email, { limit: opts.emailPerMinute, clock: opts.clock });
+  await enforceAuthEmailHourlyLimit(db, email, { limit: opts.emailPerHour, clock: opts.clock });
 }
 
 /** Options for a per-provider global limit check: an override limit and/or clock, for tests. */

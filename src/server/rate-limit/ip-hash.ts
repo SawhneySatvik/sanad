@@ -3,6 +3,10 @@
  * mirrors the guest-session secret's own handling (same >=32-byte / non-whitespace floor, same
  * dev-ephemeral-fallback-with-one-time-warning / prod-throws split), reimplemented against its own
  * env var so rotating one secret never silently resets the other's hashed keys.
+ *
+ * The same primitive also keys the auth-specific per-email rate-limit bucket (limiter.ts): an email
+ * address and an IP address never take the same shape, so the two hashed-key spaces can't collide,
+ * and reusing this secret means the per-email bucket needs no env var of its own.
  */
 
 import { createHmac, randomBytes } from "node:crypto";
@@ -59,10 +63,19 @@ function resolveIpHashSecret(): Buffer {
   return ephemeralSecret;
 }
 
+function hmac(value: string): string {
+  return createHmac("sha256", resolveIpHashSecret()).update(value).digest("base64url");
+}
+
 /**
  * Deterministic for a given process's secret — the same input IP always yields the same output key,
  * so a repeat visitor's bucket accumulates correctly — but never reversible to the raw IP.
  */
 export function hashIp(ip: string): string {
-  return createHmac("sha256", resolveIpHashSecret()).update(ip).digest("base64url");
+  return hmac(ip);
+}
+
+/** Deterministic for a given process's secret; the email is lowercased first so "Asha@x.com" and "asha@x.com" share one bucket. Never reversible to the raw email. */
+export function hashAuthEmail(email: string): string {
+  return hmac(email.toLowerCase());
 }

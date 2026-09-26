@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createGuestSession, guestSessionCookie } from "@/server/auth/session";
-import { devUserFromCookie, guestFromCookie, serializeCookie } from "@/server/http/principal";
+import { accountUserFromCookie, devUserFromCookie, guestFromCookie, serializeCookie } from "@/server/http/principal";
 
 /**
  * Mints the guest session on the first page load, before the page makes any API call. Left to the
@@ -9,7 +9,7 @@ import { devUserFromCookie, guestFromCookie, serializeCookie } from "@/server/ht
  */
 export function proxy(request: NextRequest) {
   const response = NextResponse.next();
-  if (guestFromCookie(request) || devUserFromCookie(request)) return response;
+  if (guestFromCookie(request) || devUserFromCookie(request) || accountUserFromCookie(request)) return response;
   const session = createGuestSession();
   response.headers.append("set-cookie", serializeCookie(guestSessionCookie(session.cookieValue)));
   return response;

@@ -22,5 +22,9 @@ export const SessionOutput = z.object({
   displayName: z.string().optional(),
   signInAvailable: z.boolean(),
   guestTtlHours: z.number().positive(),
+  // Which form the sign-in page should show: the dev "Name" form, the real email/password form, or
+  // neither. Optional (not just nullable) so every existing fixture that predates this field still
+  // parses — the server itself always populates it.
+  signInMethod: z.enum(["dev", "email"]).nullable().optional(),
 });
 export type SessionOutput = z.infer<typeof SessionOutput>;

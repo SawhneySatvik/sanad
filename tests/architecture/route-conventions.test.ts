@@ -19,6 +19,8 @@ import {
   ROUTES_ROOT,
   USER_SESSION_CLEAR_ROUTE,
   USER_SESSION_SET_ROUTE,
+  USER_SESSION_SIGN_IN_ROUTE,
+  USER_SESSION_SIGN_UP_ROUTE,
   VERIFICATION_MAPPER,
   VIEWS_ROOT,
   ZERO_SERVICE_ROUTES,
@@ -346,6 +348,33 @@ export const DELETE = route({ ${flags} usesLlm: false, response: DeleteAllOutput
   });
 });
 
+describe("sign-in/sign-up guest-cookie opt-in", () => {
+  const signInRoute = (flags: string) => `import { route } from "@/server/http/handler";
+import * as auth from "@/server/services/auth";
+import { SignInInput } from "@/shared/contracts/auth";
+import { SessionOutput } from "@/shared/contracts/session";
+export const POST = route({
+  body: SignInInput,
+  usesLlm: false,
+  userSession: "set-account",
+  ${flags}
+  response: SessionOutput,
+  run: ({ deps, principal, body }) => auth.signIn(deps, principal, body),
+});
+`;
+  const violation = `only ${CLAIM_ROUTE} may opt into claimSession / clearsGuestSession`;
+
+  it("permits clearsGuestSession on sign-in and sign-up, alongside userSession: set-account", () => {
+    expect(checkRouteSource(USER_SESSION_SIGN_IN_ROUTE, signInRoute("clearsGuestSession: true,"))).toEqual([]);
+    expect(checkRouteSource(USER_SESSION_SIGN_UP_ROUTE, signInRoute("clearsGuestSession: true,"))).toEqual([]);
+  });
+
+  it("still flags clearsGuestSession anywhere else, and claimSession nowhere but the claim route", () => {
+    expect(checkRouteSource("src/app/api/projects/route.ts", signInRoute("clearsGuestSession: true,"))).toContain(violation);
+    expect(checkRouteSource(USER_SESSION_SIGN_IN_ROUTE, signInRoute("claimSession: true,"))).toContain(violation);
+  });
+});
+
 describe("userSession opt-ins are confined to dev-sign-in (set) and sign-out (clear)", () => {
   const sessionRoute = (userSession: string) => `import { route } from "@/server/http/handler";
 import * as session from "@/server/services/session";
@@ -364,6 +393,11 @@ export const POST = route({
 
   it("passes sign-out's own shape at its own path (positive control)", () => {
     expect(checkRouteSource(USER_SESSION_CLEAR_ROUTE, sessionRoute('"clear"'))).toEqual([]);
+  });
+
+  it("passes sign-in's and sign-up's own set-account shape at their own paths (positive control)", () => {
+    expect(checkRouteSource(USER_SESSION_SIGN_IN_ROUTE, sessionRoute('"set-account"'))).toEqual([]);
+    expect(checkRouteSource(USER_SESSION_SIGN_UP_ROUTE, sessionRoute('"set-account"'))).toEqual([]);
   });
 
   it("flags the same source anywhere else", () => {

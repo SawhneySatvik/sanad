@@ -39,6 +39,7 @@ describe("getSession", () => {
       displayName: "Asha Verma",
       signInAvailable: true,
       guestTtlHours: DOCUMENT_GUEST_TTL_SECONDS / 3600,
+      signInMethod: "dev",
     });
   });
 
@@ -55,6 +56,7 @@ describe("signOut", () => {
       kind: "guest",
       signInAvailable: true,
       guestTtlHours: DOCUMENT_GUEST_TTL_SECONDS / 3600,
+      signInMethod: "dev",
     });
   });
 

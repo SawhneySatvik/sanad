@@ -41,6 +41,9 @@ const FIXED_MESSAGE_BY_CODE = {
   SCHEMA_FAILED: "The response from an upstream service was malformed.",
   INTERNAL_ERROR: "Something went wrong. Please try again.",
   FORBIDDEN: "This request is not allowed.",
+  INVALID_CREDENTIALS: "Email or password is incorrect.",
+  EMAIL_IN_USE: "We couldn't create an account with those details. If you already have one, sign in instead.",
+  EMAIL_CONFIRMATION_REQUIRED: "Check your email to confirm your account, then sign in.",
 } as const;
 
 const passthroughFor =
@@ -73,6 +76,9 @@ const COPY_BY_CODE: Record<CanonicalErrorCode, CopyFn> = {
   RATE_LIMITED: rateLimited,
   UPSTREAM_UNAVAILABLE: upstreamUnavailable,
   OFFLINE: () => OFFLINE_MESSAGE,
+  INVALID_CREDENTIALS: passthroughFor("INVALID_CREDENTIALS"),
+  EMAIL_IN_USE: passthroughFor("EMAIL_IN_USE"),
+  EMAIL_CONFIRMATION_REQUIRED: passthroughFor("EMAIL_CONFIRMATION_REQUIRED"),
 };
 
 export function canonicalErrorMessage(code: CanonicalErrorCode, input: CanonicalCopyInput = {}): string {

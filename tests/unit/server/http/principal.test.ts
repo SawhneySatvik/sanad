@@ -7,8 +7,11 @@ import {
   readDevUserSession,
 } from "@/server/auth/dev-session";
 import { createGuestSession, GUEST_SESSION_COOKIE_NAME, guestSessionCookie } from "@/server/auth/session";
+import { readUserSession, USER_SESSION_COOKIE_NAME } from "@/server/auth/user-session";
 import {
+  clearedAccountSessionCookie,
   clearedUserSessionCookie,
+  mintedAccountSessionCookie,
   mintedUserSessionCookie,
   readCookie,
   resolveRequestPrincipal,
@@ -180,6 +183,31 @@ describe("mintedUserSessionCookie / clearedUserSessionCookie", () => {
 
   it("clears with Max-Age=0 and no value", () => {
     expect(clearedUserSessionCookie()).toBe(`${DEV_USER_SESSION_COOKIE_NAME}=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax`);
+  });
+});
+
+describe("mintedAccountSessionCookie / clearedAccountSessionCookie", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("mints a cookie readUserSession accepts, naming the given userId", () => {
+    vi.stubEnv("USER_SESSION_SECRET", "a".repeat(32));
+    const userId = "d1d1d1d1-0000-4000-8000-0000000000d1";
+
+    const cookie = mintedAccountSessionCookie(userId);
+
+    expect(cookie).toMatch(new RegExp(`^${USER_SESSION_COOKIE_NAME}=${userId}\\.`));
+    const value = cookie.split(";")[0].split("=").slice(1).join("=");
+    expect(readUserSession(value)).toBe(userId);
+  });
+
+  it("throws (never silently mints an unusable cookie) when USER_SESSION_SECRET isn't configured", () => {
+    expect(() => mintedAccountSessionCookie("d1d1d1d1-0000-4000-8000-0000000000d1")).toThrow();
+  });
+
+  it("clears with Max-Age=0 and no value", () => {
+    expect(clearedAccountSessionCookie()).toBe(`${USER_SESSION_COOKIE_NAME}=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax`);
   });
 });
 

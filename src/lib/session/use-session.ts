@@ -43,3 +43,9 @@ export function sessionSignInAvailable(session: UseQueryResult<SessionOutput>): 
   if (session.isError) return false;
   return session.data?.signInAvailable ?? false;
 }
+
+/** Which sign-in form the client should show, mirroring sessionSignInAvailable's own "error reads as unavailable" rule. */
+export function sessionSignInMethod(session: UseQueryResult<SessionOutput>): "dev" | "email" | null {
+  if (session.isError) return null;
+  return session.data?.signInMethod ?? null;
+}

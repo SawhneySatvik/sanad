@@ -10,6 +10,9 @@ export const APP_ERROR_CODES = [
   "INVALID_DOCUMENT",
   "EXTRACTION_FAILED",
   "SCHEMA_FAILED",
+  "INVALID_CREDENTIALS",
+  "EMAIL_IN_USE",
+  "EMAIL_CONFIRMATION_REQUIRED",
 ] as const;
 
 /** One of APP_ERROR_CODES. */
@@ -61,6 +64,12 @@ const HTTP_STATUS_BY_CODE: Record<AppErrorCode, number> = {
   INVALID_DOCUMENT: 422,
   EXTRACTION_FAILED: 422,
   SCHEMA_FAILED: 502,
+  INVALID_CREDENTIALS: 401,
+  // Same status as INVALID_CREDENTIALS — with email confirmation off, Supabase's own response body
+  // already distinguishes "already registered" from "wrong password," so the status code must not
+  // become a second, cheaper oracle for the same thing.
+  EMAIL_IN_USE: 401,
+  EMAIL_CONFIRMATION_REQUIRED: 403,
 };
 
 /** HTTP status to respond with for a given AppErrorCode. */
@@ -80,6 +89,9 @@ const SAFE_MESSAGE_BY_CODE: Record<AppErrorCode, string> = {
   INVALID_DOCUMENT: "The uploaded document could not be processed.",
   EXTRACTION_FAILED: "The document's text could not be extracted.",
   SCHEMA_FAILED: "The response from an upstream service was malformed.",
+  INVALID_CREDENTIALS: "Email or password is incorrect.",
+  EMAIL_IN_USE: "We couldn't create an account with those details. If you already have one, sign in instead.",
+  EMAIL_CONFIRMATION_REQUIRED: "Check your email to confirm your account, then sign in.",
 };
 
 /** The fixed, safe message to show the user for a given AppErrorCode; never leaks `Error#message`/stack. */

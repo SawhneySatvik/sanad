@@ -15,9 +15,17 @@ import { AppError, notFound, safeMessageFor, type AppErrorCode } from "@/server/
 import type { Principal } from "@/server/core/types";
 import { clientIpFromHeaders, UNKNOWN_CLIENT_IP } from "@/server/rate-limit/client-ip";
 import { enforceIpLimit } from "@/server/rate-limit/limiter";
+import { ifNoneMatchSatisfied, type ConditionalCache } from "./conditional-cache";
 import { crossSiteRefusal, errorResponse, logRequestError, mapError, type RequestLogContext } from "./errors";
 import { clearedGuestSessionCookie, type ClaimSession } from "./claim-session";
-import { clearedUserSessionCookie, guestFromCookie, mintedUserSessionCookie, resolveRequestPrincipal } from "./principal";
+import {
+  clearedAccountSessionCookie,
+  clearedUserSessionCookie,
+  guestFromCookie,
+  mintedAccountSessionCookie,
+  mintedUserSessionCookie,
+  resolveRequestPrincipal,
+} from "./principal";
 import { securityHeaders } from "./security-headers";
 import { eventStreamResponse } from "./sse";
 import { toWire } from "./wire";
@@ -66,17 +74,24 @@ interface RouteSpecBase<P, Q, B> {
  *
  * `userSession: "set"` signs a fresh dev user-session cookie from `run()`'s result (which must then
  * carry a `userId: string` alongside its declared response shape — `toWire` strips it before the
- * client sees it); `"clear"` drops that cookie. Either way the cookie is appended only once `run()`
- * and the response contract have both succeeded — the same guarantee `clearsGuestSession` gets, and
- * independent of it: a route may mint a fresh guest cookie (via principal resolution) and set/clear
- * the user cookie in the very same response.
+ * client sees it); `"set-account"` does the same for the real (Supabase-verified) account-session
+ * cookie instead. `"clear"` drops BOTH cookies at once — sign-out doesn't know which kind a given
+ * caller signed in with. Either way the cookie is appended only once `run()` and the response
+ * contract have both succeeded — the same guarantee `clearsGuestSession` gets, and independent of
+ * it: a route may mint a fresh guest cookie (via principal resolution) and set/clear the user
+ * cookie in the very same response.
  */
 export interface JsonRouteSpec<P, Q, B> extends RouteSpecBase<P, Q, B> {
   response: z.ZodType;
   run(args: RunArgs<P, Q, B>): Promise<unknown>;
   claimSession?: never;
   clearsGuestSession?: boolean;
-  userSession?: "set" | "clear";
+  userSession?: "set" | "set-account" | "clear";
+  // Conditional-GET for a response that's immutable once access is granted: derived from run()'s own
+  // result, so it only ever runs after that result's repository read has already thrown for a
+  // missing/foreign id — an ETag is handed out post-authorization, never before. Replaces the
+  // default `no-store` with the returned Cache-Control, and 304s a matching If-None-Match.
+  cache?(result: unknown): ConditionalCache | null;
 }
 
 export interface NoContentRouteSpec<P, Q, B> extends RouteSpecBase<P, Q, B> {
@@ -210,7 +225,7 @@ async function handle(req: Request, ctx: RouteContext, spec: AnyRouteSpec): Prom
   const log: RequestLogContext = { correlationId: randomUUID(), method: req.method, path: url.pathname };
   let setCookie: string | null = null;
   let clearGuestSession = false;
-  let userSessionCookie: string | null = null;
+  let userSessionCookies: string[] = [];
   let response: Response;
   try {
     if (isCrossSiteStateChange(req)) {
@@ -252,12 +267,22 @@ async function handle(req: Request, ctx: RouteContext, spec: AnyRouteSpec): Prom
         clearGuestSession = spec.clearsGuestSession === true;
       } else {
         const result = await spec.run(args);
-        response = "status" in spec && spec.status === 204 ? new Response(null, { status: 204 }) : jsonResponse(spec.response!, result);
+        if ("status" in spec && spec.status === 204) {
+          response = new Response(null, { status: 204 });
+        } else {
+          const conditional = "cache" in spec ? (spec.cache?.(result) ?? null) : null;
+          response = conditional && ifNoneMatchSatisfied(req.headers.get("if-none-match"), conditional.etag)
+            ? notModifiedResponse(conditional)
+            : jsonResponse(spec.response!, result, conditional);
+        }
         if ("clearsGuestSession" in spec && spec.clearsGuestSession === true) clearGuestSession = true;
         // Reached only once run and the response contract both succeeded — same guarantee as
         // clearGuestSession above, and independent of it: see JsonRouteSpec's userSession doc.
-        if (spec.userSession === "set") userSessionCookie = mintedUserSessionCookie(userIdFromResult(result));
-        else if (spec.userSession === "clear") userSessionCookie = clearedUserSessionCookie();
+        if (spec.userSession === "set") userSessionCookies = [mintedUserSessionCookie(userIdFromResult(result))];
+        else if (spec.userSession === "set-account") userSessionCookies = [mintedAccountSessionCookie(userIdFromResult(result))];
+        // Clears both cookie kinds unconditionally: sign-out doesn't know (and shouldn't need to
+        // check) whether this caller signed in via the dev cookie or the real account one.
+        else if (spec.userSession === "clear") userSessionCookies = [clearedUserSessionCookie(), clearedAccountSessionCookie()];
       }
     }
   } catch (error) {
@@ -269,7 +294,7 @@ async function handle(req: Request, ctx: RouteContext, spec: AnyRouteSpec): Prom
   if (clearGuestSession) response.headers.append("set-cookie", clearedGuestSessionCookie());
   else if (setCookie) response.headers.append("set-cookie", setCookie);
   // Independent of the guest cookie above: a first-time sign-in may mint both in one response.
-  if (userSessionCookie) response.headers.append("set-cookie", userSessionCookie);
+  for (const cookie of userSessionCookies) response.headers.append("set-cookie", cookie);
   return response;
 }
 
@@ -284,8 +309,17 @@ function userIdFromResult(result: unknown): string {
   return userId;
 }
 
-function jsonResponse(contract: z.ZodType, result: unknown): Response {
-  return Response.json(toWire(contract, result), { headers: { "cache-control": "no-store" } });
+function jsonResponse(contract: z.ZodType, result: unknown, conditional: ConditionalCache | null = null): Response {
+  const headers: Record<string, string> = conditional
+    ? { "cache-control": conditional.cacheControl, etag: conditional.etag, vary: "Cookie" }
+    : { "cache-control": "no-store" };
+  return Response.json(toWire(contract, result), { headers });
+}
+
+// Same headers a 200 for this same resource would carry — a 304 is a claim about those headers, not
+// a different response.
+function notModifiedResponse(conditional: ConditionalCache): Response {
+  return new Response(null, { status: 304, headers: { "cache-control": conditional.cacheControl, etag: conditional.etag, vary: "Cookie" } });
 }
 
 function invalidRequest(): AppError {

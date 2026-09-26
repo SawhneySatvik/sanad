@@ -67,9 +67,11 @@ call the model, which are charged against the per-principal and per-provider lim
 | `POST` | `/api/threads/:id/save-to-project` | `SaveToProjectInput` | `SaveToProjectOutput` | `projects.saveToProject` | user, owner of the thread and the project | |
 | `DELETE` | `/api/me/data` | — | `DeleteAllOutput` `{ deleted: { documents, comparisons, drafts, threads, projects } }` | `library.deleteAll`: everything the principal owns, across all five types; a guest's cookie is cleared after | principal | |
 | `POST` | `/api/auth/claim` | — (derived from the session) | `ClaimResultOutput` | `auth.claimGuestSession`: re-own guest documents, comparisons and drafts, then clear the guest cookie | signed-in user plus guest cookie; called once after sign-in | |
-| `GET` | `/api/session` | — | `SessionOutput` `{ kind, displayName?, signInAvailable, guestTtlHours }` | `session.getSession`: no ids, emails or tokens on the wire | principal | |
-| `POST` | `/api/session/sign-out` | — | `SessionOutput` | `session.signOut`: clears the user-session cookie; a fresh guest session is minted lazily on the next request | principal | |
+| `GET` | `/api/session` | — | `SessionOutput` `{ kind, displayName?, signInAvailable, guestTtlHours, signInMethod }` | `session.getSession`: no ids, emails or tokens on the wire | principal | |
+| `POST` | `/api/session/sign-out` | — | `SessionOutput` | `session.signOut`: clears BOTH the dev and the real account-session cookie (a caller could hold either) | principal | |
 | `POST` | `/api/auth/dev-sign-in` | `DevSignInInput` `{ displayName }` | `SessionOutput` | `session.devSignIn`: dev-only stand-in for a real OAuth sign-in; **404s in production** | principal | |
+| `POST` | `/api/auth/sign-in` | `SignInInput` `{ email, password }` | `SessionOutput` | `auth.signIn`: verifies against Supabase Auth, mints the account-session cookie, claims the caller's guest data; **404s when email sign-in isn't configured** | principal | |
+| `POST` | `/api/auth/sign-up` | `SignUpInput` `{ email, password }` | `SessionOutput` | `auth.signUp`: creates the Supabase account, mints the account-session cookie, claims the caller's guest data; `403 EMAIL_CONFIRMATION_REQUIRED` when Supabase's own "Confirm email" setting means there's no session yet; **404s when email sign-in isn't configured** | principal | |
 | `GET` | `/api/health` | — | `HealthOutput` | builds the providers and storage adapter to check configuration; no LLM call | anyone | |
 | `GET` | `/api/e2e/ping` | — | `HealthOutput` | `e2e.ping`: the e2e harness's own readiness probe; **404s outside `SABOOT_E2E=1`, and that flag is itself refused in production** | anyone, e2e harness only | |
 | `GET` | `/api/e2e/throw` | — | — (always throws) | `e2e.forceThrow`: a deliberate failure for error-boundary tests; same dev/e2e-only refusal as `/api/e2e/ping` | anyone, e2e harness only | |
@@ -233,16 +235,36 @@ An unknown or not-yet-recorded sample id (the Compare sample, `lease_v2`, is def
 `sample_readonly` rather than silently turning a recorded analysis into a live one still labelled
 "recorded."
 
-## Session and dev sign-in
+## Session, dev sign-in and production sign-in
 
 `GET /api/session` returns a client-facing summary only — `kind` (`"guest" | "user"`), an optional
-`displayName`, `signInAvailable` and `guestTtlHours` — never an id, email or token; identity itself
-stays server-side in the signed cookie. `signInAvailable` is `false` in a production build, because
-`POST /api/auth/dev-sign-in` is a **development stand-in for real OAuth**, not a production sign-in
-path: it throws at construction and 404s when `NODE_ENV === "production"`, and a cookie signed with
-its non-production fallback secret is refused by the resolver even if one somehow reached a
-production request. `POST /api/session/sign-out` clears the user-session cookie; a fresh guest
-session is minted lazily on the next principal-resolving request, not by this route itself. Sign-in,
+`displayName`, `signInAvailable`, `guestTtlHours` and `signInMethod` (`"dev" | "email" | null`) —
+never an id, email or token; identity itself stays server-side in a signed cookie. `signInMethod` is
+`"dev"` whenever `POST /api/auth/dev-sign-in` is reachable (outside production, and in the e2e
+harness) — a **development stand-in for real OAuth**, never a production sign-in path: it throws at
+construction and 404s when `NODE_ENV === "production"`, and a cookie signed with its non-production
+fallback secret is refused by the resolver even if one somehow reached a production request. Once
+dev sign-in is refused (production), `signInMethod` is `"email"` when `SUPABASE_PROJECT_URL`,
+`SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_JWKS_URL` and `USER_SESSION_SECRET` are all configured, or
+`null` otherwise; `signInAvailable` is `signInMethod !== null`.
+
+`POST /api/auth/sign-in` and `POST /api/auth/sign-up` call Supabase Auth's own REST endpoints
+server-side (`${SUPABASE_PROJECT_URL}/auth/v1/token?grant_type=password` and `/auth/v1/signup`), then
+verify the returned access token's signature against `SUPABASE_JWKS_URL` with `node:crypto` before
+trusting anything in it — the local `users` row and the account-session cookie are built from the
+VERIFIED token's `sub`/`email`, never from the response body. On success, either route re-owns the
+caller's guest data through the same path `POST /api/auth/claim` uses (`auth.claimGuestSession`), in
+the same request — no separate claim call is needed for a real sign-in. A wrong password answers
+`401 INVALID_CREDENTIALS` (deliberately generic — it never distinguishes "no such account" from
+"wrong password"); an already-registered email answers `401 EMAIL_IN_USE` — the same status as
+INVALID_CREDENTIALS, so the status code itself is never a cheaper oracle than Supabase's own
+response body already is; Supabase's own "Confirm
+email" setting (a signup with no session yet) answers `403 EMAIL_CONFIRMATION_REQUIRED`.
+
+The account-session cookie (`__Host-user_session` in production) is signed with `USER_SESSION_SECRET`,
+independently of the dev cookie's own secret, and lives 7 days. `POST /api/session/sign-out` clears
+BOTH cookie kinds at once, since it doesn't know which one a given caller holds; a fresh guest session
+is minted lazily on the next principal-resolving request, not by this route itself. Sign-in, sign-up,
 sign-out, claim and delete-all are broadcast to every open tab over `BroadcastChannel("saboot:session")`
 (a client-side contract, not a route), so a session change in one tab is reflected in every other tab
 without a reload.

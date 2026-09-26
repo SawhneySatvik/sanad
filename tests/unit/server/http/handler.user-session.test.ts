@@ -1,25 +1,35 @@
-// route()'s userSession opt-in (dev-sign-in "set", sign-out "clear" only — restricted at the file
-// path by tests/architecture/route-conventions.ts, not tested here): the cookie is derived from
-// run()'s result and appended only once run() and the response contract both succeed; it is
-// independent of the guest cookie principal resolution may also mint in the same response.
+// route()'s userSession opt-in (dev-sign-in "set", sign-in/up "set-account", sign-out "clear" only —
+// restricted at the file path by tests/architecture/route-conventions.ts, not tested here): the
+// cookie is derived from run()'s result and appended only once run() and the response contract both
+// succeed; it is independent of the guest cookie principal resolution may also mint in the same
+// response.
 
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { deriveDevUserId, DEV_USER_SESSION_COOKIE_NAME } from "@/server/auth/dev-session";
 import { GUEST_SESSION_COOKIE_NAME } from "@/server/auth/session";
+import { HOST_USER_SESSION_COOKIE_NAME, USER_SESSION_COOKIE_NAME } from "@/server/auth/user-session";
 import { route } from "@/server/http/handler";
 import { callRoute, createRouteHarness, guestCookie, request, type RouteHarness } from "@tests/integration/routes/harness";
 
 const Result = z.object({ ok: z.boolean() });
+const ACCOUNT_USER_ID = "c1c1c1c1-0000-4000-8000-0000000000c1";
 
 let h: RouteHarness | undefined;
 afterEach(async () => {
   await h?.close();
   h = undefined;
+  vi.unstubAllEnvs();
 });
 
 function userSessionCookieOf(res: Response): string | null {
   return res.headers.getSetCookie().find((c) => c.startsWith(`${DEV_USER_SESSION_COOKIE_NAME}=`)) ?? null;
+}
+
+function accountSessionCookieOf(res: Response): string | null {
+  return (
+    res.headers.getSetCookie().find((c) => c.startsWith(`${USER_SESSION_COOKIE_NAME}=`) || c.startsWith(`${HOST_USER_SESSION_COOKIE_NAME}=`)) ?? null
+  );
 }
 
 describe('userSession: "set"', () => {
@@ -103,17 +113,61 @@ describe('userSession: "set"', () => {
   });
 });
 
+describe('userSession: "set-account"', () => {
+  it("appends an account-session cookie signing the userId run() returned, and toWire strips userId from the JSON body", async () => {
+    vi.stubEnv("USER_SESSION_SECRET", "a".repeat(32));
+    h = await createRouteHarness();
+    const setsSession = route({
+      usesLlm: false,
+      userSession: "set-account",
+      response: Result,
+      run: async () => ({ ok: true, userId: ACCOUNT_USER_ID }),
+    });
+
+    const res = await callRoute(setsSession, request("POST", "/api/test"));
+
+    expect(await res.json()).toEqual({ ok: true });
+    const cookie = accountSessionCookieOf(res);
+    expect(cookie).not.toBeNull();
+    expect(cookie).toMatch(new RegExp(`^${USER_SESSION_COOKIE_NAME}=${ACCOUNT_USER_ID}\\.`));
+    // Never the dev cookie — a real sign-in mints only its own cookie kind.
+    expect(userSessionCookieOf(res)).toBeNull();
+  });
+
+  it("never sets the cookie when run() throws", async () => {
+    vi.stubEnv("USER_SESSION_SECRET", "a".repeat(32));
+    h = await createRouteHarness();
+    const throws = route({
+      usesLlm: false,
+      userSession: "set-account",
+      response: Result,
+      run: async () => {
+        throw new Error("boom");
+      },
+    });
+
+    const res = await callRoute(throws, request("POST", "/api/test"));
+
+    expect(res.status).toBe(500);
+    expect(accountSessionCookieOf(res)).toBeNull();
+  });
+});
+
 describe('userSession: "clear"', () => {
-  it("appends a Max-Age=0 user-session cookie once run() succeeds", async () => {
+  it("appends Max-Age=0 dev AND account cookies once run() succeeds — sign-out doesn't know which kind the caller had", async () => {
     h = await createRouteHarness();
     const clearsSession = route({ usesLlm: false, userSession: "clear", response: Result, run: async () => ({ ok: true }) });
 
     const res = await callRoute(clearsSession, request("POST", "/api/test"));
 
-    const cookie = userSessionCookieOf(res);
-    expect(cookie).not.toBeNull();
-    expect(cookie).toContain("Max-Age=0");
-    expect(cookie?.startsWith(`${DEV_USER_SESSION_COOKIE_NAME}=;`)).toBe(true);
+    const devCookie = userSessionCookieOf(res);
+    const accountCookie = accountSessionCookieOf(res);
+    expect(devCookie).not.toBeNull();
+    expect(devCookie).toContain("Max-Age=0");
+    expect(devCookie?.startsWith(`${DEV_USER_SESSION_COOKIE_NAME}=;`)).toBe(true);
+    expect(accountCookie).not.toBeNull();
+    expect(accountCookie).toContain("Max-Age=0");
+    expect(accountCookie?.startsWith(`${USER_SESSION_COOKIE_NAME}=;`)).toBe(true);
   });
 
   it("never clears on an error", async () => {
@@ -131,6 +185,7 @@ describe('userSession: "clear"', () => {
 
     expect(res.status).toBe(500);
     expect(userSessionCookieOf(res)).toBeNull();
+    expect(accountSessionCookieOf(res)).toBeNull();
   });
 
   it("clearing does not disturb an existing guest cookie in the same response", async () => {
@@ -141,9 +196,10 @@ describe('userSession: "clear"', () => {
     const res = await callRoute(clearsSession, request("POST", "/api/test", { cookie }));
 
     // The request's own guest cookie was already valid, so nothing guest-related is minted — only
-    // the user-session clear should appear.
-    expect(res.headers.getSetCookie()).toHaveLength(1);
+    // the two user-session clears should appear.
+    expect(res.headers.getSetCookie()).toHaveLength(2);
     expect(userSessionCookieOf(res)).not.toBeNull();
+    expect(accountSessionCookieOf(res)).not.toBeNull();
   });
 });
 

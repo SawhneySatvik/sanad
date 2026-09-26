@@ -4,6 +4,7 @@ export const INPUT_MODES = ["text", "native_document"] as const;
 export const APP_ERROR_CODES = [
   "NOT_FOUND", "VALIDATION_FAILED", "RATE_LIMITED", "UPSTREAM_UNAVAILABLE", "TIMEOUT",
   "INVALID_DOCUMENT", "EXTRACTION_FAILED", "SCHEMA_FAILED",
+  "INVALID_CREDENTIALS", "EMAIL_IN_USE", "EMAIL_CONFIRMATION_REQUIRED",
 ] as const;
 export const ERROR_REASONS = [
   "too_large", "unsupported_type", "type_mismatch", "unreadable", "empty", "document_not_ready",

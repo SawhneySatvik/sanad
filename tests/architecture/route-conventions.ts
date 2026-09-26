@@ -21,12 +21,25 @@ export const CLAIM_ROUTE = "src/app/api/auth/claim/route.ts";
 const CLAIM_OPT_INS = new Set(["claimSession", "clearsGuestSession"]);
 export const DELETE_ALL_ROUTE = "src/app/api/me/data/route.ts";
 
-// The two routes allowed to opt into route()'s userSession cookie mechanism (src/server/http/handler.ts):
-// dev-sign-in mints the cookie, sign-out clears it. Any other route naming `userSession` at all is a
-// violation — the property name is checked, not its "set"/"clear" value, mirroring CLAIM_OPT_INS.
+// The routes allowed to opt into route()'s userSession cookie mechanism (src/server/http/handler.ts):
+// dev-sign-in mints the dev cookie, sign-in/sign-up mint the real account cookie, sign-out clears
+// both. Any other route naming `userSession` at all is a violation — the property name is checked,
+// not its "set"/"set-account"/"clear" value, mirroring CLAIM_OPT_INS.
 export const USER_SESSION_SET_ROUTE = "src/app/api/auth/dev-sign-in/route.ts";
 export const USER_SESSION_CLEAR_ROUTE = "src/app/api/session/sign-out/route.ts";
-const USER_SESSION_OPT_IN_ROUTES = new Set([USER_SESSION_SET_ROUTE, USER_SESSION_CLEAR_ROUTE]);
+export const USER_SESSION_SIGN_IN_ROUTE = "src/app/api/auth/sign-in/route.ts";
+export const USER_SESSION_SIGN_UP_ROUTE = "src/app/api/auth/sign-up/route.ts";
+const USER_SESSION_OPT_IN_ROUTES = new Set([
+  USER_SESSION_SET_ROUTE,
+  USER_SESSION_CLEAR_ROUTE,
+  USER_SESSION_SIGN_IN_ROUTE,
+  USER_SESSION_SIGN_UP_ROUTE,
+]);
+
+// clearsGuestSession alone (never claimSession) is also allowed on delete-all and on sign-in/sign-up:
+// a fresh account just claimed the guest's data, so a later sign-out must never hand the same guest
+// id back out on a shared device.
+const CLEARS_GUEST_SESSION_ALSO_ALLOWED = new Set([DELETE_ALL_ROUTE, USER_SESSION_SIGN_IN_ROUTE, USER_SESSION_SIGN_UP_ROUTE]);
 
 // The one route that resolves no caller identity (route()'s `principal: "none"`): no IP-tier charge,
 // no guest session minted. Any other route opting out would skip both.
@@ -276,7 +289,7 @@ export function checkRouteSource(relativePath: string, source: string): string[]
         propertyNameText(node.name)
           ? propertyNameText(node.name)!
           : null;
-      if (named && !(relativePath === DELETE_ALL_ROUTE && key === "clearsGuestSession")) {
+      if (named && !(key === "clearsGuestSession" && CLEARS_GUEST_SESSION_ALSO_ALLOWED.has(relativePath))) {
         violations.push(`only ${CLAIM_ROUTE} may opt into claimSession / clearsGuestSession`);
       }
     });

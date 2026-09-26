@@ -11,10 +11,14 @@ import { eq } from "drizzle-orm";
 import type { Db } from "@/db/client";
 import * as schema from "@/db/schema";
 import { createDevSignInAdapter, deriveDevUserId } from "@/server/auth/dev-session";
+import { emailSignInAvailable } from "@/server/auth/user-session";
 import { AppError, notFound, safeMessageFor } from "@/server/core/errors";
 import type { Principal } from "@/server/core/types";
 import { guestDataTtlSeconds } from "@/server/core/guest-ttl";
 import type { DevSignInInput, SessionOutput } from "@/shared/contracts/session";
+
+/** Which sign-in form (if either) the client should show, or null if neither is wired up. */
+export type SignInMethod = "dev" | "email" | null;
 
 const MAX_DISPLAY_NAME_CHARS = 120;
 
@@ -43,7 +47,7 @@ function syntheticDevEmail(userId: string): string {
   return `${userId}@dev-sign-in.invalid`;
 }
 
-function signInIsAvailable(): boolean {
+function devSignInAvailable(): boolean {
   try {
     createDevSignInAdapter();
     return true;
@@ -52,15 +56,29 @@ function signInIsAvailable(): boolean {
   }
 }
 
+// Dev wins whenever it's available at all — local dev and the e2e harness both keep the "Name"
+// form even if Supabase env vars happen to be set locally too. Only once dev sign-in refuses
+// itself (production) does the real email/password form ever show.
+export function signInMethod(): SignInMethod {
+  if (devSignInAvailable()) return "dev";
+  if (emailSignInAvailable()) return "email";
+  return null;
+}
+
+export function signInIsAvailable(): boolean {
+  return signInMethod() !== null;
+}
+
 // The guest data TTL, not the guest cookie's own (auth/session.ts's GUEST_SESSION_TTL_SECONDS governs
-// only the cookie's lifetime) — this is what the upload TTL notice is actually about.
-function guestTtlHours(): number {
+// only the cookie's lifetime) — this is what the upload TTL notice is actually about. Exported so
+// services/auth.ts's own SessionOutput-shaped results (sign-in/sign-up) use the exact same number.
+export function guestTtlHours(): number {
   return guestDataTtlSeconds() / 3600;
 }
 
 /** GET /api/session's answer for the caller's current principal. */
 export async function getSession(deps: { db: Db }, principal: Principal): Promise<SessionOutput> {
-  const base = { signInAvailable: signInIsAvailable(), guestTtlHours: guestTtlHours() };
+  const base = { signInAvailable: signInIsAvailable(), guestTtlHours: guestTtlHours(), signInMethod: signInMethod() };
   if (principal.type === "guest") return { kind: "guest", ...base };
 
   const [row] = await deps.db
@@ -72,7 +90,7 @@ export async function getSession(deps: { db: Db }, principal: Principal): Promis
 
 /** POST /api/session/sign-out's answer; the route's "userSession: clear" opt-in clears the cookie separately. */
 export async function signOut(): Promise<SessionOutput> {
-  return { kind: "guest", signInAvailable: signInIsAvailable(), guestTtlHours: guestTtlHours() };
+  return { kind: "guest", signInAvailable: signInIsAvailable(), guestTtlHours: guestTtlHours(), signInMethod: signInMethod() };
 }
 
 /** What POST /api/auth/dev-sign-in's route hands its "userSession: set" cookie minter. */
@@ -104,5 +122,5 @@ export async function devSignIn(deps: { db: Db }, input: DevSignInInput): Promis
     .values({ id: userId, email: syntheticDevEmail(userId), displayName })
     .onConflictDoNothing();
 
-  return { kind: "user", displayName, signInAvailable: true, guestTtlHours: guestTtlHours(), userId };
+  return { kind: "user", displayName, signInAvailable: true, guestTtlHours: guestTtlHours(), userId, signInMethod: "dev" };
 }
