@@ -13,8 +13,8 @@ import { callRoute, createRouteHarness, request, type RouteHarness } from "@test
 
 const CSP =
   "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; " +
-  "img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-inline'; " +
-  "style-src 'self' 'unsafe-inline'";
+  "img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; " +
+  "script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'";
 
 // The headers every environment carries, whatever NODE_ENV is.
 const BASE = {
@@ -22,6 +22,10 @@ const BASE = {
   "x-frame-options": "DENY",
   "cross-origin-opener-policy": "same-origin",
   "referrer-policy": "no-referrer",
+  "cross-origin-resource-policy": "same-origin",
+  "origin-agent-cluster": "?1",
+  "x-dns-prefetch-control": "off",
+  "x-permitted-cross-domain-policies": "none",
   "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
 };
 
@@ -47,17 +51,21 @@ function securityHeadersOf(res: Response): Record<string, string | null> {
 }
 
 describe("securityHeaders()", () => {
-  it("under NODE_ENV=test: the base six, no HSTS, no unsafe-eval", () => {
+  it("under NODE_ENV=test: the base set, no HSTS, no unsafe-eval", () => {
     expect(process.env.NODE_ENV).toBe("test");
     expect(securityHeaders()).toEqual(EXPECTED_TEST);
   });
 
-  it("under NODE_ENV=production: adds HSTS without preload, still no unsafe-eval", () => {
+  it("under NODE_ENV=production: adds HSTS without preload and upgrade-insecure-requests, still no unsafe-eval", () => {
     vi.stubEnv("NODE_ENV", "production");
     const headers = securityHeaders();
     vi.unstubAllEnvs();
 
-    expect(headers).toEqual({ ...EXPECTED_TEST, "strict-transport-security": "max-age=63072000; includeSubDomains" });
+    expect(headers).toEqual({
+      ...EXPECTED_TEST,
+      "content-security-policy": `${CSP}; upgrade-insecure-requests`,
+      "strict-transport-security": "max-age=63072000; includeSubDomains",
+    });
     expect(headers["strict-transport-security"]).not.toContain("preload");
     expect(headers["content-security-policy"]).not.toContain("unsafe-eval");
   });

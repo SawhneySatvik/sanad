@@ -43,8 +43,12 @@ function contentSecurityPolicy(): string {
     "img-src 'self' data: blob:",
     "font-src 'self'",
     "connect-src 'self'",
+    "manifest-src 'self'",
     scriptSrc(),
     "style-src 'self' 'unsafe-inline'",
+    // Over TLS in production any stray http:// subresource is fetched as https:// instead of
+    // being mixed content; under plain-HTTP local dev it would break every request.
+    ...(isProductionRuntime() ? ["upgrade-insecure-requests"] : []),
   ].join("; ");
 }
 
@@ -59,6 +63,13 @@ export function securityHeaders(): Readonly<Record<string, string>> {
     // This app opens no popups of its own (no OAuth, no window.open) — same-origin is safe to set
     // unconditionally, not just a default one route happens to need.
     "referrer-policy": "no-referrer",
+    // Another origin can't embed this app's responses (documents' text, API JSON) as a subresource.
+    "cross-origin-resource-policy": "same-origin",
+    // Ask the browser for a per-origin agent cluster, isolating this app's memory from same-site pages.
+    "origin-agent-cluster": "?1",
+    // No speculative DNS lookups for links a user never clicks, and no Flash/PDF cross-domain policy.
+    "x-dns-prefetch-control": "off",
+    "x-permitted-cross-domain-policies": "none",
     "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
     "content-security-policy": contentSecurityPolicy(),
     ...(isProductionRuntime() ? { "strict-transport-security": "max-age=63072000; includeSubDomains" } : {}),
