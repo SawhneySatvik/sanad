@@ -94,8 +94,8 @@ be overridden by environment variables.
 
 | Tier | Service | Default model | Adapter |
 |---|---|---|---|
-| 1 | Google AI Studio (Gemini API) | `gemini-2.5-flash` | [`gemini.ts`](src/server/llm/gemini.ts) (`@google/genai`) |
-| 2 | Google AI Studio | `gemini-3.5-flash-lite` | [`gemini.ts`](src/server/llm/gemini.ts) |
+| 1 | Google AI Studio (Gemini API) | `gemini-3.5-flash-lite` (500 requests/day free) | [`gemini.ts`](src/server/llm/gemini.ts) (`@google/genai`) |
+| 2 | Google AI Studio | `gemini-3.1-flash-lite` (its own 500/day) | [`gemini.ts`](src/server/llm/gemini.ts) |
 | 3 | Google AI Studio, Gemma | `gemma-4-31b-it` | [`gemini.ts`](src/server/llm/gemini.ts) |
 | 4 | NVIDIA NIM | `google/gemma-4-31b-it` | [`gemma.ts`](src/server/llm/gemma.ts) (OpenAI-compatible) |
 | 5 | OpenRouter | `google/gemma-4-31b-it:free` | [`gemma.ts`](src/server/llm/gemma.ts) |
@@ -116,8 +116,8 @@ No embedding model is called anywhere.
 ```mermaid
 flowchart LR
     Q["Service call"] --> RL["Rate limits<br/>principal · IP · provider"]
-    RL --> T1["gemini-2.5-flash"]
-    T1 -->|"timeout, 5xx, 429"| T2["gemini-3.5-flash-lite"]
+    RL --> T1["gemini-3.5-flash-lite"]
+    T1 -->|"timeout, 5xx, 429"| T2["gemini-3.1-flash-lite"]
     T2 -->|"failure"| T3["Gemma · AI Studio"]
     T3 -->|"failure"| T4["Gemma · NIM"]
     T4 -->|"failure"| T5["Gemma · OpenRouter"]

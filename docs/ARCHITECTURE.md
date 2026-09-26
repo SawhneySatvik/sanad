@@ -71,7 +71,7 @@ flowchart TB
     end
 
     subgraph Providers["External providers"]
-        GeminiAPI["Google AI Studio (Gemini API)\ngemini-2.5-flash, gemini-3.5-flash-lite,\nGemma (native structured output)"]
+        GeminiAPI["Google AI Studio (Gemini API)\ngemini-3.5-flash-lite, gemini-3.1-flash-lite,\nGemma (native structured output)"]
         NIM["Gemma via NVIDIA NIM"]
         OpenRouter["Gemma via OpenRouter"]
         SupaAuth["Supabase Auth (Google OAuth) — planned"]
@@ -400,8 +400,8 @@ into one chain under one deadline:
 ```mermaid
 flowchart LR
     Q["LLM call"] --> PL["Per-principal + per-IP limits\ncharged once per call"]
-    PL --> T1["gemini-2.5-flash\nprimary"]
-    T1 -->|"timeout, 5xx, 429,\nno response"| T2["gemini-3.5-flash-lite"]
+    PL --> T1["gemini-3.5-flash-lite\nprimary"]
+    T1 -->|"timeout, 5xx, 429,\nno response"| T2["gemini-3.1-flash-lite"]
     T2 -->|"any failure"| T3["Gemma on Google AI Studio"]
     T3 -->|"any failure"| T4["Gemma on NVIDIA NIM"]
     T4 -->|"any failure"| T5["Gemma on OpenRouter"]
@@ -411,8 +411,8 @@ flowchart LR
 
 | # | Tier | Gateway | Native documents | Rate-limit bucket |
 |---|---|---|---|---|
-| 1 | `gemini-2.5-flash` — primary; the analysis cache keys on it | Google AI Studio | yes | `gemini` |
-| 2 | `gemini-3.5-flash-lite` — its own per-model quota, sent no thinking budget | Google AI Studio | yes | `gemini_fallback` |
+| 1 | `gemini-3.5-flash-lite` — primary; the analysis cache keys on it; sent no thinking budget | Google AI Studio | yes | `gemini` |
+| 2 | `gemini-3.1-flash-lite` — its own per-model quota, sent no thinking budget | Google AI Studio | yes | `gemini_fallback` |
 | 3 | Gemma on Google AI Studio — same key as tiers 1–2, its own per-model quota | Google AI Studio | no | `gemma_google` |
 | 4 | Gemma via NVIDIA NIM | NVIDIA NIM | no | `gemma` |
 | 5 | Gemma via OpenRouter (`:free` route) | OpenRouter | no | `gemma` |
@@ -475,8 +475,9 @@ transaction that spans an LLM call:
   attempts one logical call can make (the original plus one schema-repair retry), so the worst case
   stays under quota even when every call retries.
 
-Gemini's free tier allows about 20 requests per model per day; the daily principal/IP caps keep one
-guest, or one IP cycling guest cookies, from spending a whole day's quota alone. Every limit is
+The primary model's free tier allows 500 requests a day, and each fallback model has its own quota.
+The daily caps (62 calls per principal, 124 per IP) keep one guest, or one IP cycling guest
+cookies, from spending the day's quota alone. Every limit is
 overridable by its own `RATE_LIMIT_*` environment variable, clamped to a sane ceiling so a
 misconfigured value can misconfigure the limiter but never disable it or take the app down.
 
