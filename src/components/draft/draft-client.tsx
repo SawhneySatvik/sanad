@@ -111,7 +111,9 @@ function DraftReady({ draft, draftId }: { draft: NonNullable<ReturnType<typeof u
   return (
     // No font-reading here: the chrome (heading, actions, revision timeline) stays sans;
     // draft-section.tsx already applies the reading face to each section's own body text.
-    <main data-draft-print-root className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
+    // A <div>, not a second <main>: AppShell's own SidebarInset is already the page's one main
+    // landmark, and print.css's [data-draft-print-root] selectors key off the attribute, not the tag.
+    <div data-draft-print-root className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
       <PageHeader
         title={draft.title}
         description={revisionLabel(draft.revisionNumber)}
@@ -183,6 +185,6 @@ function DraftReady({ draft, draftId }: { draft: NonNullable<ReturnType<typeof u
           submitting={renameMutation.isPending}
         />
       )}
-    </main>
+    </div>
   );
 }

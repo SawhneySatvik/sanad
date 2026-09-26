@@ -135,7 +135,9 @@ function PrepareReady({
   const goToDocument = () => router.push(`/documents/${documentId}`);
 
   return (
-    <main data-prepare-print-root className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
+    // A <div>, not a second <main>: AppShell's own SidebarInset is already the page's one main
+    // landmark, and print.css's [data-prepare-print-root] selectors key off the attribute, not the tag.
+    <div data-prepare-print-root className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
       <Link
         href={`/documents/${documentId}`}
         prefetch={false}
@@ -202,7 +204,7 @@ function PrepareReady({
       <div className="print:hidden">
         <DisclaimerLine variant="footer" />
       </div>
-    </main>
+    </div>
   );
 }
 

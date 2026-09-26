@@ -21,7 +21,7 @@ call the model, which are charged against the per-principal and per-provider lim
 | Method | Path | Request | Response | Calls | Who | LLM |
 |---|---|---|---|---|---|---|
 | `POST` | `/api/uploads` | `CreateUploadTargetInput` | `UploadTargetOutput` | `storage.createUploadTarget` | principal | |
-| `PUT` | `/api/uploads/relay` | `UploadRelayQuery` (signed token) + raw bytes | `UploadRelayOutput` | `storage.writeRelayed` (local relay only; production uploads go straight to a signed storage URL) | principal; the token's ref must belong to the caller | |
+| `PUT` | `/api/uploads/relay` | `UploadRelayQuery` (signed token) + raw bytes | `UploadRelayOutput` | `storage.writeRelayed`: bytes to the local disk in development, to Postgres `storage_objects` on Vercel | principal; the token's ref must belong to the caller | |
 | `GET` | `/api/documents` | `ListQuery` (`?cursor=&limit=`, ≤ 50) | `DocumentListOutput` (`{ items, nextCursor }`) | `library.list`: newest-activity first | principal | |
 | `POST` | `/api/documents` | `AnalyzeDocumentInput` | `AnalyzeDocumentOutput` | `understand.analyze`: confirm the upload, extract, analyse, verify | principal | yes |
 | `GET` | `/api/documents/:id` | — | `DocumentWithFindingsOutput` | `understand.get`: every quote re-verified | principal | |

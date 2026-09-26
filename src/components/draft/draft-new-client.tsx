@@ -101,7 +101,8 @@ export function DraftNewClient({ initialGroundingDocumentId }: DraftNewClientPro
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
+    // A <div>, not a second <main>: AppShell's own SidebarInset is already the page's one main landmark.
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
       <PageHeader title={NEW_DRAFT_HEADING} />
 
       {deepLinkFailed && <InlineNotice>{GROUNDING_DEEP_LINK_FAILED_NOTICE}</InlineNotice>}
@@ -122,6 +123,6 @@ export function DraftNewClient({ initialGroundingDocumentId }: DraftNewClientPro
         submitting={createMutation.isPending}
         offline={isOffline}
       />
-    </main>
+    </div>
   );
 }

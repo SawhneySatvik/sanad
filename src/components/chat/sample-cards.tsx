@@ -42,7 +42,12 @@ export interface SampleCardsProps {
 }
 
 function SampleCardError({ error }: { error: SampleCardError }) {
-  if (error.code === "RATE_LIMITED") return <RetryAfterNotice kind="RATE_LIMITED" retryAfterSeconds={error.retryAfterSeconds} />;
+  // Both retryable codes go through RetryAfterNotice, or a real 503 (provider exhaustion, whose
+  // window is often genuinely known) would silently lose its own retryAfterSeconds here and fall
+  // back to the vague "a few minutes" line even when the server gave an exact time.
+  if (error.code === "RATE_LIMITED" || error.code === "UPSTREAM_UNAVAILABLE") {
+    return <RetryAfterNotice kind={error.code} retryAfterSeconds={error.retryAfterSeconds} />;
+  }
   return <p className="text-xs text-destructive">{canonicalErrorMessage(error.code)}</p>;
 }
 
