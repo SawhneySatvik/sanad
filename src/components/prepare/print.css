@@ -1,0 +1,40 @@
+/*
+ * Scoped to this one route via [data-prepare-print-root] (same convention as draft/print.css) — the
+ * shell's own sidebar/footer/toaster are hidden by their own stable attributes, never a class this
+ * page could add to them directly, so loading this stylesheet from /documents/[id]/prepare never
+ * bleeds into any other page even though Next's App Router keeps global CSS resident across a
+ * client-side navigation.
+ */
+@media print {
+  body:has([data-prepare-print-root]) {
+    color-scheme: light;
+  }
+
+  body:has([data-prepare-print-root]) [data-slot="sidebar"],
+  body:has([data-prepare-print-root]) [data-slot="sidebar-rail"],
+  body:has([data-prepare-print-root]) footer,
+  body:has([data-prepare-print-root]) [data-sonner-toaster] {
+    display: none !important;
+  }
+
+  body:has([data-prepare-print-root]) [data-prepare-print-root] {
+    background: white !important;
+    font-family: var(--font-reading), serif;
+    font-size: 11pt;
+  }
+
+  body:has([data-prepare-print-root]) [data-prepare-print-root],
+  body:has([data-prepare-print-root]) [data-prepare-print-root] * {
+    color: black !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body:has([data-prepare-print-root]) [data-prepare-print-card] {
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 2cm;
+  }
+}
