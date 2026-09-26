@@ -533,8 +533,8 @@ Email sign-in and sign-up are proven at the route level:
 
 | Practice | Evidence |
 |---|---|
-| Security headers on every response | [`security-headers.ts`](src/server/http/security-headers.ts): `nosniff`, `x-frame-options: DENY`, `cross-origin-opener-policy: same-origin`, `referrer-policy: no-referrer`, a `permissions-policy` denying camera, microphone, geolocation, payment and usb, and HSTS in production |
-| CSP | `default-src 'self'`, `object-src 'none'`, `frame-ancestors 'none'`, `base-uri 'self'`, `form-action 'self'`, `connect-src 'self'`, `font-src 'self'`. `'unsafe-eval'` only under `next dev` ([`security-headers.test.ts`](tests/unit/server/http/security-headers.test.ts)) |
+| Security headers on every response | [`security-headers.ts`](src/server/http/security-headers.ts): `nosniff`, `x-frame-options: DENY`, `cross-origin-opener-policy: same-origin`, `referrer-policy: no-referrer`, `cross-origin-resource-policy: same-origin`, `origin-agent-cluster`, `x-dns-prefetch-control: off`, `x-permitted-cross-domain-policies: none`, a `permissions-policy` denying camera, microphone, geolocation, payment and usb, and HSTS in production |
+| CSP | `default-src 'self'`, `object-src 'none'`, `frame-ancestors 'none'`, `base-uri 'self'`, `form-action 'self'`, `connect-src 'self'`, `font-src 'self'`, `manifest-src 'self'`, and `upgrade-insecure-requests` in production. `'unsafe-eval'` only under `next dev` ([`security-headers.test.ts`](tests/unit/server/http/security-headers.test.ts)) |
 | Guest identity | A `randomUUID()` session id in an httpOnly, HMAC-signed cookie, checked with `timingSafeEqual`, with a 3-hour TTL and rotation through a previous-secret variable. It is never read from a header. The [proxy](src/proxy.ts) mints it on first page load, so parallel first requests share one guest ([`session.ts`](src/server/auth/session.ts), [`guest-identity.test.ts`](tests/integration/routes/guest-identity.test.ts)) |
 | Email sign-in | Server-side only. [`supabase-auth.ts`](src/server/auth/supabase-auth.ts) calls Supabase Auth's REST API with no SDK, then trusts only the **verified** access token, never the response body's `user` object |
 | JWT verification | Signature checked against the project JWKS with `node:crypto`. Only `ES256` or `RS256` are allowed, and the algorithm is decided by the key's own `kty`/`crv`, not the token header. `iss`, `aud`, `exp`, `sub` and `email` are checked, plus `nbf` when present; an unknown `kid` triggers one JWKS refetch ([`supabase-auth.test.ts`](tests/unit/server/auth/supabase-auth.test.ts)) |
@@ -557,12 +557,37 @@ Email sign-in and sign-up are proven at the route level:
 | Secrets | None in the repo. [`.env.example`](.env.example) lists names only, and a missing secret is reported by name. Dev sign-in and `/api/e2e/*` refuse to run in production |
 | Policy | [SECURITY.md](SECURITY.md) covers reporting and the threat model |
 
+**Threat model, in brief.** Each threat, the control that stops it, and the test that proves it.
+
+| Threat | Control | Proof |
+|---|---|---|
+| Reading another user's document, chat or draft | `canAccess` on every repository call; foreign ids return 404 | `npm run test:idor` (40 files) |
+| Forged or replayed session | HMAC-signed `__Host-` cookies, namespaced per cookie type, `timingSafeEqual`, TTL and skew bounds | [`user-session.test.ts`](tests/unit/server/auth/user-session.test.ts), [`session.test.ts`](tests/unit/server/auth/session.test.ts) |
+| Forged sign-in token | JWKS signature check with an algorithm allowlist; `iss`, `aud`, `exp`, `nbf`, `iat`; user id only from the verified token | [`supabase-auth.test.ts`](tests/unit/server/auth/supabase-auth.test.ts) |
+| Credential stuffing or sign-in lockout | Per-IP and per-hashed-email limits before any Supabase call | [`auth.rate-limit.test.ts`](tests/unit/server/rate-limit/auth.rate-limit.test.ts) |
+| CSRF | Cross-site state changes refused before any cookie is read; JSON-only bodies | [`cross-site.test.ts`](tests/integration/routes/cross-site.test.ts) |
+| XSS and clickjacking | Model text rendered as plain text only; CSP `'self'`; `frame-ancestors 'none'` and `DENY` | [`verified-badge-single-source.verify.test.ts`](tests/architecture/verified-badge-single-source.verify.test.ts), [`security-headers.test.ts`](tests/unit/server/http/security-headers.test.ts) |
+| Prompt injection claiming "verified" | Fenced document text; no status field in any model schema; `verify()` decides | [`prompt-injection.verify.test.ts`](tests/unit/server/prompts/prompt-injection.verify.test.ts) |
+| Malicious upload (zip bomb, path traversal) | Parse sandbox with heap and time caps; decompression caps; owner-prefixed storage refs | [`local-fs-adapter.traversal.property.test.ts`](tests/property/local-fs-adapter.traversal.property.test.ts) |
+| Quota exhaustion or abuse | Atomic per-principal, per-IP and per-provider counters; daily caps | `npm run test:rate-limit` |
+| Direct database access through the Data API | Grants revoked on every app table, checked live after migrating | `npm run db:migrate:remote` denial check |
+
 <a id="efficiency"></a>
 
 ### Efficiency
 
 The expensive resource is the model call: slow, quota-bound, shared across users. Most of the work
 below avoids a call, bounds one, or keeps the database round-trips around it flat.
+
+**Measured on the live deployment** (Vercel `bom1`, Supabase `ap-south-1`, Upstash Redis):
+
+| Operation | Result |
+|---|---|
+| Repeat everyday question (Redis general-chat cache) | **5.2 s → 0.11–0.16 s**, with no model call on the repeat |
+| Open a sample document with all findings | **0.7 s**, zero model calls (recorded analysis, re-verified live: 26 of 27 quotes verified) |
+| Analyse a freshly uploaded offer letter | **6.4 s** on `gemini-3.5-flash-lite` (was about 15 s on the previous primary) |
+| Library page of 10 revision chains | **40 → 3 queries**, flat at any page size |
+| Re-open a document's text | `304 Not Modified` on a matching ETag: no body, after the owner check |
 
 ```mermaid
 flowchart LR
