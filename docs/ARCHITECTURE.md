@@ -60,7 +60,7 @@ flowchart TB
         ServerComponents["Server Components"]
     end
 
-    subgraph DomainCore["Domain core — runs identically local + prod, except storage call sequence and RLS/grants"]
+    subgraph DomainCore["Domain core — runs identically local + prod, except which storage/DB backend sits behind the same interfaces, and RLS/grants"]
         Services["Service layer\n(Understand, Ask, Compare, Prepare, Draft)"]
         Deterministic["Deterministic layer\n(extract, normalize, verify, segment, templates)"]
         Orchestrator["Orchestrator / router\n(non-LLM classifier)"]
@@ -74,9 +74,8 @@ flowchart TB
         GeminiAPI["Google AI Studio (Gemini API)\ngemini-2.5-flash, gemini-3.5-flash-lite,\nGemma (native structured output)"]
         NIM["Gemma via NVIDIA NIM"]
         OpenRouter["Gemma via OpenRouter"]
-        SupaAuth["Supabase Auth (Google OAuth) — prod only"]
-        SupaStorage["Supabase Storage — prod only"]
-        SupaDB["Supabase Postgres + pgvector\nvia Supavisor pooler — prod only"]
+        SupaAuth["Supabase Auth (Google OAuth) — planned"]
+        SupaDB["Supabase Postgres + pgvector\nvia Supavisor pooler — prod only\n(storage_objects bytes live here too)"]
     end
 
     subgraph LocalDev["Local dev only — cannot deploy to Vercel"]
@@ -103,7 +102,7 @@ flowchart TB
     Repos -.local.-> PGlite
     RouteHandlers -.prod.-> SupaAuth
     RouteHandlers -.local.-> StubAuth
-    Services -.prod.-> SupaStorage
+    Services -.prod.-> SupaDB
     Services -.local.-> LocalFS
 ```
 
@@ -112,17 +111,19 @@ flowchart TB
 | Component | Local impl | Prod impl | Runs on Vercel? | Identical call sequence? |
 |---|---|---|---|---|
 | Database | PGlite (embedded, `pg-core` dialect) | Supabase Postgres + pgvector, via the **Supavisor transaction pooler (port 6543)** | No (PGlite) — local only by construction | Yes — same Drizzle schema/queries |
-| Storage | Local filesystem, server-relay (the route handler receives a multipart upload) | Supabase Storage, direct signed-PUT upload | No (local FS) — ephemeral per instance | **No — the one acknowledged exception.** `StorageAdapter`'s interface (see [Storage adapter](#storage-adapter)) gives the service layer the same methods either way, but the *number of round trips differs*: local does route handler → adapter → disk in one hop; prod does client → signed URL → Storage directly, then a separate `confirmUpload` call. |
-| Auth | Stubbed guest-only (no real sessions) | Supabase Auth, Google OAuth | N/A until wired up | Only proven identical for the **guest** code path — logic gated on `principal.type === "user"` (save-to-project, claim) is untested locally until Supabase Auth exists. |
+| Storage | Local filesystem, server-relay (route handler → adapter → disk in one hop) | Postgres `storage_objects` (bytea), same server-relay shape (route handler → adapter → DB row in one hop) — forced whenever `VERCEL` is set, or via `STORAGE_BACKEND=postgres` off Vercel | Yes (Postgres backend; local FS is local-only by construction) | Yes — both adapters implement `StorageAdapter` (see [Storage adapter](#storage-adapter)) with the identical `server-relay` round trip; the Postgres adapter additionally caps uploads at 4 MB (`POSTGRES_MAX_UPLOAD_BYTES`) to stay under Vercel's request-body limit, tighter than the shared 15 MB cap, with the same `too_large` error shape either way. |
+| Auth | Guest sessions, plus a dev-only sign-in for tests | Guest sessions (signed cookie); Supabase Auth with Google OAuth is planned | Guest path: yes | The domain logic gated on `principal.type === "user"` (save-to-project, claim) is exercised locally today, via a test harness that signs in a `UserPrincipal` directly rather than through a live session. What's **not** proven identical is the actual OAuth handshake and session-minting round trip itself — that only exists once the Supabase Auth adapter is written. |
 | Data API / RLS grants | N/A — no Data API exists locally at all | **Deny-all**: no Data API grants issued for app tables | Yes, once the DB is Supabase | Effectively identical by construction — "no grants" locally (nothing to grant) and "no grants" in prod (deliberately withheld) are the same posture. |
 | Rate limiting | Postgres counter tables against PGlite | Same tables, against Supabase Postgres | Yes, once the DB is Supabase | Yes — the atomic-upsert pattern is DB-engine-identical |
 | LLM calls | Direct to the Gemini API, NVIDIA NIM and OpenRouter | Same | Yes | Yes |
 | Domain core (services, deterministic layer, orchestrator, repositories) | Runs identically | Runs identically | Yes | Yes — no local/prod branching beyond the two exceptions named above |
 
-**The Prod column above is the target design, not a running system.** Nothing is deployed. The
-Supabase Storage and Auth adapters aren't written yet — only the local filesystem adapter and the
-guest-only auth stub exist in `src/`. The prod-only migrations (Data API revokes, the `pg_cron`/
-`pg_net` TTL sweep) exist as SQL but haven't been applied to a live Supabase project.
+**Production today.** The Supabase database is live: every numbered migration and the prod-only
+files are applied, and the Data API denial check passes against it. The app deploys to Vercel with
+the Postgres storage adapter, which Vercel forces. Production sign-in is guest-only by design: a
+signed guest session, with guest data deleted after about three hours. A Supabase Auth adapter is
+the planned extension; the `principal.type === "user"` paths it would feed are already exercised by
+tests that sign in a `UserPrincipal` directly.
 
 ---
 
@@ -130,7 +131,9 @@ guest-only auth stub exist in `src/`. The prod-only migrations (Data API revokes
 
 ### Client layer
 
-Next.js App Router. Server Components for initial render, Client Components (`'use client'`) for
+Next.js App Router, two route groups: `src/app/(marketing)/` (the landing page at `/`,
+`components/marketing/landing-page.tsx`) and `src/app/(app)/` (the signed-in/guest
+product surface). Server Components for initial render, Client Components (`'use client'`) for
 interactivity. Guest-mode state (the active thread list) lives in `localStorage` — **threads
 only**; documents, comparisons and drafts are always DB rows, never client-only. Nothing
 server-authoritative is trusted from client state: principal identity comes from an httpOnly signed
@@ -141,8 +144,38 @@ handlers already default to the Node.js runtime; a static check rejects any rout
 `runtime` export is anything other than the literal `"nodejs"`, so a future route can't silently
 opt into Edge, which can't hold a normal Postgres TCP connection.
 
-The frontend isn't built: `src/app/page.tsx` is a placeholder, and the only file under `src/lib/`
-is `guest-thread-store.ts`, the client-side append-only guest message array.
+**What's built so far.** `(app)/layout.tsx` mounts `AppShell` (`src/components/shell/app-shell.tsx`):
+a collapsible sidebar, a skip link, an offline banner and the disclaimer footer. Root `providers.tsx`
+mounts the theme provider, TanStack Query's client, the tooltip provider and the app's two standing
+live regions (one polite, one assertive) plus the toaster once for the whole tree — `AppShell` and
+every route below it must never mount a second copy of any of these, or the aria-live allow-list gate
+sees nodes it doesn't expect. A dev/guest sign-in form and a settings screen exist; `src/lib/session/`
+holds the cross-tab session sync (`BroadcastChannel("saboot:session")`, with the `storage` event as
+the fallback), so a sign-in, sign-out, claim or delete-all in one tab clears every other open tab's
+query cache and re-fetches `GET /api/session`. Every product screen — chat, the document workspace
+(`/documents/:id`), compare, prepare, drafts and library — is built and reachable. The marketing
+landing page itself has not been started.
+
+**Channel 8 (span/display binding) has a client-side half.** The guarantee's server half is
+`verify()` computing spans against `canonical_text`; the client's job is to never render a highlight
+that binding doesn't back. `bindSpan()` (`src/lib/verification/bindSpan.ts`) is the one shared,
+unit-tested function that does this — the **only** place in the app a span is bound to text: given a
+`VerificationOutput`, the target document's `{ documentId, text, textHash }` (from `GET
+/api/documents/:id/text`) and the citation's own expected `{ documentId }`, it returns a bound range
+only when `expected.documentId` matches `target.documentId`, `verification.textHash ===
+target.textHash`, and `target.text.slice(spanStart, spanEnd) === spanText` — otherwise `null`, and
+nothing renders. `verify()` sets `textHash` on every `VerificationOutput` it produces (real document
+hash, or the fixed `sha256("")` sentinel when there's no real document to bind against — see
+[Document text endpoint](#document-text-endpoint) below), so a stale reload, a wrong-document pairing
+or a doctored span all fail this check instead of rendering a false highlight. `VerificationBadge`
+(`src/components/verification/verification-badge.tsx`) is the **only** renderer of a verified mark
+anywhere in `src/app`, `src/components` and `src/lib` — enforced by a static repo-wide scan
+([`verified-badge-single-source.ts`](../tests/architecture/verified-badge-single-source.ts)) for a
+second, unaudited renderer of the label, icon or CSS token. The interactive "test this quote"
+verifier a reader can run against their own document
+(`src/components/workspace/verifier/verifier-demo.tsx`) renders through this same badge — an icon
+plus the server-derived status, never text a model's output could imitate, so the badge can't be
+forged by prompt injection even in the one component that lets a reader type arbitrary text.
 
 ### Route handlers
 
@@ -170,11 +203,16 @@ cross-site form POST is otherwise cookie-less and would get a fresh guest cookie
 over the victim's, orphaning their rows.
 
 **Security headers**, applied both by `next.config.ts` (every path — pages, 404s, static files) and
-by `route()` on each API response: `x-content-type-options: nosniff`,
+by `route()` on each API response: `x-content-type-options: nosniff`, `x-frame-options: DENY`,
+`cross-origin-opener-policy: same-origin`, `referrer-policy: no-referrer`, `permissions-policy`
+(camera/microphone/geolocation/payment/usb all denied), and in production only
 `strict-transport-security: max-age=63072000; includeSubDomains` (no `preload` — that's a
-custom-domain decision), `content-security-policy: frame-ancestors 'none'`, and
-`referrer-policy: no-referrer`. The CSP carries only `frame-ancestors`; whoever adds rendered pages
-must extend it.
+custom-domain decision, and it would be a lie over the plain HTTP a local `next start` serves). The
+`content-security-policy` restricts `default-src`, `object-src`, `base-uri`, `form-action`,
+`frame-ancestors`, `img-src`, `font-src` and `connect-src` to `'self'` (plus `data:`/`blob:` for
+`img-src`); `script-src`/`style-src` allow `'unsafe-inline'` — the App Router's own hydration script
+carries no nonce yet — and `script-src` adds `'unsafe-eval'` under `next dev` only, for React Fast
+Refresh. Whoever adds per-request nonces must extend this header, not replace it.
 
 ### Service layer (`src/server/services/{understand,ask,compare,prepare,draft}.ts`)
 
@@ -205,6 +243,59 @@ count and insert one at a time and can never overshoot the cap.
 for that one perspective, echoing it back as `lens: { id, role, stage }`. An unrecognized lens for
 the document's type is a 400; the default is the document type's first lens, the same default
 Understand uses for a finding's own `explanation`.
+
+### Samples (`src/server/samples/`)
+
+Five bundled, pre-analysed Understand documents (`lease`, `offer_letter`, `nda`, `privacy_policy`,
+`freelance`) a visitor can open with zero model calls and zero quota spent. `registry.ts` maps each
+fixed `sampleId` to its bundled file bytes, the sha256 of the extracted canonical text it was recorded
+against, a reshaped recording of a real `gemini-2.5-flash` capture, and the exact prompt
+version/fingerprint the recording answers — a stale bundle, a divergent live prompt, or an edited
+recording all refuse to replay rather than silently drifting from what was actually recorded. The
+Compare sample (`lease_v2`) is deferred and deliberately absent from the registry; any unknown or
+deferred sample id is a 404.
+
+`POST /api/samples/:sampleId/open` runs the sample's bytes through the real `extractDocument()`
+exactly like an upload, asserts the resulting hash matches the registry's pin, then runs the real
+Understand service with `RecordedLlmClient` standing in for the LLM: it fingerprints its exact
+expected prompt and throws on any mismatch, refuses a native-file input outright, and refuses to
+stream (samples never stream) — so it can only ever answer the one call it was built for, never a
+live oracle. `RecordedLlmClient` is imported nowhere but `src/server/samples/**` — never
+`providers.ts`, the container, or the fallback chain — checked by a static import-graph test. The
+replay still goes through `verify()`, still gets an audit row and still re-verifies on every read,
+exactly like a live analysis; the only thing that never happens is a network call. Opening a sample
+skips the `analyzed_result_cache` write specifically (never the persistence or re-verify steps), and
+is idempotent per principal via the same advisory-lock pattern every create path uses. Sample replay
+counts as channel 1 (model response) and channel 6 (cache) coverage, not an eleventh channel.
+
+A sample document is otherwise an ordinary, owner-checked `documents` row (`sample_id` set, `IdParams`
+guid), with one behavioural difference: `POST /api/documents/:id/analyze` on it refuses with
+`sample_readonly` rather than ever turning a recorded analysis into a live one still labelled
+"recorded" — checked *before* the ordinary idempotent-retry short-circuit would otherwise return the
+sample's own recorded analysis as an unremarkable `200`.
+
+### Document text endpoint
+
+`GET /api/documents/:id/text` is the **one** route allowed to put canonical text on the wire — every
+other response contract is kept clear of it by the wire-contract lint. It exists because the
+analysis workspace and Compare need to render `canonical_text.slice(spanStart, spanEnd)` (channel
+8's own requirement) and no endpoint returned a document's text before this one. It answers
+`{ documentId, text, textHash, inputMode, sampleId }`; `text` is `canonical_text` verbatim, never run
+through the model-text sanitizer that scrubs every other model-authored field — sanitizing it would
+break `bindSpan()`'s exact-slice check even for a `native_document` transcription, which is
+model-authored but is the canonical text of record. The response is `Cache-Control: no-store` with
+no `ETag` and no `304` at all, so there's no conditional-GET path that could short-circuit around
+`canAccess`. A document that hasn't finished extraction answers `422`/`document_not_ready` instead of
+a 200 standing in with an empty string.
+
+`toVerificationOutput()` (the one chokepoint every route uses to put a verification on the wire) sets
+`textHash` on `verified`, `approximate` and `not_found` alike: the real `canonical_text_hash` when a
+real document backs the verification, or a fixed anti-oracle sentinel, `sha256("")` =
+`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`, when there is no real document at
+all (an unlinked citation, a foreign or deleted source). Without a fixed sentinel, a distinguishable
+"no document" value would let `POST /api/verify-batch` or a citation's `textHash` be probed as a "does
+document X contain string Y" oracle for documents the caller doesn't own; with it, every "nothing to
+bind against" case is indistinguishable from every other one.
 
 ### Deterministic layer (`src/server/deterministic/`) — model-independent, property-tested
 
@@ -520,15 +611,25 @@ immediately follow that updated ownership, with no need to rename or move the un
 object, whose path keeps its original `guest:<sessionId>` prefix forever (a historical artifact of
 the ref's name, not a live authorization input).
 
-Guest uploads carry `expires_at` (3 hours). Deletion is **designed** around Supabase `pg_cron`, not
-Vercel Cron (whose Hobby-plan cadence can't honor a short TTL precisely): a prod-only migration
-schedules a sweep that finds expired rows and is meant to reach the Storage REST API via the
-`pg_net` extension, calling a storage-cleanup Edge Function that performs the actual delete with the
-service-role key — that Edge Function isn't written yet, and the prod-only migrations haven't been
-applied to a live project. A `StoragePurger` interface and a `LocalFsStoragePurger` implementation
-exist (`storage/purger.ts`) for whichever job ends up calling them, but nothing in local dev
-schedules a sweep today — expired guest rows and their files are not yet actually deleted locally.
-The intended delete ordering and the cascade rules it depends on are in
+Guest uploads carry `expires_at` (3 hours). Deletion runs through
+[`prod-only/0007_guest_ttl_sweep_postgres_storage.sql`](../src/db/migrations/prod-only/0007_guest_ttl_sweep_postgres_storage.sql):
+a `pg_cron` job, every 5 minutes, that deletes expired guest rows and their `storage_objects` bytes
+in the *same* transaction — no `pg_net`, no Edge Function, no Vault secret, since the bytes are
+already rows in this database once the Postgres storage backend is active (the path Vercel always
+forces — see the deployment view above). The same sweep also clears any `storage_objects` row gone
+unreferenced for over an hour (an abandoned upload, or a document deleted through the cleanup
+outbox below), so the outbox needs no separate worker on this backend. 0007 supersedes an earlier
+migration ([`prod-only/0003_m4_pg_cron_pg_net_jobs.sql`](../src/db/migrations/prod-only/0003_m4_pg_cron_pg_net_jobs.sql))
+designed around a real external object store reached through `pg_net` and a storage-cleanup Edge
+Function that was never written — that path is skipped now that production storage lives in
+Postgres. `npm run db:migrate:remote` applies the numbered migrations, then prod-only `0004`,
+`0005`, `0006`, `0001`, `0002`, `0007`, in that order: the narrow revokes precede 0001 because
+0001's post-condition asserts no public object is still reachable by the Data API roles.
+
+A `StoragePurger` interface, `LocalFsStoragePurger` and `PostgresStoragePurger` implementations
+exist (`storage/purger.ts`, `storage/postgres-purger.ts`) for whichever job ends up calling them,
+but nothing in local dev schedules a sweep today — expired guest rows and their files are not yet
+actually deleted locally. The intended delete ordering and the cascade rules it depends on are in
 [SCHEMA.md](SCHEMA.md#delete-behaviour).
 
 ### Auth adapter (`src/server/auth/`)
@@ -689,9 +790,10 @@ and sits behind the same three-tier rate limiting as every other route.
 - **Authorization.** The `canAccess` chokepoint, principal-scoped; every multi-entity association
   checks ownership of every referenced entity.
 - **Second layer: deny-all Data API posture.** App tables never receive PostgREST grants for
-  `anon`/`authenticated` roles. The prod-only revoke migration is tested today against stand-in
-  roles on PGlite; the anon-key PostgREST denial test against a live Supabase project runs once a
-  project exists.
+  `anon`/`authenticated` roles. The prod-only revoke migration is tested against stand-in roles on
+  PGlite; against the live project, `npm run db:migrate:remote` queries
+  `information_schema.role_table_grants` after applying and fails if either role still holds any
+  privilege on a public table.
 - **Guest identity.** An httpOnly, signed session cookie — never a client-supplied header. A
   CSPRNG-generated session id, `timingSafeEqual`-compared against its signature so a forged cookie
   can't be brute-forced by timing (`auth/session.ts`). Rotating `GUEST_SESSION_SECRET` invalidates
@@ -739,12 +841,13 @@ and sits behind the same three-tier rate limiting as every other route.
 | `GUEST_SESSION_SECRET` | server-only | Signs the guest session cookie, ≥32 bytes |
 | `GUEST_SESSION_SECRET_PREVIOUS` | server-only, optional | Verify-only previous secret during rotation, so live guest sessions survive |
 | `RATE_LIMIT_IP_HASH_SECRET` | server-only | HMAC key for IP-bucket keys — raw IPs are never stored |
-| `LOCAL_STORAGE_SIGNING_SECRET` | server-only, local dev | Signs the local filesystem adapter's relay URLs |
+| `LOCAL_STORAGE_SIGNING_SECRET` | server-only | Signs `local-storage:` relay/signed URLs — read by whichever storage adapter is installed, local filesystem or Postgres |
+| `STORAGE_BACKEND` | server-only, optional | `postgres` forces the Postgres/`bytea` storage adapter; `local` or unset picks the local filesystem adapter, except on Vercel (`VERCEL` set), where Postgres is forced regardless — each function instance has its own ephemeral disk |
 | `RATE_LIMIT_{PRINCIPAL,IP,GEMINI,GEMINI_FALLBACK,GEMMA,GEMMA_GOOGLE}_PER_MINUTE` | server-only, optional | Per-minute limit overrides, one per bucket; defaults in [`limiter.ts`](../src/server/rate-limit/limiter.ts) |
 | `RATE_LIMIT_IP_LLM_PER_MINUTE`, `RATE_LIMIT_PRINCIPAL_PER_DAY`, `RATE_LIMIT_IP_LLM_PER_DAY` | server-only, optional | Per-call IP limit and the daily LLM-call caps per principal and per IP |
 | `MAX_ACTIVE_ROWS_PER_GUEST`, `MAX_ACTIVE_ROWS_PER_USER` | server-only, optional | Active-row cap overrides; defaults in [`documents.ts`](../src/server/data/documents.ts) |
 | `TRUSTED_PROXY_HOPS` | server-only, optional, off Vercel only | Number of reverse proxies in front of the app; unset means `x-forwarded-for` is ignored and every client shares one bucket |
 | `VERCEL` | set by the platform | When present, only `x-vercel-forwarded-for` is trusted for the client IP |
 
-Every value may stay blank for local work; see [README.md](../README.md#quick-start) for what
+Every value may stay blank for local work; see [README.md](../README.md#run-it-locally) for what
 works keyless.

@@ -43,6 +43,12 @@ npm run validate:live     # real Gemini/NVIDIA/OpenRouter calls against curated 
                            # provider keys, spends the shared free-tier quota; run explicitly, one
                            # part at a time, never concurrently with itself, never folded into
                            # check-all or npm test. Re-run after any prompt or fixture change.
+npm run e2e:server        # an isolated `next dev` on :3100, SABOOT_E2E=1, fresh .pglite-e2e/, a
+                           # local fake provider at the transport boundary — refuses in production
+npm run test:e2e          # Playwright; starts e2e:server itself if one isn't already running
+npm run test:a11y         # the same harness, filtered to specs tagged @a11y (axe via @axe-core/playwright)
+npm run capture:screens   # screenshots a route/state list at 1440x900 and 390x844, light and dark,
+                           # against the e2e server, from an isolated rsync'd copy of the working tree
 ```
 
 ## Non-negotiable rules
@@ -115,6 +121,9 @@ npm run validate:live     # real Gemini/NVIDIA/OpenRouter calls against curated 
 | `src/server/orchestrator/**` | The fan-out cap test; confirm the classify step makes no LLM call |
 | A storage adapter | The owner-prefix and principal-required tests |
 | Anything in `src/server/prompts/**` | `npm run validate:live` before treating the change as done |
+| `src/server/samples/**` | The registry's sha256/prompt-fingerprint pins, the single-importer check for `RecordedLlmClient`, and `npm run test:verify` (channels 1 and 6) |
+| A screen or flow reachable by the e2e harness | `npm run test:e2e`; `npm run test:a11y` too if markup or ARIA changed |
+| `scripts/capture-screens.ts` or its support code | `npm run capture:screens` against the affected route/state list |
 | Anything | `npm test`, `npm run typecheck`, `npm run lint` |
 
 More detail lives in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (system design, the One

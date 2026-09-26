@@ -22,29 +22,57 @@ call the model, which are charged against the per-principal and per-provider lim
 |---|---|---|---|---|---|---|
 | `POST` | `/api/uploads` | `CreateUploadTargetInput` | `UploadTargetOutput` | `storage.createUploadTarget` | principal | |
 | `PUT` | `/api/uploads/relay` | `UploadRelayQuery` (signed token) + raw bytes | `UploadRelayOutput` | `storage.writeRelayed` (local relay only; production uploads go straight to a signed storage URL) | principal; the token's ref must belong to the caller | |
+| `GET` | `/api/documents` | `ListQuery` (`?cursor=&limit=`, ≤ 50) | `DocumentListOutput` (`{ items, nextCursor }`) | `library.list`: newest-activity first | principal | |
 | `POST` | `/api/documents` | `AnalyzeDocumentInput` | `AnalyzeDocumentOutput` | `understand.analyze`: confirm the upload, extract, analyse, verify | principal | yes |
 | `GET` | `/api/documents/:id` | — | `DocumentWithFindingsOutput` | `understand.get`: every quote re-verified | principal | |
-| `POST` | `/api/documents/:id/analyze` | — | `DocumentWithFindingsOutput` | `understand.analyzeDocument`: idempotent retry of an incomplete analysis | principal | yes |
+| `PATCH` | `/api/documents/:id` | `RenameInput` `{ title }` (≤ 120 chars, server-enforced) | `DocumentListRowOutput` | `library.rename` | owner | |
+| `DELETE` | `/api/documents/:id` | — | `204` | `library.remove`: cascades comparisons that reference it; queues its storage object for cleanup | owner | |
+| `DELETE` | `/api/documents/:id/project` | — | `DocumentListRowOutput` | `library.unassign`: detaches from its project, never restores a TTL | owner | |
+| `GET` | `/api/documents/:id/delete-impact` | — | `DeleteImpactOutput` `{ comparisons, draftsUngrounded, threadsUnlinked }` | `library.deleteImpact`: dry-run count for a delete confirmation | owner | |
+| `GET` | `/api/documents/:id/text` | — | `DocumentTextOutput` `{ documentId, text, textHash, inputMode, sampleId }` | `documentText.getText`: the document's own `canonical_text`, byte-exact | owner | |
+| `POST` | `/api/documents/:id/analyze` | — | `DocumentWithFindingsOutput` | `understand.analyzeDocument`: idempotent retry of an incomplete analysis; refuses on a sample document | principal | yes |
 | `POST` | `/api/documents/:id/prepare` | `PrepareQuery` (optional `?lens=`) | `PrepareOutput` | `prepare.generate`: lawyer questions, checklist, Markdown export | principal | yes |
+| `POST` | `/api/samples/:sampleId/open` | `SampleIdParams` (a fixed registry id) | `SampleOpenOutput` `{ documentId }` | `samples.openSample`: replays one of five recorded analyses, no model call | principal | |
 | `POST` | `/api/verify-batch` | `VerifyBatchInput` | `VerifyBatchOutput` | `verifyBatch.run`: fresh statuses for a reopened guest thread | principal, ownership checked per document | |
 | `POST` | `/api/ask` | `AskGuestInput` (query, optional `documentIds` and bounded `history`) | event stream, then `AskMessageOutput` | `ask.ask`: an unsaved turn; nothing is persisted | principal | yes |
+| `GET` | `/api/threads` | `ListQuery` | `ThreadListOutput` (a guest gets an empty list) | `library.list` | principal | |
 | `POST` | `/api/threads` | `CreateThreadInput` (optionally importing a guest thread) | `ThreadOutput` | `ask.createThread` | user | |
+| `PATCH` | `/api/threads/:id` | `RenameInput` `{ title }` | `ThreadListRowOutput` | `library.rename` | owner | |
+| `DELETE` | `/api/threads/:id` | — | `204` | `library.remove`: messages and citations cascade | owner | |
+| `DELETE` | `/api/threads/:id/project` | — | `ThreadListRowOutput` | `library.unassign` | owner | |
 | `POST` | `/api/threads/:id/messages` | `AskMessageInput` | event stream, then `AskMessageOutput` | `ask.ask`: a turn on a saved thread | user, owner of the thread | yes |
 | `GET` | `/api/threads/:id/messages` | `ListMessagesInput` (`?limit=`) | `MessagesOutput` | `ask.listRecentMessages`: citations re-verified | user, owner of the thread | |
+| `GET` | `/api/comparisons` | `ListQuery` | `ComparisonListOutput` | `library.list` | principal | |
 | `POST` | `/api/comparisons` | `CreateComparisonInput` | `ComparisonOutput` | `compare.compare` | principal, owner of **both** documents | yes |
 | `GET` | `/api/comparisons/:id` | — | `ComparisonWithChangesOutput` | `compare.get`: both sides re-verified | principal | |
+| `PATCH` | `/api/comparisons/:id` | `RenameInput` `{ title }` | `ComparisonListRowOutput` | `library.rename` | owner | |
+| `DELETE` | `/api/comparisons/:id` | — | `204` | `library.remove`: changes cascade; the two documents are untouched | owner | |
+| `DELETE` | `/api/comparisons/:id/project` | — | `ComparisonListRowOutput` | `library.unassign` | owner | |
+| `GET` | `/api/drafts` | `ListQuery` | `DraftListOutput` (one row per revision chain: its latest revision) | `library.list` | principal | |
 | `POST` | `/api/drafts` | `CreateDraftInput` | `DraftOutput` | `draft.create` | principal; owner of the grounding document, if any | yes |
-| `POST` | `/api/drafts/:id/revise` | `ReviseDraftInput` | `DraftOutput` | `draft.revise` | principal, owner of the parent draft | yes |
 | `GET` | `/api/drafts/:id` | — | `DraftWithSectionsOutput` | `draft.get` | principal | |
+| `PATCH` | `/api/drafts/:id` | `RenameInput` `{ title }` | `DraftListRowOutput` | `library.rename`: writes the title to **every row in the chain** | owner | |
+| `DELETE` | `/api/drafts/:id` | — | `204` | `library.remove`: deletes the **whole revision chain**, leaf first | owner | |
+| `DELETE` | `/api/drafts/:id/project` | — | `DraftListRowOutput` | `library.unassign`: applies to the whole chain | owner | |
+| `GET` | `/api/drafts/:id/revisions` | — | `DraftRevisionsOutput` `{ items }` | `library.revisions`: every revision in the chain, creation-ordered, `isCurrent`/`isLatest` flags | owner | |
+| `POST` | `/api/drafts/:id/revise` | `ReviseDraftInput` | `DraftOutput` | `draft.revise` | principal, owner of the parent draft | yes |
 | `POST` | `/api/projects` | `CreateProjectInput` | `ProjectOutput` | `projects.createProject` | user | |
-| `GET` | `/api/projects` | — | `ProjectsListOutput` | `projects.listProjects` | principal (a guest gets an empty list) | |
+| `GET` | `/api/projects` | — | `ProjectsListOutput` (`{ projects }` — the one list route that predates, and keeps, the older envelope) | `projects.listProjects` | principal (a guest gets an empty list) | |
 | `GET` | `/api/projects/:id` | — | `ProjectDetailOutput` | `projects.getProject` | user, owner | |
+| `PATCH` | `/api/projects/:id` | `RenameProjectInput` `{ name }` (≤ 255 chars, server-enforced) | `ProjectOutput` | `library.rename` | owner | |
+| `DELETE` | `/api/projects/:id` | — | `204` | `library.remove`: items are unassigned (`project_id` set null), never deleted | owner | |
 | `POST` | `/api/documents/:id/save-to-project` | `SaveToProjectInput` | `SaveToProjectOutput` | `projects.saveToProject` | user, owner of the document and the project | |
 | `POST` | `/api/comparisons/:id/save-to-project` | `SaveToProjectInput` | `SaveToProjectOutput` | `projects.saveToProject` | user, owner of the comparison and the project | |
 | `POST` | `/api/drafts/:id/save-to-project` | `SaveToProjectInput` | `SaveToProjectOutput` | `projects.saveToProject` | user, owner of the draft's whole revision chain and the project | |
 | `POST` | `/api/threads/:id/save-to-project` | `SaveToProjectInput` | `SaveToProjectOutput` | `projects.saveToProject` | user, owner of the thread and the project | |
+| `DELETE` | `/api/me/data` | — | `DeleteAllOutput` `{ deleted: { documents, comparisons, drafts, threads, projects } }` | `library.deleteAll`: everything the principal owns, across all five types; a guest's cookie is cleared after | principal | |
 | `POST` | `/api/auth/claim` | — (derived from the session) | `ClaimResultOutput` | `auth.claimGuestSession`: re-own guest documents, comparisons and drafts, then clear the guest cookie | signed-in user plus guest cookie; called once after sign-in | |
+| `GET` | `/api/session` | — | `SessionOutput` `{ kind, displayName?, signInAvailable, guestTtlHours }` | `session.getSession`: no ids, emails or tokens on the wire | principal | |
+| `POST` | `/api/session/sign-out` | — | `SessionOutput` | `session.signOut`: clears the user-session cookie; a fresh guest session is minted lazily on the next request | principal | |
+| `POST` | `/api/auth/dev-sign-in` | `DevSignInInput` `{ displayName }` | `SessionOutput` | `session.devSignIn`: dev-only stand-in for a real OAuth sign-in; **404s in production** | principal | |
 | `GET` | `/api/health` | — | `HealthOutput` | builds the providers and storage adapter to check configuration; no LLM call | anyone | |
+| `GET` | `/api/e2e/ping` | — | `HealthOutput` | `e2e.ping`: the e2e harness's own readiness probe; **404s outside `SABOOT_E2E=1`, and that flag is itself refused in production** | anyone, e2e harness only | |
+| `GET` | `/api/e2e/throw` | — | — (always throws) | `e2e.forceThrow`: a deliberate failure for error-boundary tests; same dev/e2e-only refusal as `/api/e2e/ping` | anyone, e2e harness only | |
 
 ### Guests and chat
 
@@ -64,6 +92,30 @@ deliberate: guest chat never needs a server-side row.
 The server reads the bytes through the storage ref and extracts the text itself. A client-supplied
 string is never accepted as a document's text.
 
+### List responses, rename and delete
+
+Every `GET` that returns a collection (documents, comparisons, drafts, threads) answers
+`{ items: T[], nextCursor: string | null }`, newest-activity first (`updatedAt` desc, `id` as the
+tiebreak); the cursor is an opaque token, not a page number. `GET /api/projects` is the one
+pre-existing exception, and keeps its own `{ projects: ProjectOutput[] }` shape. **A list row never
+carries a verification status, a quote, a span or model text** — an exact-key contract test pins
+this (a field like `processingStatus` is legal; a bare `status`/`verification`/`spanText` key is
+not).
+
+Rename (`PATCH`) is server-capped independently of each contract's outer sanity bound: documents,
+comparisons, drafts and threads at 120 characters; projects at 255 — both trimmed, with control and
+bidi characters stripped, same as everywhere else user text is stored. A draft's rename writes the
+new title onto **every row in its revision chain**, in one transaction, because the library only
+ever shows a chain's latest revision under one shared title.
+
+Delete cascades follow the FK behaviour in [docs/SCHEMA.md](SCHEMA.md#delete-behaviour): deleting a
+document first deletes every comparison that references it; deleting a draft deletes its whole
+revision chain; deleting a project only unassigns its items (`project_id` set to null) and never
+deletes them or restores a TTL. `GET /api/documents/:id/delete-impact` is the dry-run companion a
+delete confirmation needs before the user commits to it; the other three types use fixed
+confirmation copy client-side instead (a draft's dialog states its revision count from
+`DraftListRowOutput.revisionCount`).
+
 ## Response conventions
 
 - **Verification.** Every quote on the wire is a `VerificationOutput`:
@@ -71,9 +123,17 @@ string is never accepted as a document's text.
     document's own text;
   - `approximate` adds `claimedQuote`, the model's text;
   - `not_found` carries only `claimedQuote`.
+  - **`textHash`** is set on all three: the source document's `canonical_text_hash` when a real
+    document backs the verification, or the fixed anti-oracle sentinel `sha256("")` =
+    `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` whenever there is no real
+    document at all (an unlinked citation, a foreign or deleted source) — never a distinguishable
+    value that would let a client tell "no document" apart from "a document I can't read."
 
   A verified passage never carries model text. Canonical text and storage refs never appear in a
-  response.
+  response, with one exception: `GET /api/documents/:id/text`'s `DocumentTextOutput.text`, which
+  *is* the document's `canonical_text`, byte-for-byte — the one field the wire-contract lint allows
+  to carry it, because the client-side highlighter (`bindSpan()`) needs the exact text `verify()`
+  matched against, not a sanitised copy of it.
 - **AI text is labelled.** Every model-written field has a provenance sibling
   (`provenance: "ai_generated"`, or `"templated"` for fixed draft text). Streamed `token` events
   are an unlabelled live preview of the final message, which carries the label.
@@ -158,6 +218,45 @@ matching `Error#message` text:
 - **The retry handle.** When `POST /api/documents` fails after the caller's document row exists,
   the body adds `documentId`, so the analysis can be retried through
   `POST /api/documents/:id/analyze`.
+
+## Samples
+
+`POST /api/samples/:sampleId/open` accepts only a fixed registry id (`lease`, `offer_letter`, `nda`,
+`privacy_policy`, `freelance`) — never a file, text or a model output — and can never become an
+analysis cache or a content oracle. It replays one of five recordings of a real, previously-captured
+model response through the real Understand service, so the resulting findings are persisted and
+re-verified exactly like a live analysis; the only difference is that no model is called. Opening a
+sample the caller already holds, unexpired, returns that same copy rather than creating a second one.
+An unknown or not-yet-recorded sample id (the Compare sample, `lease_v2`, is deferred) returns `404`.
+`sampleId` is echoed on `DocumentOutput`, so the client can honestly label a recorded analysis;
+`POST /api/documents/:id/analyze` on a sample document refuses with `422 INVALID_DOCUMENT` /
+`sample_readonly` rather than silently turning a recorded analysis into a live one still labelled
+"recorded."
+
+## Session and dev sign-in
+
+`GET /api/session` returns a client-facing summary only — `kind` (`"guest" | "user"`), an optional
+`displayName`, `signInAvailable` and `guestTtlHours` — never an id, email or token; identity itself
+stays server-side in the signed cookie. `signInAvailable` is `false` in a production build, because
+`POST /api/auth/dev-sign-in` is a **development stand-in for real OAuth**, not a production sign-in
+path: it throws at construction and 404s when `NODE_ENV === "production"`, and a cookie signed with
+its non-production fallback secret is refused by the resolver even if one somehow reached a
+production request. `POST /api/session/sign-out` clears the user-session cookie; a fresh guest
+session is minted lazily on the next principal-resolving request, not by this route itself. Sign-in,
+sign-out, claim and delete-all are broadcast to every open tab over `BroadcastChannel("saboot:session")`
+(a client-side contract, not a route), so a session change in one tab is reflected in every other tab
+without a reload.
+
+## Document text, caching and the anti-oracle sentinel
+
+`GET /api/documents/:id/text` answers `Cache-Control: no-store`, with **no `ETag` and no `304`
+path at all** — a stale `If-None-Match` on an otherwise-valid request changes nothing, and `canAccess`
+runs on every request because there's no conditional-GET short-circuit that could bypass it. A
+document that hasn't finished extraction (`pending` or `extraction_failed`) answers `422
+INVALID_DOCUMENT` / `document_not_ready` rather than a 200 with an empty string. A scanned
+(`native_document`) document's text is the model's own transcription, not independent evidence; the
+response says so through `inputMode`, and the client is expected to label it accordingly rather than
+treat it as ordinary document text.
 
 ## Rate limiting
 

@@ -12,7 +12,14 @@ disagree, the SQL wins.
   one has changed, so a fix always goes forward in a new file.
 - [`schema.ts`](../src/db/schema.ts) mirrors the SQL for typed queries. Drizzle Kit's diff is used
   only as a parity check, never as a generator.
-- `migrations/prod-only/` needs Supabase roles, `pg_cron` and `pg_net`, and is applied only there.
+- `migrations/prod-only/` needs Supabase roles and (for most of them) `pg_cron`, and is applied only
+  there, by [`scripts/db-migrate-remote.ts`](../scripts/db-migrate-remote.ts) (`npm run
+  db:migrate:remote`). It runs every numbered migration first, then the prod-only files in this
+  order: `0004`, `0005`, `0006`, `0001`, `0002`, `0007`. The three narrow revokes go first because
+  0001's post-condition checks that no public table or function is still reachable by the Data API
+  roles, which holds on a fresh database only once objects added after 0001 are revoked too. 0003
+  (superseded by 0007 below) also needs `pg_net` and is skipped. Applied prod-only files are
+  checksummed in `schema_migrations_prod_only`, and an edited one is refused.
 - `migrations/pending/` holds work blocked on a dependency. The runner applies neither folder.
 
 ## Access rules
@@ -34,8 +41,9 @@ disagree, the SQL wins.
   [`0001_m3_revoke_data_api_grants.sql`](../src/db/migrations/prod-only/0001_m3_revoke_data_api_grants.sql)
   revokes all privileges from `PUBLIC`, `anon` and `authenticated` on every app table and function,
   then asserts that none survive. Row-level security is not used, because `auth.uid()` does not
-  exist on PGlite. The revoke is tested against stand-in roles on PGlite. The anon-key denial test
-  against a live Supabase project runs once a project exists.
+  exist on PGlite. The revoke is tested against stand-in roles on PGlite. Against the live project,
+  `npm run db:migrate:remote` queries `information_schema.role_table_grants` after applying and
+  fails if `anon` or `authenticated` still holds any privilege on a public table.
 
 ## Entity relationships
 
@@ -109,6 +117,14 @@ client-supplied string is never accepted as canonical text.
   one row. It is namespaced `{principalKey}/{uuid}/{filename}` and keeps its original guest prefix
   after a claim. Access always follows the row's current owner, never the ref's name.
 - **`expires_at`.** Required for guest rows: upload time plus 3 hours.
+- **`title`.** Nullable; an untitled row resolves to its `filename` at the service layer, never here.
+- **`sample_id`.** Nullable; names which bundled sample (`src/server/samples/registry.ts`) a document
+  was opened from, if any. Validated against the live registry in the service, not a DB CHECK — the
+  sample set is expected to grow, so a registry-mirrored CHECK would need a new migration every time
+  it does.
+- **`updated_at`.** Bumped by every write that changes what the row shows (rename, analysis
+  complete, save-to-project, unassign) in the same statement — never by a trigger, since a guest→user
+  claim rewrites owner columns without that being a visible change worth reordering the library by.
 
 ### `analyses`, `findings`, `finding_lens_explanations`
 
@@ -135,6 +151,8 @@ client-supplied string is never accepted as canonical text.
   - The document pair is immutable (enforced by a trigger).
   - A guest comparison's `expires_at` is capped at `LEAST(documentA.expires_at,
     documentB.expires_at)`.
+  - `title` (nullable; resolves to `"<title A> vs <title B>"`) and `updated_at` (bumped the same way
+    as `documents.updated_at`) follow the same pattern as documents.
 - **`comparison_changes`.** Each side (`quote_text_a/b`, `doc_a/b_span_*`,
   `verification_status_a/b`) is verified independently against its own document, under the same
   CHECKs as findings. An added or removed change has no quote, and so no status, on its missing
@@ -163,7 +181,13 @@ client-supplied string is never accepted as canonical text.
   - `grounding_document_id` may be set only in `document_grounded` mode.
   - `parent_draft_id` forms the revision chain.
   - A guest draft expires no later than its grounding document. Every revision takes its chain
-    root's `expires_at`.
+    root's `expires_at`, `projectId` and `title` — a revision is always a continuation of its
+    parent's identity, never a fresh, unfiled draft.
+  - `title` (nullable; resolves to `"<type label> draft"`) is stored on **every row in the chain**,
+    not derived from the root at read time, so a rename rewrites every revision in one transaction.
+  - `user_instructions` (nullable) records what a revision was actually asked for. Rows written
+    before this column existed have nothing to show and stay NULL — inventing a value for them
+    would misattribute a request nobody made.
 - **`draft_sections.provenance`.** Records where a section's text came from, `templated` or
   `ai_generated`. A CHECK rejects any value mentioning verification, because drafts are never
   verified.
@@ -191,6 +215,25 @@ client-supplied string is never accepted as canonical text.
   served to a lookup for the primary. `expires_at` is NOT NULL: 7 days, capped at the source
   document's expiry for guest uploads, so a cache row never keeps a guest's excerpts longer than the
   document itself.
+
+### `storage_objects`
+
+Backs `PostgresStorageAdapter` (`src/server/storage/postgres-adapter.ts`), the storage backend
+Vercel forces (each function instance has its own ephemeral disk, so uploaded bytes have to live
+somewhere every instance can reach). One row per `storage_ref`, added by
+[`0008_storage_objects.sql`](../src/db/migrations/0008_storage_objects.sql).
+
+- **`bytes`.** NULL until `writeRelayed` writes it exactly once — an atomic conditional `UPDATE`
+  (`WHERE bytes IS NULL`), not a DB trigger, is what makes the second write a no-op instead of a
+  silent overwrite.
+- **`confirmed_at`.** The one-shot marker `confirmUpload` sets; a CHECK requires `bytes` and
+  `filename` to already be present before it can be set.
+- **`filename`/`mime_type`.** Nullable, because a row can originate from `writeRelayed` directly with
+  no prior `createUploadTarget` call (the samples-open flow mints a ref and writes it in one step) —
+  such a row carries no declared filename/type and can never be confirmed, matching
+  `LocalFsStorageAdapter`'s own upload-record requirement.
+- **No Data API access.** [`prod-only/0006_storage_objects_revoke_data_api_grants.sql`](../src/db/migrations/prod-only/0006_storage_objects_revoke_data_api_grants.sql)
+  extends the deny-all posture here too.
 
 ## Native-document ceiling
 
@@ -228,23 +271,87 @@ dependent rows never expire after what they reference, and leaves go first even 
 tie, the two `RESTRICT` rules never block a guest sweep. They fire only for saved user data, where
 blocking is intended.
 
-The same function returns the storage refs whose bytes must go, and
-[`prod-only/0003_m4_pg_cron_pg_net_jobs.sql`](../src/db/migrations/prod-only/0003_m4_pg_cron_pg_net_jobs.sql)
-schedules the sweep and a rate-limit and cache prune every 5 minutes with `pg_cron`. It sends the
-refs to a storage-cleanup Edge Function through `pg_net`, and that function is not in this
-repository yet.
+The same function returns the storage refs whose bytes must go. Which migration schedules the sweep
+depends on the storage backend:
+[`prod-only/0007_guest_ttl_sweep_postgres_storage.sql`](../src/db/migrations/prod-only/0007_guest_ttl_sweep_postgres_storage.sql)
+runs it and a rate-limit/cache prune every 5 minutes with `pg_cron`, and deletes the returned refs'
+`storage_objects` rows in the same transaction — no external call, since the bytes are already rows
+in this database. It supersedes
+[`prod-only/0003_m4_pg_cron_pg_net_jobs.sql`](../src/db/migrations/prod-only/0003_m4_pg_cron_pg_net_jobs.sql),
+which sends the refs to a storage-cleanup Edge Function through `pg_net` instead — designed for a
+real external object store, that function was never written, and 0003 is skipped in the deploy
+order now that production storage lives in Postgres (`storage_objects`, above).
 
 **Claim** (guest to user) locks rows in the sweep's own order, then sets the owner and clears
 `expires_at` in one statement per row ([ADR 0010](adr/0010-guest-data-lifecycle-and-claim.md)).
 
+## Storage cleanup outbox
+
+A document's row and its stored bytes are deleted independently: the row goes inside the request's
+own short transaction (rename/delete/delete-all all run this way), and the object delete is queued
+for a separate worker rather than attempted inline, so a slow or failing storage call never holds
+that transaction open. [`0006_storage_cleanup_outbox.sql`](../src/db/migrations/0006_storage_cleanup_outbox.sql)
+adds `storage_cleanup_outbox (storage_ref PRIMARY KEY, created_at)`; every document-owning delete
+path inserts the document's `storage_ref` into it (`ON CONFLICT DO NOTHING`) in the same transaction
+that deletes the row.
+
+[`0007_storage_cleanup_retry_and_thread_index.sql`](../src/db/migrations/0007_storage_cleanup_retry_and_thread_index.sql)
+adds the retry and tombstone machinery:
+
+- **`purged_at`, `next_attempt_at`, `attempt_count`.** A failed purge attempt bumps `attempt_count`
+  and pushes `next_attempt_at` out by an exponential backoff (30 s doubling up to a 1 hour cap,
+  computed in [`data/library.ts`](../src/server/data/library.ts)`.processQueuedStorageRef`), so a
+  transient storage failure retries without a human — and without hammering the storage API in a
+  tight loop.
+- **A live-ref guard.** Before purging, the worker re-checks that no `documents` row still points at
+  the ref (`storage_ref` can be reused across a row's lifetime in principle) — a purge only proceeds
+  once nothing live references the object.
+- **A tombstone, not a delete-and-forget.** A purged row's outbox entry is kept (`purged_at` set),
+  and an `AFTER INSERT` trigger on `documents` (`documents_storage_ref_tombstone_guard`) rejects a new
+  row that reuses a `storage_ref` still queued *or already purged* — a ref that has gone through this
+  outbox once can never be silently reissued to a different document.
+- **A due-work index**
+  (`storage_cleanup_outbox_due_idx … WHERE purged_at IS NULL`) lets the worker select bounded batches
+  of pending work without a failed oldest row starving everything queued after it.
+
+**Running the worker.** There is no scheduled job for this locally; drain the queue by hand with
+`npx tsx scripts/storage-cleanup.ts` (refuses outside a local PGlite target — this is the local-dev
+stand-in only). It calls
+[`storage/cleanup-worker.ts`](../src/server/storage/cleanup-worker.ts)`.runStorageCleanupBatch`, which
+selects up to 50 due entries and, for each, purges through the storage adapter (`LocalFsStoragePurger`
+locally) inside the same short transaction as the live-ref recheck and the `purged_at` write. On the
+Postgres storage backend, this per-row worker isn't what actually drains production: `prod-only/0007`'s
+5-minute sweep (above) also deletes any `storage_objects` row gone unreferenced for over an hour,
+which covers a queued outbox delete generically, and then removes the now-pointless outbox row
+itself — so nothing needs to run `cleanup-worker.ts` against a live project. That script (and a
+`pg_cron`-scheduled sweep calling a storage-cleanup Edge Function over `pg_net`) would only matter
+for a real external object store, which this deployment doesn't use.
+
+**Prod-only grants.**
+[`prod-only/0004_storage_cleanup_outbox_revoke_data_api_grants.sql`](../src/db/migrations/prod-only/0004_storage_cleanup_outbox_revoke_data_api_grants.sql)
+and
+[`prod-only/0005_documents_storage_ref_tombstone_guard_revoke.sql`](../src/db/migrations/prod-only/0005_documents_storage_ref_tombstone_guard_revoke.sql)
+extend the deny-all Data API posture to the outbox table and its trigger function, each asserting no
+grant survives the revoke.
+
 ## Indexes
 
-Every foreign key and owner column is indexed, as is every `expires_at` the sweep scans. Two indexes
-serve specific queries:
+Every foreign key and owner column is indexed, as is every `expires_at` the sweep scans. Several
+indexes serve specific queries:
 
 - `messages (thread_id, created_at DESC, id DESC)` matches the "latest N messages" query exactly.
 - `documents (lower(storage_ref))` is unique, because a case-insensitive filesystem would otherwise
   let two refs share one file.
+- **Keyset library pages.** `documents`, `comparisons` and `drafts` each carry one composite index
+  per owner column — `(owner_user_id, updated_at DESC, id DESC)` and `(owner_guest_session_id,
+  updated_at DESC, id DESC)` — matching the "newest activity first" list query's own order exactly,
+  one index per owner column rather than one index with an `OR` (ownership on these tables is split
+  across two mutually-exclusive nullable columns; the index split mirrors that same split). `threads`
+  gets only the `owner_user_id` form, since threads have no guest owner.
+- **The outbox's own indexes.** `storage_cleanup_outbox_due_idx (next_attempt_at, created_at,
+  storage_ref) WHERE purged_at IS NULL` serves the worker's batch selection; `lower(storage_ref)`
+  is indexed separately so the tombstone-guard trigger's lookup stays fast as the (retained) history
+  of purged refs grows.
 
 No index uses `IF NOT EXISTS`, so a same-name index with different columns fails loudly instead of
 doing nothing.
