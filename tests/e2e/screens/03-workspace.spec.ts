@@ -241,8 +241,14 @@ test.describe("Analysis workspace — resting-state highlights", () => {
     await page.goto(`/documents/${id}`);
     await page.waitForLoadState("networkidle");
 
-    const marksCount = await page.locator("[data-document-id] mark").count();
-    expect(marksCount, "no <mark> rendered at rest — bindSpan() may be suppressing every finding on this fixture").toBeGreaterThan(0);
+    // Polled, not read once: networkidle only means the fetches finished, and a shared CI runner can
+    // still be rendering the document body at that instant.
+    await expect
+      .poll(() => page.locator("[data-document-id] mark").count(), {
+        message: "no <mark> rendered at rest — bindSpan() may be suppressing every finding on this fixture",
+        timeout: 20_000,
+      })
+      .toBeGreaterThan(0);
 
     // Cross-checks every bound finding's own spanText (QuoteBlock's first <p><bdi>, per
     // quote-block.tsx — the badge and the claimedQuote line are their own separate elements) against
@@ -540,8 +546,11 @@ test.describe("Analysis workspace — route-entry focus and the disclaimer line"
     await page.goto(`/documents/${id}`);
     await page.waitForLoadState("networkidle");
 
-    const focusedIsHeading = await page.evaluate(() => document.activeElement?.tagName === "H1");
-    expect(focusedIsHeading, "focus must land on the document's <h1> on route entry (the App Router focus hazard)").toBe(true);
+    // A retrying assertion: the focus effect runs after hydration, which can trail networkidle.
+    await expect(
+      page.getByRole("heading", { level: 1 }),
+      "focus must land on the document's <h1> on route entry (the App Router focus hazard)",
+    ).toBeFocused({ timeout: 20_000 });
 
     // `:focus-visible` reflects the browser's own focus-modality heuristic, not what actually
     // painted — it still matches here (the ring is real focus, just visually suppressed), so the
