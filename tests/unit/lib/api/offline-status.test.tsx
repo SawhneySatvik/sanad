@@ -49,6 +49,25 @@ describe("useIsOffline", () => {
     expect(result.current).toBe(false);
   });
 
+  it("a real online event clears a failure reported during the outage, without waiting out the decay", () => {
+    vi.useFakeTimers();
+    const nav = { onLine: false };
+    vi.stubGlobal("navigator", nav);
+    const { result } = renderHook(() => useIsOffline());
+
+    act(() => reportNetworkFailure());
+    expect(result.current).toBe(true);
+
+    act(() => {
+      nav.onLine = true;
+      window.dispatchEvent(new Event("online"));
+    });
+    expect(result.current).toBe(false);
+
+    act(() => vi.advanceTimersByTime(15_000));
+    expect(result.current).toBe(false);
+  });
+
   it("a second reportNetworkFailure() restarts the decay window rather than letting the first timer clear it early", () => {
     vi.useFakeTimers();
     vi.stubGlobal("navigator", { onLine: true });

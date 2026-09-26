@@ -35,13 +35,27 @@ export function reportNetworkFailure(): void {
   notify();
 }
 
+// A real "online" event is fresher evidence than a failure from while the browser was offline:
+// without this, a background fetch that failed during the outage kept the composer disabled for the
+// rest of DECAY_MS after reconnecting. If the connection is still broken, the next failed fetch
+// raises the flag again.
+function clearRecentFailure(): void {
+  recentFailure = false;
+  if (decayTimeout) clearTimeout(decayTimeout);
+  decayTimeout = null;
+}
+
 function subscribe(listener: Listener): () => void {
+  const onOnline = () => {
+    clearRecentFailure();
+    listener();
+  };
   listeners.add(listener);
-  window.addEventListener("online", listener);
+  window.addEventListener("online", onOnline);
   window.addEventListener("offline", listener);
   return () => {
     listeners.delete(listener);
-    window.removeEventListener("online", listener);
+    window.removeEventListener("online", onOnline);
     window.removeEventListener("offline", listener);
   };
 }

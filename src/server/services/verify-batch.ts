@@ -113,8 +113,13 @@ export async function run(deps: VerifyBatchDeps, principal: Principal, input: Ve
     });
   }
 
-  const remaining = MIN_RESPONSE_MS - (performance.now() - started);
-  if (remaining > 0) await sleep(remaining);
+  // Re-measured after each sleep: a timer can fire a millisecond or two early against
+  // performance.now(), and the floor is a guarantee, not an approximation.
+  let remaining = MIN_RESPONSE_MS - (performance.now() - started);
+  while (remaining > 0) {
+    await sleep(Math.ceil(remaining));
+    remaining = MIN_RESPONSE_MS - (performance.now() - started);
+  }
   return { results };
 }
 
