@@ -45,6 +45,12 @@ describe("EmptyState", () => {
     expect(onClick).toHaveBeenCalledOnce();
   });
 
+  it("renders an href action as a real link, not a button", () => {
+    render(<EmptyState heading="No documents yet." action={{ label: "Go to chat to add a document", href: "/chat" }} />);
+    expect(screen.getByRole("link", { name: "Go to chat to add a document" })).toHaveAttribute("href", "/chat");
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+
   it("renders neither icon nor asset for a bare heading-only empty state", () => {
     const { container } = render(<EmptyState heading="Nothing here yet" />);
     expect(container.querySelector("svg")).not.toBeInTheDocument();

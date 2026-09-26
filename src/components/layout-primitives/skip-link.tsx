@@ -1,7 +1,7 @@
 /**
  * Visually hidden until focused, so a keyboard/screen-reader user reaches it first on every route
  * without a sighted user ever seeing it — jumping straight past the sidebar to the route's own
- * content.
+ * content. WCAG 2.4.1 Bypass Blocks.
  */
 export function SkipLink({ targetId }: { targetId: string }) {
   return (

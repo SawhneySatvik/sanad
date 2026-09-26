@@ -1,11 +1,14 @@
+import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AssetPlaceholder } from "./asset-placeholder";
 
+export type EmptyStateAction = { label: string; onClick: () => void } | { label: string; href: string };
+
 export interface EmptyStateProps {
   heading: string;
   body?: string;
-  action?: { label: string; onClick: () => void };
+  action?: EmptyStateAction;
   /** At most one of icon/asset — a bare heading-only empty state commissions neither on purpose. */
   icon?: LucideIcon;
   asset?: { id: string; ratio: string };
@@ -23,11 +26,16 @@ export function EmptyState({ heading, body, action, icon: Icon, asset, headingLe
       {asset && <AssetPlaceholder assetId={asset.id} ratio={asset.ratio} label={heading} sizePx={{ w: 240 }} />}
       <Heading className="font-display text-lg font-medium text-foreground">{heading}</Heading>
       {body && <p className="max-w-sm text-sm text-muted-foreground">{body}</p>}
-      {action && (
-        <Button variant="outline" size="sm" onClick={action.onClick}>
-          {action.label}
-        </Button>
-      )}
+      {action &&
+        ("href" in action ? (
+          <Button asChild variant="outline" size="sm">
+            <Link href={action.href}>{action.label}</Link>
+          </Button>
+        ) : (
+          <Button variant="outline" size="sm" onClick={action.onClick}>
+            {action.label}
+          </Button>
+        ))}
     </div>
   );
 }

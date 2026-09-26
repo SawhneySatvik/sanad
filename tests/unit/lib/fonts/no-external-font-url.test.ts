@@ -4,13 +4,11 @@
  * fonts.googleapis.com/fonts.gstatic.com request from the browser. Two halves:
  *
  * 1. A static source scan (this file's main describe block): no literal reference to either host
- *    anywhere in src/, and the root layout never imports a fonts module itself (each route group
- *    scopes its own preload list instead). This runs on every `npm test`, with no build required,
+ *    anywhere in src/, and every face is applied once, on <html>, so content portalled into <body>
+ *    (dialogs, sheets, menus, toasts) inherits the same faces as the page. This runs on every `npm test`, with no build required,
  *    and is red-proven below.
- * 2. A `.next` build-output scan, run only when a production build's CSS is present. Neither
- *    (marketing)/fonts.ts nor (app)/fonts.ts is imported by any route yet, so today there is no
- *    @font-face rule in any build output to check at all; this half stays a no-op until a route
- *    group actually consumes one of them, and is not what this gate's red-proof rests on. Scans
+ * 2. A `.next` build-output scan, run only when a production build's CSS is present. The
+ *    red-proof below rests on the source scan, not on this half. Scans
  *    the whole of .next/static, not a fixed css/ subfolder — Turbopack places generated CSS under
  *    static/chunks/ alongside JS, confirmed by inspecting a real build's own output tree rather
  *    than assumed from convention.
@@ -43,7 +41,7 @@ function srcFiles(): SourceFile[] {
 describe("no external font URL anywhere in src/", () => {
   it("scans the whole of src/ (positive control)", () => {
     const files = srcFiles().map((f) => f.file);
-    expect(files).toEqual(expect.arrayContaining(["src/app/globals.css", "src/app/(app)/fonts.ts", "src/app/(marketing)/fonts.ts"]));
+    expect(files).toEqual(expect.arrayContaining(["src/app/globals.css", "src/app/fonts.ts"]));
     expect(files.length).toBeGreaterThan(50);
   });
 
@@ -51,9 +49,13 @@ describe("no external font URL anywhere in src/", () => {
     expect(scanForExternalFontUrls(srcFiles())).toEqual([]);
   });
 
-  it("the root layout never imports a fonts module — each route group scopes its own preload list", () => {
+  it("the root layout applies every face's variable on <html>, so portalled content inherits them", () => {
     const layout = readFileSync(path.join(process.cwd(), "src/app/layout.tsx"), "utf8");
-    expect(layout).not.toMatch(/["'][^"']*fonts["']/);
+    expect(layout).toMatch(/from "\.\/fonts"/);
+    const html = layout.slice(layout.indexOf("<html"), layout.indexOf("<body"));
+    for (const face of ["sourceSerif", "plexSans", "devanagari", "literata", "plexMono"]) {
+      expect(html).toContain(`\${${face}.variable}`);
+    }
   });
 });
 
@@ -68,8 +70,8 @@ describe("red-proof: scanForExternalFontUrls", () => {
   });
 });
 
-describe(".next build-output font-face check (best-effort; a no-op until a route group consumes the fonts modules)", () => {
-  it("every @font-face src in any built CSS is self-hosted under /_next/static/media/, when build output exists", () => {
+describe(".next build-output font-face check (best-effort; runs when a production build exists)", () => {
+  it("every @font-face src in any built CSS is same-origin, never another host, when build output exists", () => {
     const staticDir = path.join(process.cwd(), ".next/static");
     if (!existsSync(staticDir)) return; // no production build has run in this session — nothing to check yet
 
@@ -81,7 +83,11 @@ describe(".next build-output font-face check (best-effort; a no-op until a route
     for (const css of cssFiles) {
       for (const block of css.matchAll(/@font-face\s*{[^}]*}/g)) {
         for (const url of block[0].matchAll(/url\(([^)]+)\)/g)) {
-          if (!url[1].includes("/_next/static/media/")) externalFontFaceUrls.push(url[1]);
+          // The build writes these relative to its own chunk ("../media/…") or root-relative; only a
+          // scheme or a protocol-relative "//" would reach another origin.
+          const src = url[1].replace(/^["']|["']$/g, "");
+          if (/^[a-z][a-z0-9+.-]*:/i.test(src) && !src.startsWith("data:")) externalFontFaceUrls.push(src);
+          else if (src.startsWith("//")) externalFontFaceUrls.push(src);
         }
       }
     }

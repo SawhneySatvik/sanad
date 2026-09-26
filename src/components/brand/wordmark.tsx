@@ -12,12 +12,14 @@ export function Wordmark({ collapsed = false }: WordmarkProps) {
       {collapsed ? (
         <span
           aria-hidden="true"
-          className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary font-display text-sm font-medium text-primary-foreground"
+          // Not a filled brand-accent tile — the collapsed rail sits next to a lot of other icons,
+          // and a solid --primary square there reads as a nav/action button rather than the mark.
+          className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-foreground font-display text-sm font-medium text-background"
         >
           S
         </span>
       ) : (
-        <span className="font-display text-lg font-medium">Saboot</span>
+        <span className="font-display text-xl font-medium tracking-[-0.01em]">Saboot</span>
       )}
     </Link>
   );

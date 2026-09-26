@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import { devanagari, literata, plexMono, plexSans, sourceSerif } from "./fonts";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -23,7 +24,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // suppressHydrationWarning: next-themes sets the .dark class client-side before first paint,
     // which the server's own markup can never predict — this is next-themes' own documented
     // requirement, not a blanket escape hatch for other mismatches.
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${sourceSerif.variable} ${plexSans.variable} ${devanagari.variable} ${literata.variable} ${plexMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
       </body>

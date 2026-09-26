@@ -1,3 +1,4 @@
+import { FileText } from "lucide-react";
 import { resolveAssetSrc } from "./resolve-asset-src";
 
 export interface AssetPlaceholderProps {
@@ -10,7 +11,11 @@ export interface AssetPlaceholderProps {
   sizePx?: { w: number; h?: number };
 }
 
-/** A labelled placeholder at an asset's final ratio, until delivered art lands. */
+/**
+ * The asset at its final ratio, or until the art is delivered a quiet tinted shape with a drawn
+ * document glyph. No visible caption: a demo screen must not read as unfinished, and the label
+ * already names the slot for assistive tech.
+ */
 export function AssetPlaceholder({ assetId, ratio, label, sizePx }: AssetPlaceholderProps) {
   const src = resolveAssetSrc(assetId);
   const style = { aspectRatio: ratio, width: sizePx?.w, height: sizePx?.h };
@@ -25,9 +30,10 @@ export function AssetPlaceholder({ assetId, ratio, label, sizePx }: AssetPlaceho
       role="img"
       aria-label={label}
       style={style}
-      className="flex w-full items-center justify-center rounded-md border border-dashed border-border bg-muted p-4 text-center text-xs text-muted-foreground"
+      data-asset-id={assetId}
+      className="flex w-full items-center justify-center rounded-md border border-border bg-accent text-muted-faint"
     >
-      {`Placeholder — final art pending (${assetId})`}
+      <FileText aria-hidden="true" className="size-1/3 max-h-12 max-w-12" strokeWidth={1.25} />
     </div>
   );
 }

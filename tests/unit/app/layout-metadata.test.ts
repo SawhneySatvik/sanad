@@ -1,5 +1,17 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { metadata } from "@/app/layout";
+
+// next/font/google only works inside Next's compiler; the layout needs just each face's variable class.
+vi.mock("next/font/google", () => {
+  const face = (name: string) => () => ({ variable: `font-${name}`, className: name });
+  return {
+    Source_Serif_4: face("source-serif"),
+    IBM_Plex_Sans: face("plex-sans"),
+    IBM_Plex_Sans_Devanagari: face("devanagari"),
+    Literata: face("literata"),
+    IBM_Plex_Mono: face("plex-mono"),
+  };
+});
 
 function titleStrings(): string[] {
   const title = metadata.title;

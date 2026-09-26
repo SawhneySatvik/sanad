@@ -4,10 +4,10 @@ import { axe } from "jest-axe";
 import { AssetPlaceholder } from "@/components/feedback/asset-placeholder";
 
 describe("AssetPlaceholder", () => {
-  it("renders a labelled placeholder box at the exact ratio, naming its assetId", () => {
+  it("renders a labelled placeholder shape at the exact ratio, tagged with its assetId", () => {
     render(<AssetPlaceholder assetId="empty-library" ratio="1 / 1" label="Empty library illustration" />);
     const el = screen.getByRole("img", { name: "Empty library illustration" });
-    expect(el).toHaveTextContent("Placeholder — final art pending (empty-library)");
+    expect(el).toHaveAttribute("data-asset-id", "empty-library");
     expect(el).toHaveStyle({ aspectRatio: "1 / 1" });
   });
 
@@ -17,9 +17,9 @@ describe("AssetPlaceholder", () => {
     expect(el).toHaveStyle({ width: "240px", height: "180px" });
   });
 
-  it("is never mistakable for final art — the caption is real visible text, not just an aria-label", () => {
+  it("shows no visible caption, so a demo screen never reads as unfinished", () => {
     render(<AssetPlaceholder assetId="error-404" ratio="1 / 1" label="404 illustration" />);
-    expect(screen.getByText(/Placeholder — final art pending/)).toBeVisible();
+    expect(screen.getByRole("img", { name: "404 illustration" })).toHaveTextContent("");
   });
 
   it("has no axe violations", async () => {

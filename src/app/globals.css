@@ -197,9 +197,28 @@
      adds no focus treatment of its own). Most src/components/ui primitives set their own
      outline-none alongside a focus-visible:ring-* utility, replacing this outline outright rather
      than stacking with it — a few (badge; tabs' trigger, which sets its own outline-1/outline-ring
-     instead) don't, so this default can still apply for those. */
+     instead) don't, so this default can still apply for those. WCAG 2.4.7 Focus Visible. */
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
+  }
+
+  /* WCAG 2.3.3 Animation from Interactions: a visitor who has told their OS to reduce motion gets
+     every animation/transition collapsed to near-instant rather than deleted outright — `none`
+     would drop transitionend/animationend events some components key off, leaving a state change
+     with no completion signal at all. `!important` so this reaches every element regardless of
+     which cascade layer set its duration; the one component that chooses a slower (but still
+     brief) motion-reduce duration on purpose — the sheet, `motion-reduce:duration-150` in
+     src/components/ui/sheet.tsx — collapses to this instead, which is still reduced motion, just
+     more so. The other three per-component handlers (highlight-mark's pulse, streaming-preview,
+     upload-progress) set `animation-name`/`transition-property` to `none`, a different
+     declaration, so this doesn't touch them either way. */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

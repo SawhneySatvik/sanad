@@ -34,7 +34,9 @@ export function ThemeToggle() {
   const mounted = useMounted();
 
   return (
-    <DropdownMenu>
+    // Non-modal, as ItemMenu: a modal Radix menu aria-hides the page behind it without taking its
+    // controls out of the Tab order.
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" aria-label="Toggle theme">
           {/* CSS-only swap, driven by the .dark class next-themes' own pre-paint script sets on

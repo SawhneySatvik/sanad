@@ -22,6 +22,8 @@ describe("AssetPlaceholder, once resolveAssetSrc names a real path", () => {
 
   it("still falls back to the placeholder box for an asset id the resolver doesn't recognise", () => {
     render(<AssetPlaceholder assetId="not-yet-delivered" ratio="1 / 1" label="Not yet delivered" />);
-    expect(screen.getByText(/Placeholder — final art pending/)).toBeInTheDocument();
+    const el = screen.getByRole("img", { name: "Not yet delivered" });
+    expect(el.tagName).toBe("DIV");
+    expect(el).toHaveAttribute("data-asset-id", "not-yet-delivered");
   });
 });

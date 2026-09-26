@@ -34,7 +34,9 @@ export function useAnnounce(): AnnounceContextValue["announce"] {
  * Mounts both standing regions unconditionally, so a later announce() always has somewhere to
  * land. A live region only fires on an actual text change — re-announcing the same message twice
  * in a row (for example, the same "Showing this obligation in the document" on a second jump to
- * the same finding) needs a clear-then-set, or the second call is silently a no-op.
+ * the same finding) needs a clear-then-set, or the second call is silently a no-op. WCAG 4.1.3
+ * Status Messages: this is the one mechanism a status update reaches assistive tech through
+ * without moving focus.
  */
 export function LiveRegionProvider({ children }: { children: ReactNode }) {
   const [politeMessage, setPoliteMessage] = useState("");

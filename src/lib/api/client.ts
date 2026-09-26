@@ -26,6 +26,46 @@ function isOffline(): boolean {
   return typeof navigator !== "undefined" && navigator.onLine === false;
 }
 
+/** The subset of Headers apiFetch's response and putRelay's own XMLHttpRequest both satisfy — the
+ * one shape errorFromParts needs, so it never has to depend on a real Response object. */
+export interface HeaderReader {
+  get(name: string): string | null;
+}
+
+/**
+ * Builds the one ApiError every non-2xx response becomes, from parts rather than a Response: the
+ * status/headers/body triple is exactly what both apiFetch's own fetch() response and putRelay's
+ * XMLHttpRequest expose, just through two different APIs — this is the shared logic neither has to
+ * duplicate. `bodyText` is parsed defensively: a non-JSON or empty body (a proxy's HTML error page,
+ * a direct-put signed-URL target with no JSON error shape of its own) still resolves to a fixed
+ * status-based code below, never an unhandled throw.
+ */
+export function errorFromParts(status: number, headers: HeaderReader, bodyText: string): ApiError {
+  const correlationId = headers.get(CORRELATION_ID_HEADER) ?? undefined;
+  const headerRetryAfter = parseRetryAfterHeader(headers.get("retry-after"));
+
+  let body: ErrorBody | undefined;
+  try {
+    const parsed = ErrorBody.safeParse(JSON.parse(bodyText));
+    if (parsed.success) body = parsed.data;
+  } catch {
+    // A non-JSON or empty error body still resolves to a fixed status-based code below.
+  }
+
+  const code = (body?.error.code as CanonicalErrorCode | undefined) ?? FALLBACK_CODE_BY_STATUS[status] ?? "INTERNAL_ERROR";
+
+  return new ApiError({
+    code,
+    correlationId,
+    reason: body?.error.reason,
+    // The body's own retryAfterSeconds wins when present; the header is the fallback, matching the
+    // same precedence the server itself uses to set both from one value.
+    retryAfterSeconds: body?.error.retryAfterSeconds ?? headerRetryAfter,
+    serverMessage: body?.error.message,
+    documentId: body?.error.documentId,
+  });
+}
+
 export interface ApiFetchInit extends Omit<RequestInit, "body"> {
   /** Serialized as the request body; sets content-type: application/json automatically. */
   json?: unknown;
@@ -69,28 +109,11 @@ export async function apiFetch(input: string, init: ApiFetchInit = {}): Promise<
 
   if (response.ok) return response;
 
-  const correlationId = response.headers.get(CORRELATION_ID_HEADER) ?? undefined;
-  const headerRetryAfter = parseRetryAfterHeader(response.headers.get("retry-after"));
-
-  let body: ErrorBody | undefined;
-  try {
-    const parsed = ErrorBody.safeParse(await response.json());
-    if (parsed.success) body = parsed.data;
-  } catch {
-    // A non-JSON or empty error body still resolves to a fixed status-based code below.
-  }
-
-  const code = (body?.error.code as CanonicalErrorCode | undefined) ?? FALLBACK_CODE_BY_STATUS[response.status] ?? "INTERNAL_ERROR";
-
-  throw new ApiError({
-    code,
-    correlationId,
-    reason: body?.error.reason,
-    // The body's own retryAfterSeconds wins when present; the header is the fallback, matching the
-    // same precedence the server itself uses to set both from one value.
-    retryAfterSeconds: body?.error.retryAfterSeconds ?? headerRetryAfter,
-    serverMessage: body?.error.message,
-  });
+  // .text() rather than .json(): errorFromParts does its own JSON.parse behind the identical
+  // try/catch the old inline version had, so a body-read failure (same as a non-JSON body) still
+  // falls through to a status-derived code instead of throwing here.
+  const bodyText = await response.text().catch(() => "");
+  throw errorFromParts(response.status, response.headers, bodyText);
 }
 
 /** apiFetch, then response.json() — the shape most GET/POST callers actually want. */

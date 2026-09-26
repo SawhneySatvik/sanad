@@ -121,6 +121,29 @@ describe("apiFetch — error responses", () => {
     expect(apiError.message).toBe("The uploaded document could not be processed.");
   });
 
+  it("carries the ErrorBody's own documentId (POST /api/documents failing after the document row already exists)", async () => {
+    vi.stubGlobal("navigator", { onLine: true });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        jsonResponse(503, {
+          error: { code: "UPSTREAM_UNAVAILABLE", message: "busy", documentId: "0a0a0a0a-0000-4000-8000-00000000000a" },
+        }),
+      ),
+    );
+
+    const err = (await apiFetch("/api/documents").catch((e: unknown) => e)) as ApiError;
+    expect(err.documentId).toBe("0a0a0a0a-0000-4000-8000-00000000000a");
+  });
+
+  it("leaves documentId undefined when the ErrorBody carries none", async () => {
+    vi.stubGlobal("navigator", { onLine: true });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse(422, { error: { code: "INVALID_DOCUMENT", message: "x", reason: "empty" } })));
+
+    const err = (await apiFetch("/api/documents").catch((e: unknown) => e)) as ApiError;
+    expect(err.documentId).toBeUndefined();
+  });
+
   it("prefers the body's retryAfterSeconds over the retry-after header when both are present", async () => {
     vi.stubGlobal("navigator", { onLine: true });
     vi.stubGlobal(

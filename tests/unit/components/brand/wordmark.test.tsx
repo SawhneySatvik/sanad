@@ -21,6 +21,15 @@ describe("Wordmark", () => {
     expect(screen.queryByText("Saboot")).not.toBeInTheDocument();
   });
 
+  it("never renders the collapsed mark as a filled brand-accent tile", () => {
+    render(<Wordmark collapsed />);
+    const mark = screen.getByText("S");
+    expect(mark.className).not.toMatch(/\bbg-primary\b/);
+    expect(mark.className).not.toMatch(/\btext-primary-foreground\b/);
+    expect(mark.className).toMatch(/\bbg-foreground\b/);
+    expect(mark.className).toMatch(/\btext-background\b/);
+  });
+
   it("has no axe violations, expanded or collapsed", async () => {
     const expanded = render(<Wordmark />);
     expect(await axe(expanded.container)).toHaveNoViolations();

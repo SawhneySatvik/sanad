@@ -1,0 +1,8 @@
+Saboot is a legal-information assistant for Indian tenants, employees and freelancers. It reads a
+lease, an offer letter, an NDA, a privacy policy or a freelance agreement, explains in plain
+language what it commits the reader to, and shows exactly where in their own document it says so.
+Every quote it shows as verified has been checked, at the moment of display, against the document's
+own extracted text — nothing is taken on the model's word. It gives legal information, never legal
+advice.
+
+More: [README](../README.md) · [Product scope](../docs/PRODUCT.md) · [Architecture](../docs/ARCHITECTURE.md)
