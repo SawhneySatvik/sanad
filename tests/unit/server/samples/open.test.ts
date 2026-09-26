@@ -110,3 +110,31 @@ describe("a reservation failure (not merely a lost race) cleans up the object it
     expect(await countFilesRecursively(rootDir)).toBe(1);
   });
 });
+
+describe("openSample — an id absent from the registry entirely", () => {
+  it("NOT_FOUND, indistinguishable from a live entry that failed its freshness check — never a detail-leaking shape", async () => {
+    const deps = await harness();
+    await expect(openSample(deps, principal, "not-a-real-sample-id")).rejects.toMatchObject({ code: "NOT_FOUND" });
+    expect(await documentCount()).toBe(0);
+  });
+});
+
+describe("cleanUpOrphanedObject — best-effort: a storage.delete failure never surfaces as the caller's error", () => {
+  it("the lost-race branch's own cleanup swallows a delete failure and logs, but the caller still sees its real result", async () => {
+    const deps = await harness();
+    const deleteSpy = vi.spyOn(deps.storage, "delete").mockRejectedValueOnce(new Error("disk full"));
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    const first = await openSample(deps, principal, "lease");
+    // Losing the race still calls delete on the second write's orphaned ref; forcing that delete to
+    // reject must not turn a successful re-open into a thrown error.
+    const second = await openSample(deps, principal, "lease");
+
+    expect(second.documentId).toBe(first.documentId);
+    expect(deleteSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith("Sample reservation cleanup failed.");
+
+    deleteSpy.mockRestore();
+    errorSpy.mockRestore();
+  });
+});

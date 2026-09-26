@@ -34,6 +34,15 @@ jobs:
 
       - run: npm run test:coverage
 
+      # Uploaded even when the threshold check above fails the step, so a regression is visible
+      # in the run's artifacts rather than only in the red exit code.
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: ${{ !cancelled() }}
+        with:
+          name: coverage-summary
+          path: coverage/coverage-summary.json
+          retention-days: 7
+
       - run: npm run security:audit
 
   e2e:

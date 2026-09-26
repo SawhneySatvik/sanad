@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { DisclaimerLine } from "@/components/brand/disclaimer-line";
 import { FileText } from "lucide-react";
-import { DRAFTABLE_TYPES, GROUNDED_RESPONSE_LABEL, type FromScratchDocumentTypeId } from "./document-type-labels";
+import { DRAFTABLE_TYPES, GROUNDED_RESPONSE_LABEL, type FromScratchDocumentTypeId } from "@/lib/copy/document-type-labels";
 import { GroundingDocumentPicker, type GroundingOption } from "./grounding-document-picker";
 import { InstructionsField } from "./instructions-field";
 import {

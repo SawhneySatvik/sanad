@@ -7,14 +7,13 @@
  */
 
 import { apiFetchJson } from "@/lib/api";
+import { fetchDocument } from "@/lib/api/documents";
 import { postSse, type SseFrame } from "@/lib/sse";
 import type { AskGuestInput, AskMessageInput, CreateThreadInput, MessagesOutput, ThreadOutput } from "@/shared/contracts/threads";
-import type { DocumentWithFindingsOutput } from "@/shared/contracts/documents";
 import { VerifyBatchOutput, type VerifyBatchInput } from "@/shared/contracts/verify-batch";
 
-export async function fetchDocument(documentId: string): Promise<DocumentWithFindingsOutput> {
-  return apiFetchJson<DocumentWithFindingsOutput>(`/api/documents/${encodeURIComponent(documentId)}`);
-}
+/** Re-exported (never re-implemented) so every attachment lookup this screen makes shares the one fetcher/cache key every other document reader uses. */
+export { fetchDocument };
 
 /**
  * Parsed against its own output schema, never trusted as the cast the route handler's declared

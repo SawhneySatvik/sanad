@@ -142,4 +142,24 @@ describe("parseSseStream", () => {
 
     await expect(collect(stream)).resolves.toEqual([{ event: "token", data: big }]);
   });
+
+  it("drops a frame with no data: line at all (a bare comment/keepalive), yielding nothing for it", async () => {
+    const stream = streamFromChunks([`event: ping\n\nevent: token\ndata: {"type":"token","text":"ok"}\n\n`]);
+    await expect(collect(stream)).resolves.toEqual([{ event: "token", data: { type: "token", text: "ok" } }]);
+  });
+
+  it("a read that rejects because the signal happened to already be aborted returns quietly rather than throwing", async () => {
+    // Distinct from the abort-before-next-pull case above: here the abort and the read failure are
+    // the SAME event (real race), not two separate ticks — so the top-of-loop abort check
+    // (line 53) can't be what catches it; only the catch block's own re-check can.
+    const controller = new AbortController();
+    const stream = new ReadableStream<Uint8Array>({
+      pull() {
+        controller.abort();
+        throw new Error("connection reset by the abort itself");
+      },
+    });
+
+    await expect(collect(stream, controller.signal)).resolves.toEqual([]);
+  });
 });

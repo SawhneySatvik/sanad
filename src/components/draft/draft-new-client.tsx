@@ -15,7 +15,7 @@ import { PageHeader } from "@/components/page/page-header";
 import type { CreateDraftInput } from "@/shared/contracts/drafts";
 import { DraftComposer, type DraftMode } from "./draft-composer";
 import { DraftErrorBanner } from "./draft-error-banner";
-import type { FromScratchDocumentTypeId } from "./document-type-labels";
+import type { FromScratchDocumentTypeId } from "@/lib/copy/document-type-labels";
 import { mergeGroundingOptions, optionFromDocumentDetail, optionFromListRow } from "./grounding-options";
 import { useGroundingDocumentQuery } from "./queries/use-grounding-document-query";
 import { useDocumentsListQuery } from "./queries/use-documents-list-query";

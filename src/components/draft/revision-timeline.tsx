@@ -15,10 +15,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useIsDesktop } from "@/hooks/use-is-desktop";
 import type { DraftRevisionEntry } from "./types";
 import { fromRevisionNote, GO_TO_LATEST_LABEL, INSTRUCTIONS_NOT_RECORDED, REVISIONS_TRIGGER_LABEL, revisionLabel } from "./copy";
 import { RevisionsBottomSheet } from "./revisions-bottom-sheet";
-import { useIsDesktop } from "./use-is-desktop";
 
 export interface RevisionTimelineProps {
   revisions: DraftRevisionEntry[];

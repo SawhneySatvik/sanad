@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/feedback/error-state";
 import { InlineNotice } from "@/components/feedback/inline-notice";
 import { ApiError, useIsOffline } from "@/lib/api";
+import { useIsDesktop } from "@/hooks/use-is-desktop";
 import { useSession, sessionSignInAvailable } from "@/lib/session/use-session";
 import type { AskCitationOutput } from "@/shared/contracts/threads";
 import type { DocumentWithFindingsOutput, FindingOutput } from "@/shared/contracts/documents";
@@ -36,7 +37,6 @@ import { CITATION_HIGHLIGHT_FINDING_ID, type ExtraBoundEntry } from "./document/
 import { ResizableWorkspaceSplit } from "./layout/resizable-split";
 import { SegmentedFindingsAsk, type WorkspaceSegment } from "./layout/segmented-findings-ask";
 import { WorkspaceBottomSheet } from "./layout/bottom-sheet";
-import { useIsDesktopWorkspace } from "./layout/use-is-desktop";
 import { WORKSPACE_HEIGHT_CLASS } from "./layout/workspace-height";
 import { GENERIC_DOCUMENT_NOTICE, SAMPLE_NOTICE, jumpAnnouncement } from "./copy";
 
@@ -103,7 +103,7 @@ function WorkspaceReady({
   const session = useSession();
   const signInAvailable = sessionSignInAvailable(session);
   const isGuest = session.data?.kind !== "user";
-  const isDesktop = useIsDesktopWorkspace();
+  const isDesktop = useIsDesktop();
   const isOffline = useIsOffline();
 
   const lens = useLensState(findings, document.documentType, initialLensParam);

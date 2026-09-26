@@ -3,7 +3,7 @@
 // src/components/shell/local-threads.ts's own reads under the exact same keys. No JSX here;
 // the .tsx extension is only to opt into vitest's jsdom project (a real Storage implementation).
 
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { appendMessage, deserializeThread, loadThread, type GuestMessage, type GuestThread } from "@/lib/guest-thread-store";
 import {
   deleteLocalThreadAfterImport,
@@ -12,6 +12,7 @@ import {
   loadLocalThread,
   mintLocalThreadId,
   saveLocalThread,
+  subscribeToLocalThreadWrites,
 } from "@/lib/guest-threads/local-thread";
 
 function userMessage(id: string, content: string): GuestMessage {
@@ -142,5 +143,92 @@ describe("deleteLocalThreadAfterImport", () => {
 
     const index: string[] = JSON.parse(window.localStorage.getItem("saboot:threads:v1:index") ?? "[]");
     expect(index).not.toContain(id);
+  });
+});
+
+describe("subscribeToLocalThreadWrites — the sidebar's same-tab signal", () => {
+  it("notifies a subscribed listener on save and on post-import delete", () => {
+    const id = mintLocalThreadId();
+    const listener = vi.fn();
+    const unsubscribe = subscribeToLocalThreadWrites(listener);
+
+    saveLocalThread(id, { id, title: "T", documentIds: [], messages: [] });
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    deleteLocalThreadAfterImport(id);
+    expect(listener).toHaveBeenCalledTimes(2);
+
+    unsubscribe();
+  });
+
+  it("stops notifying once unsubscribed — the browser's native storage event never fires for a same-document write, so this is the only channel", () => {
+    const listener = vi.fn();
+    const unsubscribe = subscribeToLocalThreadWrites(listener);
+    unsubscribe();
+
+    saveLocalThread(mintLocalThreadId(), { id: "x", title: "T", documentIds: [], messages: [] });
+    expect(listener).not.toHaveBeenCalled();
+  });
+
+  it("a second subscriber's own unsubscribe never silences the first", () => {
+    const first = vi.fn();
+    const second = vi.fn();
+    subscribeToLocalThreadWrites(first);
+    const unsubscribeSecond = subscribeToLocalThreadWrites(second);
+    unsubscribeSecond();
+
+    saveLocalThread(mintLocalThreadId(), { id: "x", title: "T", documentIds: [], messages: [] });
+    expect(first).toHaveBeenCalledTimes(1);
+    expect(second).not.toHaveBeenCalled();
+  });
+});
+
+describe("saveLocalThread — a corrupt index recovers instead of throwing", () => {
+  it("an unparseable index is treated as empty, and the save still succeeds", () => {
+    window.localStorage.setItem("saboot:threads:v1:index", "{not json");
+    const id = mintLocalThreadId();
+
+    const result = saveLocalThread(id, { id, title: "T", documentIds: [], messages: [] });
+
+    expect(result.evictedIds).toEqual([]);
+    expect(hasLocalThread(id)).toBe(true);
+  });
+
+  it("an index that parses to a non-array is treated as empty", () => {
+    window.localStorage.setItem("saboot:threads:v1:index", JSON.stringify({ not: "an array" }));
+    const id = mintLocalThreadId();
+
+    saveLocalThread(id, { id, title: "T", documentIds: [], messages: [] });
+
+    const index: unknown = JSON.parse(window.localStorage.getItem("saboot:threads:v1:index")!);
+    expect(index).toEqual([id]);
+  });
+
+  it("non-string entries in an otherwise-array index are dropped rather than carried forward", () => {
+    window.localStorage.setItem("saboot:threads:v1:index", JSON.stringify(["local-real", 42, null, "local-other"]));
+    const id = mintLocalThreadId();
+
+    saveLocalThread(id, { id, title: "T", documentIds: [], messages: [] });
+
+    const index: unknown[] = JSON.parse(window.localStorage.getItem("saboot:threads:v1:index")!);
+    expect(index).toEqual([id, "local-real", "local-other"]);
+  });
+});
+
+describe("saveLocalThread — eviction survives a removeItem failure on the evicted key", () => {
+  it("still reports the id as evicted, and the index write already dropped it from every future read", () => {
+    const ids = Array.from({ length: 20 }, () => mintLocalThreadId());
+    for (const existingId of ids) saveLocalThread(existingId, { id: existingId, title: "T", documentIds: [], messages: [] });
+
+    const removeItemSpy = vi.spyOn(Storage.prototype, "removeItem").mockImplementationOnce(() => {
+      throw new Error("quota/security error");
+    });
+    const newest = mintLocalThreadId();
+    const result = saveLocalThread(newest, { id: newest, title: "T", documentIds: [], messages: [] });
+    removeItemSpy.mockRestore();
+
+    expect(result.evictedIds).toEqual([ids[0]]);
+    const index: string[] = JSON.parse(window.localStorage.getItem("saboot:threads:v1:index")!);
+    expect(index).not.toContain(ids[0]);
   });
 });

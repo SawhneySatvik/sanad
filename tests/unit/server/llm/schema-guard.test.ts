@@ -71,4 +71,29 @@ describe("assertSafeResponseSchema", () => {
       expect(error).not.toHaveProperty("code");
     }
   });
+
+  it("rejects a forbidden key hidden inside a $defs entry — a named/reused sub-schema, not inlined at its use site", () => {
+    // A schema given an id (or reused via a shared registry) is hoisted into JSON Schema's own
+    // $defs and referenced with $ref, rather than inlined — the walk must follow $defs too, not
+    // just each property in place.
+    const shared = z.object({ verified: z.boolean() }).meta({ id: "SharedAnswer" });
+    const badSchema = z.object({ a: shared, b: shared });
+    expect(() => assertSafeResponseSchema(badSchema)).toThrow(/forbidden key/);
+  });
+
+  it("a $defs entry with no forbidden key is accepted", () => {
+    const shared = z.object({ text: z.string() }).meta({ id: "SharedText" });
+    const okSchema = z.object({ a: shared, b: shared });
+    expect(() => assertSafeResponseSchema(okSchema)).not.toThrow();
+  });
+
+  it("rejects a forbidden key hidden inside a union member (anyOf) — z.union's own JSON Schema shape", () => {
+    const badSchema = z.object({ answer: z.union([z.object({ verified: z.boolean() }), z.string()]) });
+    expect(() => assertSafeResponseSchema(badSchema)).toThrow(/forbidden key/);
+  });
+
+  it("a union with no forbidden key anywhere in its members is accepted", () => {
+    const okSchema = z.object({ answer: z.union([z.object({ text: z.string() }), z.string()]) });
+    expect(() => assertSafeResponseSchema(okSchema)).not.toThrow();
+  });
 });

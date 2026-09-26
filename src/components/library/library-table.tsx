@@ -15,7 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { expiresInHoursLabel } from "@/components/shell/recent-items";
-import { documentTypeLabel, draftModeLabel } from "./document-type-labels";
+import { documentTypeLabel, draftModeLabel } from "@/lib/copy/document-type-labels";
 import { LibraryRowActions } from "./library-row-actions";
 import { relativeTimeLabel } from "./relative-time";
 import type { LibraryRow } from "./library-row";

@@ -92,4 +92,42 @@ describe("LocalFsStoragePurger", () => {
     const purger = new LocalFsStoragePurger({ rootDir: tempDir });
     await expect(purger.purge(["not-a-valid-ref"])).rejects.toThrow();
   });
+
+  it("falls back to DEFAULT_ROOT_DIR when constructed with no rootDir option", () => {
+    // path.resolve only — no filesystem access at construction, so this is safe against the repo's
+    // real cwd.
+    expect(() => new LocalFsStoragePurger()).not.toThrow();
+    expect(() => new LocalFsStoragePurger({})).not.toThrow();
+  });
+
+  it("purgeUnconfirmedUploads deletes only the unconfirmed upload, leaving the confirmed one readable", async () => {
+    const adapter = new LocalFsStorageAdapter({
+      accessCheck: () => true,
+      rootDir: tempDir,
+      signingSecret: SIGNING_SECRET,
+    });
+    const unconfirmed = await adapter.createUploadTarget(USER, {
+      filename: "unconfirmed.pdf",
+      mimeType: "application/pdf",
+      sizeBytes: 4,
+    });
+    await adapter.writeRelayed(USER, unconfirmed.ref, Buffer.from("junk"));
+    const confirmed = await adapter.createUploadTarget(USER, {
+      filename: "confirmed.pdf",
+      mimeType: "application/pdf",
+      sizeBytes: 4,
+    });
+    await adapter.writeRelayed(USER, confirmed.ref, Buffer.from("keep"));
+    await adapter.confirmUpload(USER, confirmed.ref);
+
+    const purger = new LocalFsStoragePurger({ rootDir: tempDir });
+    // Far in the future: every genuinely unconfirmed upload was "created before" it, without
+    // depending on real clock skew between this test and the upload's own recorded mtime.
+    const sweptCount = await purger.purgeUnconfirmedUploads(new Date(Date.now() + 60_000));
+
+    expect(sweptCount).toBe(1);
+    await expect(adapter.readObject(unconfirmed.ref)).rejects.toMatchObject({ code: "NOT_FOUND" });
+    const stillThere = await adapter.readObject(confirmed.ref);
+    expect(Buffer.from(stillThere).equals(Buffer.from("keep"))).toBe(true);
+  });
 });

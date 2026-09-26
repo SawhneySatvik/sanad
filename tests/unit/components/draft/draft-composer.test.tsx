@@ -4,7 +4,7 @@ import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { axe } from "jest-axe";
 import { DraftComposer, canSubmitDraft, type DraftMode } from "@/components/draft/draft-composer";
-import type { FromScratchDocumentTypeId } from "@/components/draft/document-type-labels";
+import type { FromScratchDocumentTypeId } from "@/lib/copy/document-type-labels";
 import type { GroundingOption } from "@/components/draft/grounding-document-picker";
 
 // A controlled component needs a stateful harness to exercise like a real page would — DraftComposer
