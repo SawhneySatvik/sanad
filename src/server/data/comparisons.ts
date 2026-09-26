@@ -108,8 +108,7 @@ export async function getComparableDocuments(
   documentAId: string,
   documentBId: string,
 ): Promise<{ documentA: ReadyDocument; documentB: ReadyDocument }> {
-  const documentA = await selectDocument(db, documentAId);
-  const documentB = await selectDocument(db, documentBId);
+  const [documentA, documentB] = await Promise.all([selectDocument(db, documentAId), selectDocument(db, documentBId)]);
   assertCanAccessAll(principal, [documentA, documentB]);
   // ready() has checked canonicalText too.
   return { documentA: ready(documentA!) as ReadyDocument, documentB: ready(documentB!) as ReadyDocument };

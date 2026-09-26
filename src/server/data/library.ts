@@ -220,6 +220,117 @@ export async function listLibraryRows(db: Db, principal: Principal, kind: "docum
   }
 }
 
+type DraftRow = typeof schema.drafts.$inferSelect;
+
+// The root ancestor of `id`'s chain, via one recursive walk instead of a SELECT per generation.
+// UNION (not UNION ALL) gives the same self-terminating guarantee the downward chain queries below
+// rely on: a re-derived row is deduplicated away, so a malformed cycle can never loop forever — it
+// just yields no root, which the caller below turns into a 404 like any other broken chain.
+async function chainRootId(db: Db, id: string): Promise<string | null> {
+  const result = await db.execute(sql`
+    WITH RECURSIVE ancestors(id, parent_draft_id) AS (
+      SELECT id, parent_draft_id FROM drafts WHERE id = ${id}::uuid
+      UNION
+      SELECT d.id, d.parent_draft_id FROM drafts d JOIN ancestors ON d.id = ancestors.parent_draft_id
+    )
+    SELECT id FROM ancestors WHERE parent_draft_id IS NULL
+  `);
+  return executeRows<{ id: string }>(result)[0]?.id ?? null;
+}
+
+/**
+ * Loads and validates the full (ownership-unfiltered) descendant set of every id in `rootIds`, in a
+ * fixed number of queries regardless of how many roots or how deep each one is: one recursive walk
+ * for every member id, one batch select for their rows, one for every grounding document any of them
+ * reference, one for every project any of them (or their grounding document) reference. A root whose
+ * group comes back short (a row vanished), fails ownership/expiry, or references a foreign/missing
+ * project or grounding document is dropped from the result entirely — never partially returned.
+ */
+async function loadValidatedChains(db: Db, principal: Principal, rootIds: readonly string[]): Promise<Map<string, DraftRow[]>> {
+  const result = new Map<string, DraftRow[]>();
+  const uniqueRoots = [...new Set(rootIds)];
+  if (!uniqueRoots.length) return result;
+
+  const idsResult = await db.execute(sql`
+    WITH RECURSIVE chain(id, root_id) AS (
+      SELECT id, id FROM drafts WHERE id IN (${sql.join(uniqueRoots.map((rootId) => sql`${rootId}::uuid`), sql`, `)})
+      UNION
+      SELECT d.id, chain.root_id FROM drafts d JOIN chain ON d.parent_draft_id = chain.id
+    )
+    SELECT id, root_id FROM chain
+  `);
+  const idRows = executeRows<{ id: string; root_id: string }>(idsResult);
+  if (!idRows.length) return result;
+  const rootOf = new Map(idRows.map((row) => [row.id, row.root_id]));
+  const expectedCountByRoot = new Map<string, number>();
+  for (const row of idRows) expectedCountByRoot.set(row.root_id, (expectedCountByRoot.get(row.root_id) ?? 0) + 1);
+
+  const rows = await db.select().from(schema.drafts).where(inArray(schema.drafts.id, [...rootOf.keys()]))
+    .orderBy(asc(schema.drafts.createdAt), asc(schema.drafts.id));
+  const rowsByRoot = new Map<string, DraftRow[]>();
+  for (const row of rows) {
+    const rootId = rootOf.get(row.id);
+    if (rootId === undefined) continue;
+    (rowsByRoot.get(rootId) ?? rowsByRoot.set(rootId, []).get(rootId)!).push(row);
+  }
+
+  const invalid = new Set<string>();
+  for (const [rootId, expectedCount] of expectedCountByRoot) {
+    const group = rowsByRoot.get(rootId) ?? [];
+    if (group.length !== expectedCount || group.some((row) => !canAccess(principal, row) || !active(row))) invalid.add(rootId);
+  }
+
+  const groundingIds = new Set<string>();
+  for (const [rootId, group] of rowsByRoot) {
+    if (invalid.has(rootId)) continue;
+    for (const row of group) if (row.groundingDocumentId) groundingIds.add(row.groundingDocumentId);
+  }
+  const groundingById = new Map<string, { ownerUserId: string | null; ownerGuestSessionId: string | null; expiresAt: Date | null; projectId: string | null }>();
+  if (groundingIds.size) {
+    const groundingRows = await db.select({ id: schema.documents.id, ownerUserId: schema.documents.ownerUserId,
+      ownerGuestSessionId: schema.documents.ownerGuestSessionId, expiresAt: schema.documents.expiresAt, projectId: schema.documents.projectId })
+      .from(schema.documents).where(inArray(schema.documents.id, [...groundingIds]));
+    for (const row of groundingRows) groundingById.set(row.id, row);
+  }
+  for (const [rootId, group] of rowsByRoot) {
+    if (invalid.has(rootId)) continue;
+    for (const row of group) {
+      if (!row.groundingDocumentId) continue;
+      const grounding = groundingById.get(row.groundingDocumentId);
+      if (!grounding || !canAccess(principal, grounding) || !active(grounding)) invalid.add(rootId);
+    }
+  }
+
+  const projectIdsByRoot = new Map<string, Set<string>>();
+  for (const [rootId, group] of rowsByRoot) {
+    if (invalid.has(rootId)) continue;
+    const ids = new Set<string>();
+    for (const row of group) {
+      if (row.projectId) ids.add(row.projectId);
+      const groundingProjectId = row.groundingDocumentId ? groundingById.get(row.groundingDocumentId)?.projectId : undefined;
+      if (groundingProjectId) ids.add(groundingProjectId);
+    }
+    if (ids.size) projectIdsByRoot.set(rootId, ids);
+  }
+  const allProjectIds = new Set<string>();
+  for (const ids of projectIdsByRoot.values()) for (const id of ids) allProjectIds.add(id);
+  const projectOwnerById = new Map<string, string | null>();
+  if (allProjectIds.size) {
+    const projectRows = await db.select({ id: schema.projects.id, ownerUserId: schema.projects.ownerUserId })
+      .from(schema.projects).where(inArray(schema.projects.id, [...allProjectIds]));
+    for (const row of projectRows) projectOwnerById.set(row.id, row.ownerUserId);
+  }
+  for (const [rootId, ids] of projectIdsByRoot) {
+    for (const id of ids) {
+      const ownerUserId = projectOwnerById.get(id);
+      if (ownerUserId === undefined || !canAccess(principal, { ownerUserId, ownerGuestSessionId: null })) invalid.add(rootId);
+    }
+  }
+
+  for (const [rootId, group] of rowsByRoot) if (!invalid.has(rootId)) result.set(rootId, group);
+  return result;
+}
+
 export async function listDraftChainsPage(db: Db, principal: Principal, cursor: LibraryCursor | null, limit: number) {
   const rootOwner = principal.type === "user" ? sql`d.owner_user_id = ${principal.userId}` : sql`d.owner_guest_session_id = ${principal.guestSessionId}`;
   const childOwner = principal.type === "user" ? sql`c.owner_user_id = ${principal.userId}` : sql`c.owner_guest_session_id = ${principal.guestSessionId}`;
@@ -235,24 +346,24 @@ export async function listDraftChainsPage(db: Db, principal: Principal, cursor: 
       SELECT c.id, chain.root_id FROM drafts c JOIN chain ON c.parent_draft_id = chain.id
       WHERE ${childOwner} AND (c.expires_at IS NULL OR c.expires_at > now())
     ), ranked AS (
-      SELECT d.id, d.updated_at, count(*) OVER (PARTITION BY chain.root_id)::int AS revision_count,
+      SELECT d.id, d.updated_at, chain.root_id, count(*) OVER (PARTITION BY chain.root_id)::int AS revision_count,
              row_number() OVER (PARTITION BY chain.root_id ORDER BY d.created_at DESC, d.id DESC) AS position
       FROM chain JOIN drafts d ON d.id = chain.id
     )
-    SELECT id, revision_count, updated_at::text AS cursor_updated_at FROM ranked WHERE position = 1 ${afterCursor}
+    SELECT id, revision_count, updated_at::text AS cursor_updated_at, root_id FROM ranked WHERE position = 1 ${afterCursor}
     ORDER BY updated_at DESC, id DESC LIMIT ${limit + 1}
   `);
-    const entries = executeRows<{ id: string; revision_count: number; cursor_updated_at: string }>(result);
+    const entries = executeRows<{ id: string; revision_count: number; cursor_updated_at: string; root_id: string }>(result);
     if (entries.length === 0) break;
+    // One batched load/validation for every candidate chain on this page, not one draftChain() call
+    // per row — the project/grounding-document checks the ranked query above can't express in SQL
+    // still run, just once per referenced id instead of once per row that references it.
+    const validated = await loadValidatedChains(db, principal, entries.map((entry) => entry.root_id));
     for (const entry of entries) {
       position = { updatedAt: entry.cursor_updated_at, id: entry.id };
-      try {
-        const chain = await draftChain(db, principal, entry.id);
-        const row = chain.find((draft) => draft.id === entry.id);
-        if (row) valid.push({ row, revisionCount: chain.length, cursorUpdatedAt: entry.cursor_updated_at });
-      } catch (error) {
-        if (!(error instanceof AppError) || error.code !== "NOT_FOUND") throw error;
-      }
+      const chain = validated.get(entry.root_id);
+      const row = chain?.find((draft) => draft.id === entry.id);
+      if (row) valid.push({ row, revisionCount: chain!.length, cursorUpdatedAt: entry.cursor_updated_at });
       if (valid.length > limit) break;
     }
     if (entries.length < limit + 1) break;
@@ -267,39 +378,12 @@ export async function getLibraryRow(db: Db, principal: Principal, kind: LibraryK
 export async function draftChain(db: Db, principal: Principal, id: string) {
   const current = await rowFor(db, principal, "draft", id);
   if (!("parentDraftId" in current)) throw notFound();
-  let root = current;
-  const seen = new Set<string>();
-  while (root.parentDraftId) {
-    if (seen.has(root.id)) throw notFound();
-    seen.add(root.id);
-    const [parent] = await db.select().from(schema.drafts).where(eq(schema.drafts.id, root.parentDraftId));
-    assertCanAccess(principal, parent);
-    if (!active(parent)) throw notFound();
-    await assertProjectReference(db, principal, parent.projectId);
-    root = parent;
-  }
-  const ids = await db.execute(sql`WITH RECURSIVE chain(id) AS (
-    SELECT id FROM drafts WHERE id = ${root.id}::uuid
-    UNION
-    SELECT d.id FROM drafts d JOIN chain c ON d.parent_draft_id = c.id
-  ) SELECT id FROM chain`);
-  const chainIds = executeRows<{ id: string }>(ids).map((row) => row.id);
-  const chain = await db.select().from(schema.drafts).where(inArray(schema.drafts.id, chainIds))
-    .orderBy(asc(schema.drafts.createdAt), asc(schema.drafts.id));
-  if (chain.length !== chainIds.length) throw notFound();
-  for (const draft of chain) {
-    assertCanAccess(principal, draft);
-    if (!active(draft)) throw notFound();
-    await assertProjectReference(db, principal, draft.projectId);
-    if (draft.groundingDocumentId) {
-      const [grounding] = await db.select({ ownerUserId: schema.documents.ownerUserId, ownerGuestSessionId: schema.documents.ownerGuestSessionId,
-        expiresAt: schema.documents.expiresAt, projectId: schema.documents.projectId })
-        .from(schema.documents).where(eq(schema.documents.id, draft.groundingDocumentId));
-      assertCanAccess(principal, grounding);
-      if (!active(grounding!)) throw notFound();
-      await assertProjectReference(db, principal, grounding!.projectId);
-    }
-  }
+  // A root revision is its own chain root — skips the ancestor walk for the common case (a draft
+  // with no revisions yet), which lockDraftChain's three draftChain() calls would otherwise triple.
+  const rootId = current.parentDraftId === null ? current.id : await chainRootId(db, id);
+  const validated = rootId === null ? new Map<string, DraftRow[]>() : await loadValidatedChains(db, principal, [rootId]);
+  const chain = rootId === null ? undefined : validated.get(rootId);
+  if (!chain || !chain.some((draft) => draft.id === id)) throw notFound();
   return chain;
 }
 
@@ -362,15 +446,19 @@ export async function unassignLibraryRow(db: Db, principal: Principal, kind: Exc
 }
 
 async function assertDocumentReferencesOwned(db: Db, principal: Principal, id: string) {
-  const comparisons = await db.select().from(schema.comparisons).where(or(eq(schema.comparisons.documentAId, id), eq(schema.comparisons.documentBId, id)));
-  const drafts = await db.select().from(schema.drafts).where(eq(schema.drafts.groundingDocumentId, id));
-  const threadLinks = await db.select({ threadId: schema.threads.id, ownerUserId: schema.threads.ownerUserId }).from(schema.threadDocuments)
-    .innerJoin(schema.threads, eq(schema.threadDocuments.threadId, schema.threads.id))
-    .where(eq(schema.threadDocuments.documentId, id));
-  const citationThreads = await db.select({ threadId: schema.threads.id, ownerUserId: schema.threads.ownerUserId }).from(schema.messageCitations)
-    .innerJoin(schema.messages, eq(schema.messageCitations.messageId, schema.messages.id))
-    .innerJoin(schema.threads, eq(schema.messages.threadId, schema.threads.id))
-    .where(eq(schema.messageCitations.sourceDocumentId, id));
+  // Four independent reads (different tables, all keyed on the same document id) — run together
+  // instead of round-tripping one at a time.
+  const [comparisons, drafts, threadLinks, citationThreads] = await Promise.all([
+    db.select().from(schema.comparisons).where(or(eq(schema.comparisons.documentAId, id), eq(schema.comparisons.documentBId, id))),
+    db.select().from(schema.drafts).where(eq(schema.drafts.groundingDocumentId, id)),
+    db.select({ threadId: schema.threads.id, ownerUserId: schema.threads.ownerUserId }).from(schema.threadDocuments)
+      .innerJoin(schema.threads, eq(schema.threadDocuments.threadId, schema.threads.id))
+      .where(eq(schema.threadDocuments.documentId, id)),
+    db.select({ threadId: schema.threads.id, ownerUserId: schema.threads.ownerUserId }).from(schema.messageCitations)
+      .innerJoin(schema.messages, eq(schema.messageCitations.messageId, schema.messages.id))
+      .innerJoin(schema.threads, eq(schema.messages.threadId, schema.threads.id))
+      .where(eq(schema.messageCitations.sourceDocumentId, id)),
+  ]);
   if (comparisons.some((row) => !canAccess(principal, row)) || drafts.some((row) => !canAccess(principal, row)) ||
     [...threadLinks, ...citationThreads].some((row) => !canAccess(principal, { ownerUserId: row.ownerUserId, ownerGuestSessionId: null }))) {
     throw notFound();
@@ -394,13 +482,15 @@ async function lockDocumentDependents(tx: Db, id: string) {
 }
 
 async function assertProjectItemsOwned(db: Db, principal: Principal, id: string) {
-  const documents = await db.select({ ownerUserId: schema.documents.ownerUserId, ownerGuestSessionId: schema.documents.ownerGuestSessionId })
-    .from(schema.documents).where(eq(schema.documents.projectId, id));
-  const comparisons = await db.select({ ownerUserId: schema.comparisons.ownerUserId, ownerGuestSessionId: schema.comparisons.ownerGuestSessionId })
-    .from(schema.comparisons).where(eq(schema.comparisons.projectId, id));
-  const drafts = await db.select({ ownerUserId: schema.drafts.ownerUserId, ownerGuestSessionId: schema.drafts.ownerGuestSessionId })
-    .from(schema.drafts).where(eq(schema.drafts.projectId, id));
-  const threads = await db.select({ ownerUserId: schema.threads.ownerUserId }).from(schema.threads).where(eq(schema.threads.projectId, id));
+  const [documents, comparisons, drafts, threads] = await Promise.all([
+    db.select({ ownerUserId: schema.documents.ownerUserId, ownerGuestSessionId: schema.documents.ownerGuestSessionId })
+      .from(schema.documents).where(eq(schema.documents.projectId, id)),
+    db.select({ ownerUserId: schema.comparisons.ownerUserId, ownerGuestSessionId: schema.comparisons.ownerGuestSessionId })
+      .from(schema.comparisons).where(eq(schema.comparisons.projectId, id)),
+    db.select({ ownerUserId: schema.drafts.ownerUserId, ownerGuestSessionId: schema.drafts.ownerGuestSessionId })
+      .from(schema.drafts).where(eq(schema.drafts.projectId, id)),
+    db.select({ ownerUserId: schema.threads.ownerUserId }).from(schema.threads).where(eq(schema.threads.projectId, id)),
+  ]);
   if ([...documents, ...comparisons, ...drafts].some((row) => !canAccess(principal, row)) ||
     threads.some((row) => !canAccess(principal, { ownerUserId: row.ownerUserId, ownerGuestSessionId: null }))) {
     throw notFound();

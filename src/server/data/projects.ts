@@ -182,10 +182,13 @@ export async function getProject(db: Db, principal: Principal, projectId: string
     : [];
   assertCanAccess(principal, project && userOwned(project));
 
-  const documents = await selectDocuments(db, project.id);
-  const comparisons = await selectComparisons(db, project.id);
-  const drafts = await selectDrafts(db, project.id);
-  const threads = await selectThreads(db, project.id);
+  // Four independent reads, all keyed only on project.id — no data dependency between them.
+  const [documents, comparisons, drafts, threads] = await Promise.all([
+    selectDocuments(db, project.id),
+    selectComparisons(db, project.id),
+    selectDrafts(db, project.id),
+    selectThreads(db, project.id),
+  ]);
 
   for (const row of documents) assertCanAccess(principal, row);
   for (const row of comparisons) {

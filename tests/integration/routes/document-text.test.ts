@@ -1,7 +1,8 @@
 // GET /api/documents/:id/text through the real route wiring. Owner access itself is covered
-// separately in document-text.idor.test.ts; this file covers the 2xx shape, the not-store/no-ETag/
-// no-304 gate, the 422 document_not_ready gate, and that a native_document's transcription is never
-// run through sanitizeModelText() — it must equal canonical_text byte-exact.
+// separately in document-text.idor.test.ts; this file covers the 2xx shape, the ETag/304 gate, the
+// 422 document_not_ready gate (no-store, no ETag: that response never reaches cache()), and that a
+// native_document's transcription is never run through sanitizeModelText() — it must equal
+// canonical_text byte-exact.
 
 import { createHash } from "node:crypto";
 import { eq } from "drizzle-orm";
@@ -55,19 +56,42 @@ describe("GET /api/documents/:id/text", () => {
     expect(body.textHash).toBe(await storedCanonicalTextHash(documentId));
   });
 
-  it("Cache-Control: no-store, no ETag, and a stale If-None-Match never produces a 304", async () => {
+  it("carries an ETag of the stored canonical_text_hash, private/must-revalidate, and Vary: Cookie", async () => {
+    h = await createRouteHarness();
+    const { cookie } = guestCookie();
+    const documentId = await analyzedDocumentViaRoutes(cookie);
+    const hash = await storedCanonicalTextHash(documentId);
+
+    const plain = await getText(documentId, cookie);
+    expect(plain.headers.get("cache-control")).toBe("private, max-age=0, must-revalidate");
+    expect(plain.headers.get("etag")).toBe(`"${hash}"`);
+    expect(plain.headers.get("vary")).toBe("Cookie");
+  });
+
+  it("304s a matching If-None-Match (bare, quoted, or weak) after the access check, with no body", async () => {
+    h = await createRouteHarness();
+    const { cookie } = guestCookie();
+    const documentId = await analyzedDocumentViaRoutes(cookie);
+    const hash = await storedCanonicalTextHash(documentId);
+
+    for (const ifNoneMatch of [`"${hash}"`, `W/"${hash}"`, "*"]) {
+      const res = await getText(documentId, cookie, { "if-none-match": ifNoneMatch });
+      expect(res.status, ifNoneMatch).toBe(304);
+      expect(res.headers.get("etag"), ifNoneMatch).toBe(`"${hash}"`);
+      expect(res.headers.get("cache-control"), ifNoneMatch).toBe("private, max-age=0, must-revalidate");
+      expect(await res.text(), ifNoneMatch).toBe("");
+    }
+  });
+
+  it("a stale If-None-Match still gets the full 200 body, never a 304", async () => {
     h = await createRouteHarness();
     const { cookie } = guestCookie();
     const documentId = await analyzedDocumentViaRoutes(cookie);
 
-    const plain = await getText(documentId, cookie);
-    expect(plain.headers.get("cache-control")).toBe("no-store");
-    expect(plain.headers.get("etag")).toBeNull();
-
-    const conditional = await getText(documentId, cookie, { "if-none-match": '"anything-at-all"' });
+    const conditional = await getText(documentId, cookie, { "if-none-match": '"anything-else"' });
     expect(conditional.status).toBe(200);
-    expect(conditional.headers.get("etag")).toBeNull();
-    expect(conditional.headers.get("cache-control")).toBe("no-store");
+    const body = DocumentTextOutput.parse(await conditional.json());
+    expect(body.documentId).toBe(documentId);
   });
 
   it("422 INVALID_DOCUMENT / document_not_ready on the owner's own still-pending document, and leaks no text/textHash", async () => {
