@@ -2,7 +2,7 @@
  * Factory functions that read env vars and build real (network-capable) LlmClient instances — the
  * only place in this module that touches process.env. createRateLimitedLlmClient flattens the
  * primary (createGeminiClient) and secondary (createGemmaClient) sides into one FallbackLlmClient
- * with one deadline: gemini-2.5-flash, gemini-3.5-flash-lite, then Gemma on Google AI Studio, NIM,
+ * with one deadline: gemini-3.5-flash-lite, gemini-3.1-flash-lite, then Gemma on Google AI Studio, NIM,
  * and OpenRouter — Google's Gemma runs first because NIM gave this account no response at all, and
  * OpenRouter's free Gemma shares Google AI Studio's pool. Every tier has its own circuit breaker.
  */
@@ -99,8 +99,8 @@ function e2eGemmaBaseUrl(realBaseUrl: string, e2ePath: string): string {
 // per-operation budget instead (llm/timeouts.ts), which also bounds the whole fallback chain.
 const DEFAULT_TIMEOUT_MS = 45_000;
 
-// gemini-2.5-flash-lite returns HTTP 404 to new API keys; this is the id a current key can use instead.
-const DEFAULT_GEMINI_FALLBACK_MODEL = "gemini-3.5-flash-lite";
+// A second Flash Lite model: its own 500-requests-a-day free quota, separate from the primary's.
+const DEFAULT_GEMINI_FALLBACK_MODEL = "gemini-3.1-flash-lite";
 // Each gateway spells the same Gemma model differently: Google AI Studio uses the bare id, NIM a
 // `google/` prefix, OpenRouter's free route a `:free` suffix.
 const DEFAULT_GEMMA_MODEL_GOOGLE = "gemma-4-31b-it";

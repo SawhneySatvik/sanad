@@ -30,3 +30,6 @@ next-env.d.ts
 /.agents/
 /.impeccable/
 /skills-lock.json
+
+# launch-video workspace
+/brag-output*/

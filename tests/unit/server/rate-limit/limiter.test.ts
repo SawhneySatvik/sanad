@@ -695,9 +695,9 @@ describe("the per-IP LLM-call and daily defaults", () => {
     expect(DEFAULT_IP_DAILY_LIMIT).toBeGreaterThanOrEqual(DEFAULT_PRINCIPAL_DAILY_LIMIT);
   });
 
-  it("one principal can't spend more than one free model's day even if every call needs its repair retry; one IP stays under it at one request per call", () => {
-    expect(DEFAULT_PRINCIPAL_DAILY_LIMIT * MAX_HTTP_ATTEMPTS_PER_CALL).toBeLessThanOrEqual(20);
-    expect(DEFAULT_IP_DAILY_LIMIT).toBeLessThan(20);
+  it("one principal can't spend more than a quarter of the primary model's 500-a-day quota even if every call needs its repair retry; one IP stays under the whole day at one request per call", () => {
+    expect(DEFAULT_PRINCIPAL_DAILY_LIMIT * MAX_HTTP_ATTEMPTS_PER_CALL).toBeLessThanOrEqual(125);
+    expect(DEFAULT_IP_DAILY_LIMIT).toBeLessThan(500);
     expect(Number.isInteger(DEFAULT_IP_DAILY_LIMIT)).toBe(true);
   });
 });

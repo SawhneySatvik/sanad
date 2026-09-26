@@ -19,7 +19,7 @@ import { completeStructured } from "./structured-output";
 import type { LlmCapabilities, LlmClient, LlmCompleteInput, LlmDocumentInput, LlmStreamEvent, LlmTokensUsed } from "./types";
 
 /** Used when no `model` option and no `GEMINI_MODEL` env var is set. */
-export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
+export const DEFAULT_GEMINI_MODEL = "gemini-3.5-flash-lite";
 
 /** Real SDK response is a superset of this — only the fields this adapter reads. */
 export type GeminiGenerateResult = Pick<GenerateContentResponse, "text" | "usageMetadata">;
@@ -47,6 +47,14 @@ export interface GeminiLlmClientOptions {
   sendThinkingBudget?: boolean;
 }
 
+/**
+ * Whether a model accepts `thinkingConfig.thinkingBudget`. The Flash Lite models and Gemma answer
+ * 400 to it, so a primary switched to one of them by env var must stop sending it on its own.
+ */
+export function acceptsThinkingBudget(model: string): boolean {
+  return !/flash-lite|gemma/i.test(model);
+}
+
 /** Gemini adapter — see the module header for the contract. */
 export class GeminiLlmClient implements LlmClient {
   readonly capabilities: LlmCapabilities;
@@ -59,8 +67,8 @@ export class GeminiLlmClient implements LlmClient {
 
   constructor(options: GeminiLlmClientOptions) {
     this.capabilities = { structuredOutput: true, nativeDocumentInput: options.nativeDocumentInput ?? true, streaming: true };
-    this.sendThinkingBudget = options.sendThinkingBudget ?? true;
     this.model = options.model ?? DEFAULT_GEMINI_MODEL;
+    this.sendThinkingBudget = options.sendThinkingBudget ?? acceptsThinkingBudget(this.model);
     this.defaultTimeoutMs = options.defaultTimeoutMs;
     this.errorContext = { model: this.model, apiKey: options.apiKey };
     this.transport =

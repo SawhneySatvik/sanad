@@ -252,7 +252,7 @@ describe("the schema Gemini is sent, and what a rejected call logs", () => {
       );
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     try {
-      const client = new GeminiLlmClient({ apiKey, fetch: fakeFetch });
+      const client = new GeminiLlmClient({ apiKey, model: "gemini-2.5-flash", fetch: fakeFetch });
       let caught: unknown;
       try {
         await client.complete({ systemPrompt: "s", userPrompt: "DOCUMENT-TEXT-MARKER", schema });
@@ -300,6 +300,21 @@ describe("the schema Gemini is sent, and what a rejected call logs", () => {
 });
 
 describe("the thinking budget reaches Gemini only when a caller sets one", () => {
+  it("never sends a thinking budget to a Flash Lite or Gemma model, which reject it", async () => {
+    const sent: GenerateContentParameters[] = [];
+    const transport: GeminiModelsTransport = {
+      generateContent: async (params) => {
+        sent.push(params);
+        return { text: JSON.stringify({ answer: "ok" }), usageMetadata: {} };
+      },
+      generateContentStream: async () => (async function* () {})(),
+    };
+    for (const model of ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemma-4-31b-it"]) {
+      await new GeminiLlmClient({ apiKey: "k", model, transport }).complete({ systemPrompt: "s", userPrompt: "u", schema, thinkingBudget: 0 });
+    }
+    expect(sent.map((params) => params.config?.thinkingConfig)).toEqual([undefined, undefined, undefined]);
+  });
+
   it("forwards thinkingBudget as config.thinkingConfig on complete() and stream(), and sends none when unset", async () => {
     const sent: GenerateContentParameters[] = [];
     const answer = { text: JSON.stringify({ answer: "ok" }), usageMetadata: {} };
@@ -315,7 +330,7 @@ describe("the thinking budget reaches Gemini only when a caller sets one", () =>
         })();
       },
     };
-    const client = new GeminiLlmClient({ apiKey: "k", transport });
+    const client = new GeminiLlmClient({ apiKey: "k", model: "gemini-2.5-flash", transport });
 
     await client.complete({ systemPrompt: "s", userPrompt: "u", schema, thinkingBudget: 0 });
     for await (const event of client.stream({ systemPrompt: "s", userPrompt: "u", schema, thinkingBudget: 0 })) void event;

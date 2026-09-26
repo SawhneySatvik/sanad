@@ -119,7 +119,7 @@ export const MAX_HTTP_ATTEMPTS_PER_CALL = 2;
 const GEMINI_ASSUMED_RPM = 15;
 const GEMINI_FALLBACK_ASSUMED_RPM = 15;
 const GEMMA_ASSUMED_RPM = 20;
-const GEMMA_GOOGLE_ASSUMED_RPM = 15;
+const GEMMA_GOOGLE_ASSUMED_RPM = 30;
 
 /**
  * Must sit below every global provider default so a single guest/user can never consume a whole
@@ -138,20 +138,20 @@ export const DEFAULT_IP_LIMIT = 60;
  */
 export const DEFAULT_IP_LLM_LIMIT = DEFAULT_PRINCIPAL_LIMIT;
 
-// Gemini's free tier: requests per model per day, each model its own quota.
-const GEMINI_FREE_TIER_REQUESTS_PER_DAY = 20;
+// Free-tier requests per day of the primary model (Gemini 3.5 Flash Lite); each model has its own.
+const PRIMARY_MODEL_REQUESTS_PER_DAY = 500;
 
 /**
- * LLM calls per principal per UTC day: about one demo (two analyses, a few Asks, Prepare, Draft).
- * Even if every call needed its repair retry, one principal spends at most one free Gemini model's day.
+ * LLM calls per principal per UTC day: a few full demos (analyses, Asks, Prepare, Draft, Compare).
+ * Even if every call needed its repair retry, one principal spends under a third of the primary
+ * model's day, and the fallback tiers carry their own separate quotas behind it.
  */
-export const DEFAULT_PRINCIPAL_DAILY_LIMIT = Math.floor(GEMINI_FREE_TIER_REQUESTS_PER_DAY / MAX_HTTP_ATTEMPTS_PER_CALL);
+export const DEFAULT_PRINCIPAL_DAILY_LIMIT = Math.floor(PRIMARY_MODEL_REQUESTS_PER_DAY / MAX_HTTP_ATTEMPTS_PER_CALL / 4);
 /**
- * LLM calls per IP per UTC day: one principal's day plus half of a second one's, for two people
- * behind one NAT. Still under one free Gemini model's day at one request per call, so cycling
- * cookies can't drain it either.
+ * LLM calls per IP per UTC day: two principals' days, for people sharing one NAT. Still under the
+ * primary model's day at one request per call, so cycling cookies can't drain it.
  */
-export const DEFAULT_IP_DAILY_LIMIT = (DEFAULT_PRINCIPAL_DAILY_LIMIT * 3) / 2;
+export const DEFAULT_IP_DAILY_LIMIT = DEFAULT_PRINCIPAL_DAILY_LIMIT * 2;
 
 /**
  * Which shared quota a global bucket counts against. Two keys can point at the same underlying
